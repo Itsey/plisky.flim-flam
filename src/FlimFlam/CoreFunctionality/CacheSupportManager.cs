@@ -1,0 +1,92 @@
+////using Plisky.Plumbing.Legacy;
+using System;
+using System.Collections;
+using Plisky.Plumbing;
+
+namespace Plisky.FlimFlam { 
+
+    /// <summary>
+    /// Summary description for CacheSupportManager.
+    /// </summary>
+    internal class CacheSupportManager {
+        private string m_thisMachineNameCache = Environment.MachineName;
+
+        internal CacheSupportManager() {
+            //Bilge.Log("MexViewer::CacheSupportManager --> Create () ");
+            m_truncateCache = new Hashtable();
+        }
+
+        internal string MexRunningOnMachineName {
+            get { return m_thisMachineNameCache; }
+        }
+
+        internal string DiagnosticsText() {
+            return "Cached Machine Name:" + m_thisMachineNameCache;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        internal void Shutdown() {
+            //Bilge.Log("MexViewer::CacheSupportManager --> Shutdown requested.");
+        }
+
+        #region Truncation Cache System
+
+        private Hashtable m_truncateCache;
+
+        internal void CacheAdd_EventEntryExpectingTruncate(EventEntry ee, int pid, string machineName, string joinIdentifier) {
+            string keyForAdd = pid.ToString() + machineName + joinIdentifier;
+            if (!m_truncateCache.Contains(keyForAdd)) {
+                m_truncateCache.Add(keyForAdd, ee);
+            } else {
+                //Bilge.Log("CacheSupportManager::CacheAdd_EventEntryExpectingTruncate --> Entry already cached");
+            }
+        }
+
+        internal EventEntry CacheGet_EventEntryExpectingTruncate(int pid, string machineName, string joinIdentifier) {
+            return CacheGet_EventEntryExpectingTruncate(pid, machineName, joinIdentifier, false);
+        }
+
+        internal EventEntry CacheGet_EventEntryExpectingTruncate(int pid, string machineName, string joinIdentifier, bool expire) {
+
+            #region entry code
+
+            //Bilge.Assert(pid >= 0, "Invalid pid passed to CacheGet_EventEntryExpectingTruncate");
+            if (machineName == null) {
+                //Bilge.Log("CacheSupportManager::CacheGet_EventEntryExpectingTruncate --> WARNING no machine name passed, will try to process");
+                // TODO: FIX THIS!!!
+                machineName = Environment.MachineName;
+            }
+
+            #endregion entry code
+
+            string searchKey = pid.ToString() + machineName + joinIdentifier;
+            EventEntry result = (EventEntry)m_truncateCache[searchKey];
+
+            if (result == null) {
+                // Its not cached, this should not actually be possible
+                //Bilge.Log("CacheSupportManager::CacheGet_EventEntryExpectingTruncate WARNING--> Cache Miss on truncate should not be possible");
+                //Bilge.Log("CacheSupportManager::CacheGet_EventEntryExpectingTruncate CORRECTION CODE ENGAGED --> Looking for truncation");
+                TracedApplication ta = MexCore.TheCore.DataManager.GetKnownApplicationByPid(pid, machineName);
+                if (ta != null) {
+                    // TA can be null if we really unluckily intercepted the tail half of a truncation.
+                    for (int i = ta.EventEntries.Count - 1; i >= 0; i--) {
+                        if (ta.EventEntries[i].DebugMessage.EndsWith(FlimFlamConstants.MESSAGETRUNCATE)) {
+                            result = ta.EventEntries[i];
+                            break;
+                        }
+                    }
+                }
+            } else {
+                // it was found in the cache, check whether were expiring it.
+                if (expire) {
+                    m_truncateCache.Remove(searchKey);
+                }
+            }
+
+            // Hmm it doesent exist at all, this also should not be possible.
+            return result;
+        }
+
+        #endregion Truncation Cache System
+    }
+}

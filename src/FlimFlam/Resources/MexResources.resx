@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\refresh.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="autoscroll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\autoscroll.ico;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnAddNewListener" xml:space="preserve">
+    <value>Adds the listener detailed by the hostname and port into the list of listeners which are to be added by Tex on startup.</value>
+  </data>
+  <data name="btnDevelopmentDefaults" xml:space="preserve">
+    <value>This button will choose a set of defaults which work well for most people when developing on an XP Workstation.  It is recommended that these defaults are used for developers new to using//Bilge.</value>
+  </data>
+  <data name="btnReadEnvironment" xml:space="preserve">
+    <value>Reads the environment settings from the current machine and applies those settings to the options dialog box. All user changes will be lost.</value>
+  </data>
+  <data name="btnReleaseDefaults" xml:space="preserve">
+    <value>This will set all of the options on this screen to options suitable for a release environment.  N.B. by default release environments should not have the environment variable therefore this is unnecessary.  However once an environment variable is set this is a good way to unset it.</value>
+  </data>
+  <data name="btnRemoveSelected" xml:space="preserve">
+    <value>Removes the selected TCP listener from the list of listeners which are to be used by//Bilge.</value>
+  </data>
+  <data name="btnSetEnvironment" xml:space="preserve">
+    <value>Takes the value of the settings specified and applies it to the TEX_INIT environment variable on the local machine.  This operation takes much longer than you would expect.</value>
+  </data>
+  <data name="chkAddStackInfo" xml:space="preserve">
+    <value>If enabled then stack information is added to every trace message.  This allows the display of method and class names in the trace output but incurs a significant performance overhead.  To greatly improve the performance of Tex logging disable this feature.</value>
+  </data>
+  <data name="chkEnableEnhancements" xml:space="preserve">
+    <value>Determines whether Tex enhancements are enabled, if they are then additional features such as custom replacements within the trace strings are enabled.  This should typically be off unless you are using the additional features</value>
+  </data>
+  <data name="chkExpandAssertions" xml:space="preserve">
+    <value>If this is set an additional environment variable will be created to inform Tex that the default Tex Assertion dialog should present itself showing full details when displayed.</value>
+  </data>
+  <data name="chkMakeTcpInteractive" xml:space="preserve">
+    <value>If enabled then the TCP listener will display interactive dialogs if an Error or Assertion condition occurs. Tex will check that an interactive user is logged on before presenting a dialog box.  This is the best choice if you wish to see assertions as they occur and therefore this would typically be true, however if the target application is running on an unattended session then this should be set to false.</value>
+  </data>
+  <data name="chkUseHighPerf" xml:space="preserve">
+    <value>Determines whether Tex should use internal caching for the messages.  If this is enabled then a background thread is created within Tex which will send all of the messages to the trace stream.  This allows the application to run as smoothly as possible but results in an additional thread and additional memory consumption.</value>
+  </data>
+  <data name="chkUseRenderNameNotPID" xml:space="preserve">
+    <value>When enabled Mex will use the name passed by Tex instead of the PID of a process.  This will be used in labels and menus which refer to the process lists.  If Mex has not received any process information then this will display the PID as before. Defaults to Off to maintain backward compatibility.  Introduced in Mex 2.3.0.0.</value>
+  </data>
+  <data name="chkAddTexListener" xml:space="preserve">
+    <value>Adds the default Tex listener into the .net listener collection.  The default listener uses the windows OutputDebugString API to send messages to Mex and has interactive assertion dialogs.  The output from this listener can be displayed in tools other than Mex – such as DebugView.  This listener does not work properly for all server configurations and is designed for developers using Tex/Mex on their desktop.</value>
+  </data>
+  <data name="chkRemoveAll" xml:space="preserve">
+    <value>When enabled the Tex configuration will be set to remove all of the listeners from the .net listener collection before any Tex listeners are added.  This is normally used to disable the default .net listener.</value>
+  </data>
+  <data name="chkRemoveDupes" xml:space="preserve">
+    <value>If enabled Mex will check the entries when they arrive for duplicates, if a duplicate is detected it will be discarded and not imported into the data store.  Typically this is used when more than one listener is configured in the target application which can result in all messages being duplicated in Mex.</value>
+  </data>
+  <data name="txtIPInit" xml:space="preserve">
+    <value>The IP address or hostname to which Tex should stream messages when using a TCP listener.  The host or IP must already have Mex running and listening for messages to be visible, if no socket connection can be made then Tex will not try again for a timeout period.  After setting the IP and Port add the TCP listener using the button.  The TCP listener is the best choice for Server operating systems.</value>
+  </data>
+  <data name="txtGeneratedString" xml:space="preserve">
+    <value>Contains the configuration string which is generated from the options that are chosen on this dialog. This configuration string can be passed to Tex to allow it to configure itself correctly.  The default method of doing this is to store this configuration string to an environment variable using the Set Environment button.</value>
+  </data>
+  <data name="txtPortInit" xml:space="preserve">
+    <value>The port which the TCP Listener should use for communication.  This port MUST match the port to which Mex is set up to listen otherwise no content will arrive at the destination.  The default Mex port is 9060.</value>
+  </data>
+  <data name="chkAllowCancelOperations" xml:space="preserve">
+    <value>Asks Mex to check for user input during intensive loops and attempt to cancel.  This slows down the Mex processing considerably - making the loops take longer but does allow you to cancel the operation if its taking too long.</value>
+  </data>
+  <data name="chkAutoRefresh" xml:space="preserve">
+    <value>Automatically refreshes the view that you are looking at when new messages arrive in the background.</value>
+  </data>
+  <data name="chkAutoScroll" xml:space="preserve">
+    <value>Automatically scrolls the view that you are looking at when new messages arrive in the background.</value>
+  </data>
+  <data name="chkAutoSelectProcessIfNoneSelected" xml:space="preserve">
+    <value>If this is ticked then whenever there is no process selected but there is process data within Mex the first process will be selected.</value>
+  </data>
+  <data name="chkBeautifyOutput" xml:space="preserve">
+    <value>Removes CRLF combinations from the output, which display as little squares in the list views.</value>
+  </data>
+  <data name="chkDisplayGlobalIndexInMainView" xml:space="preserve">
+    <value>Determines whether the internal index that Mex uses for messages is displayed in the output.</value>
+  </data>
+  <data name="chkEnableBacktrace" xml:space="preserve">
+    <value>If this is enabled then the details view will include a list of the event logs which occurred before the one selected.  This is a slightly slow operation therefore disable this for performance.</value>
+  </data>
+  <data name="chkHighlightCrossProcesses" xml:space="preserve">
+    <value>If this is ticked then when cross process view is used a default highlight colour scheme will be applied to separate each of the processes that are added.  This highlight overrides any highlight that you may be using.</value>
+  </data>
+  <data name="chkImportMatchingPIDODSIntoEvents" xml:space="preserve">
+    <value>When enabled any OutputDebugString messages that are intercepted from a process which Mex is already watching will be copied into that processes view. This allows output which is not formatted in a Tex compatible way to arrive in the same view as the Tex formatted output.</value>
+  </data>
+  <data name="chkLeaveMatchingPidsInNonTracedToo" xml:space="preserve">
+    <value>If this is ticked then when trace messages from the same process are placed into the specific process a copy will be left in the generic main view.</value>
+  </data>
+  <data name="chkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartialschkMatchingNamePurgeAlsoClearsPartials" xml:space="preserve">
+    <value>If this is ticked then when a process is purged any copies of that process will also be purged.</value>
+  </data>
+  <data name="chkRecycleProcessWhenNameMatches" xml:space="preserve">
+    <value>When enabled Mex will check for matching process names each time a new process is found. If a process name match is found then the old one will be removed to keep only one instance of the named application in Mex.  This is useful when debugging and repeatedly restarting an application to display only the latest run.</value>
+  </data>
+  <data name="chkRespectFilter" xml:space="preserve">
+    <value>Respects the current filter.  If this is unticked then no filtering at all will be applied to the view.</value>
+  </data>
+  <data name="chkSelectingProcessSelectsProcessView" xml:space="preserve">
+    <value>If this is ticked then when a new process is selected (from the menu) the Process view for that process is automatically displayed.</value>
+  </data>
+  <data name="chkWotTimedViewToo" xml:space="preserve">
+    <value>If enabled then your filter will be applied to timed view.  Timed view is dependant on timing messages being present in the trace stream therefore if the filter is used you can get unpredictable results if you filter out timed messages.  The default is that Mex uses its own filter for timed view</value>
+  </data>
+  <data name="chkXRefAppInitialises" xml:space="preserve">
+    <value>Places a copy of Application initialisation messages into the main view.</value>
+  </data>
+  <data name="chkXRefCheckAssertions" xml:space="preserve">
+    <value>Places a copy of assertion messages into the main view.</value>
+  </data>
+  <data name="chkXRefErrors" xml:space="preserve">
+    <value>Places a copy of Error messages into the main view.</value>
+  </data>
+  <data name="chkXRefExceptions" xml:space="preserve">
+    <value>Places a copy of Exceptions into the main view.</value>
+  </data>
+  <data name="chkXRefLogs" xml:space="preserve">
+    <value>Places a copy of Logs into the Main View.  WARNING this will duplicate all logs internally and make Mex store a lot of inforamtion.</value>
+  </data>
+  <data name="chkXRefResourceMessages" xml:space="preserve">
+    <value>Places a copy of resource messages into the main view.</value>
+  </data>
+  <data name="chkXRefVerbLogs" xml:space="preserve">
+    <value>Places a copy of verbose logs into the main view.</value>
+  </data>
+  <data name="chkXRefWarnings" xml:space="preserve">
+    <value>Places a copy of Warning messages into the main view.</value>
+  </data>
+  <data name="grpThreadDisplayOptions" xml:space="preserve">
+    <value>Determines how Mex should display threads.  The thread can be specified by its Operating System thread identifier or its .net thread identifier or a combination of both.</value>
+  </data>
+  <data name="grpUserMessageNotificationOptions" xml:space="preserve">
+    <value>Determines how you wish to view Mex internal messages.</value>
+  </data>
+  <data name="lbxAddTCPListeners" xml:space="preserve">
+    <value>This is the list of TCP listeners that will be used, it is possible to have many different TCP listeners running at once to route trace messages to many different Mex viewers.</value>
+  </data>
+  <data name="txtIPBinding" xml:space="preserve">
+    <value>Decides which IP address Mex is listening for messages on.  The best option is *</value>
+  </data>
+  <data name="txtLongRunningOps" xml:space="preserve">
+    <value>Determines how long it is an import is allowed to run for before Mex attempts to notify the user that the import is still going on.</value>
+  </data>
+  <data name="txtPortBinding" xml:space="preserve">
+    <value>Decides which Port Mex listens on the default is 9060.</value>
+  </data>
+  <data name="txtUIRefreshFrequency" xml:space="preserve">
+    <value>Determines how frequently the UI checks to automatically refresh itself</value>
+  </data>
+  <data name="txtUserLogSize" xml:space="preserve">
+    <value>Determines how many internal Mex messages to store.  Internal operations and notifications are stored in a log and after this many messages the log will recycle.</value>
+  </data>
+  <data name="chkMatchingNamePurgeAlsoClearsPartials" xml:space="preserve">
+    <value>If this is enabled then when a process is purged any copies of that process are also purged.</value>
+  </data>
+  <data name="chkRemoveDupesOnDisplay" xml:space="preserve">
+    <value>Removes duplicate entries at display time, this will filter out the entries from the display, not delete the data in Mex. </value>
+  </data>
+  <data name="grpTraceLevel" xml:space="preserve">
+    <value>Sets the trace level for//Bilge.  The trace level can be one of the values specified. Off: No Trace. Info:Normal Trace. Error:Minimal Trace. Verbose:Full Trace. Warning: Slightly more than Error.</value>
+  </data>
+  <data name="rdoErrorLevel" xml:space="preserve">
+    <value>&lt;hlp idr="grpTraceLevel"/&gt;</value>
+  </data>
+  <data name="rdoTraceInfo" xml:space="preserve">
+    <value>&lt;hlp idr="grpTraceLevel"/&gt;</value>
+  </data>
+  <data name="rdoTraceOff" xml:space="preserve">
+    <value>&lt;hlp idr="grpTraceLevel"/&gt;</value>
+  </data>
+  <data name="rdoVerboseLevel" xml:space="preserve">
+    <value>&lt;hlp idr="grpTraceLevel"/&gt;</value>
+  </data>
+  <data name="rdoWarningLevel" xml:space="preserve">
+    <value>&lt;hlp idr="grpTraceLevel"/&gt;</value>
+  </data>
+  <data name="chkAllowInternalMessageDisplays" xml:space="preserve">
+    <value>If enabled then internal messages can be displayed in the views (if the filter permits this). Internal messages are instructions to Mex and messages which are not normally displayed.</value>
+  </data>
+  <data name="chkFilterDefaultIncludeModules" xml:space="preserve">
+    <value>If this is enabled then the module identities will be saved with filters as they are persisted to disk.</value>
+  </data>
+  <data name="chkFilterDefaultIncludesClasses" xml:space="preserve">
+    <value>If this is enabled then class names will be saved with filteres as they are persisted to disk.</value>
+  </data>
+  <data name="chkFilterDefaultIncludesLocations" xml:space="preserve">
+    <value>If this is enabled then locations will be saved with filters as they are persisted to disk.</value>
+  </data>
+  <data name="chkFilterDefaultIncludesThreads" xml:space="preserve">
+    <value>If this is enabled then thread identities will be saved with filters as they are persisted to disk.</value>
+  </data>
+  <data name="chkRelocateOnChange" xml:space="preserve">
+    <value>If enabled then when the directory used to store filters is changed all of the existing filters will be copied to the new location.</value>
+  </data>
+  <data name="chkTimingsViewIgnoresThreads" xml:space="preserve">
+    <value>When enabled the timings view will not treat timer starts and stops as scoped by thread. This will typically mess up the results for a multithreaded application but is the only way to get timings if you start a timer on one thread and stop it on another.</value>
+  </data>
+  <data name="chkActivateImportLogging" xml:space="preserve">
+    <value>Determines whether all of the messages recieved by Mex are recorded out to disk files. This import logging allows you to save all of the data Mex recieves to files which can be loaded in later.</value>
+  </data>
+  <data name="chkImportLoggingInlcudedsODS" xml:space="preserve">
+    <value>If enabled then, when recording input messages, those messages recieved from the local OutputDebugString listener will be included in the file.</value>
+  </data>
+  <data name="chkIncludeFileContents" xml:space="preserve">
+    <value>If enabled then when logging content out to a file any content which is read from a file will be included in the output. N.B. this can generate very large files.</value>
+  </data>
+  <data name="chkInlucdeTCPContents" xml:space="preserve">
+    <value>If enabled then when recording input messages, those messages recieved via the TCP listeners will be written out to the log files.</value>
+  </data>
+</root>

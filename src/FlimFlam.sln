@@ -1,0 +1,110 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_Dependencies", "_Dependencies\_Dependencies.csproj", "{6A505E98-EAE9-44A1-9B62-D30617367DC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DAE51FC-F82A-4F54-BE1B-70BE32447DE9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Local.testsettings = Local.testsettings
+		PliskyLibrary.vsmdi = PliskyLibrary.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Support", "Support\Support.csproj", "{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PliskyUIControls", "PliskyUIControls\PliskyUIControls.csproj", "{903EF514-80E9-49C2-9C99-B386804EA722}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlimFlam.Tests", "FlimFlam.Tests\FlimFlam.Tests.csproj", "{8E46387B-86AE-4D51-BAC4-5C07106DE51E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlimFlamUI", "FlimFlam\FlimFlamUI.csproj", "{8521167D-E5DF-4306-9B26-4BB8E4F31A32}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CoreShared", "FlimFlam.Shared\CoreShared.shproj", "{B67DB3AB-E460-48C9-B997-5469598759A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Develop|Any CPU = Develop|Any CPU
+		Develop|x86 = Develop|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Debug|x86.Build.0 = Debug|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Develop|Any CPU.ActiveCfg = Develop|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Develop|x86.ActiveCfg = Develop|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Develop|x86.Build.0 = Develop|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Release|x86.ActiveCfg = Release|Any CPU
+		{6A505E98-EAE9-44A1-9B62-D30617367DC0}.Release|x86.Build.0 = Release|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Debug|x86.Build.0 = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Develop|x86.ActiveCfg = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Develop|x86.Build.0 = Debug|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Release|x86.ActiveCfg = Release|Any CPU
+		{1D9A9B02-A9E9-4B37-AA2D-E342E4F78362}.Release|x86.Build.0 = Release|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Debug|x86.Build.0 = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Develop|x86.ActiveCfg = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Develop|x86.Build.0 = Debug|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Release|Any CPU.Build.0 = Release|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Release|x86.ActiveCfg = Release|Any CPU
+		{903EF514-80E9-49C2-9C99-B386804EA722}.Release|x86.Build.0 = Release|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Debug|x86.Build.0 = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Develop|x86.ActiveCfg = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Develop|x86.Build.0 = Debug|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E46387B-86AE-4D51-BAC4-5C07106DE51E}.Release|x86.Build.0 = Release|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Debug|x86.Build.0 = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Develop|Any CPU.ActiveCfg = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Develop|Any CPU.Build.0 = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Develop|x86.ActiveCfg = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Develop|x86.Build.0 = Debug|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Release|x86.ActiveCfg = Release|Any CPU
+		{8521167D-E5DF-4306-9B26-4BB8E4F31A32}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9888A3EF-0EAC-487F-A71E-03D3B6EFEF80}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		FlimFlam.Shared\FFCoreShared.projitems*{1d9a9b02-a9e9-4b37-aa2d-e342e4f78362}*SharedItemsImports = 5
+		FlimFlam.Shared\FFCoreShared.projitems*{b67db3ab-e460-48c9-b997-5469598759a1}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = PliskyLibrary.vsmdi
+	EndGlobalSection
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,2 @@
+﻿ShowDetailsView,Flimflam screen navigation message to show the details view.
+ShowHomeView,Flimflam screen navigation message to go to the home screen.

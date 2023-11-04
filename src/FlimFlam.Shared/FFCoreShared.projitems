@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>b67db3ab-e460-48c9-b997-5469598759a1</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>FFCoreShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Application\Utility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enums\UserMessages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FfApp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\BlankLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\ChainBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\FFV3FormatLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\FFV4FormatLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\FlimFlamMessageStructures.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\ImportParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\UnknownFormatLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\V1FormatterLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Importer\V2FormatterLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\FlimFlamConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\MessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\RawApplicationEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\SingleOriginEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Origin\OriginIdentity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UINotificationMessage.cs" />
+  </ItemGroup>
+</Project>

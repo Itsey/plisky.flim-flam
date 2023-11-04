@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Plisky.Diagnostics" Version="3.2.0" />
+    <PackageReference Include="Plisky.Plumbing" Version="1.8.5" />
+    <PackageReference Include="System.Reactive" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Plisky.Diagnostics">
+      <HintPath>..\..\packages\Plisky.Diagnostics.3.1.12\lib\net48\Plisky.Diagnostics.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="..\FlimFlam.Shared\FFCoreShared.projitems" Label="Shared" />
+
+</Project>

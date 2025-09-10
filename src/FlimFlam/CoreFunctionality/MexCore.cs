@@ -1,6 +1,7 @@
 namespace Plisky.FlimFlam {
     using System;
     using System.Diagnostics;
+    using System.IO;
     using System.Threading;
     using Plisky.Diagnostics.FlimFlam;
     using Plisky.FilmFlam;
@@ -8,23 +9,39 @@ namespace Plisky.FlimFlam {
     /// <summary>
     /// Summary description for Core.
     /// </summary>
-    internal class MexCore {
-        internal MexOptions Options;
-        internal PrimaryWorkManager WorkManager;
-        internal DataStructureManager DataManager;
-        internal IncomingMessageManager MessageManager;
-        internal ViewSupportManager ViewManager;
-        internal MexDiagnosticManager Diagnostics;
-        internal CacheSupportManager CacheManager;
+    public class MexCore {
 
-        private readonly Thread m_coreExecutionThread;
-        private volatile bool m_continueRunning = true;
+        public void LogEveryting(string context, string message) {
+            if (MexCore.TheCore.Options.PersistEverything) {
+                try {
+                    //string when = string.Format("{0}:{1}:{2}", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+                    //string[] strings = new string[] { when, context, Environment.NewLine, message };
+                    if (message.EndsWith(Environment.NewLine)) {
+                        message = message.Substring(0, message.Length - Environment.NewLine.Length);
+                    }
+                    File.AppendAllLines(MexCore.TheCore.Options.CurrentFilename, new string[] { message });
+                } catch {
+                }
+            }
+        }
+
+
+        public MexOptions Options { get; set; }
+        internal PrimaryWorkManager WorkManager { get; set; }
+        internal DataStructureManager DataManager { get; set; }
+        internal IncomingMessageManager MessageManager { get; set; }
+        internal ViewSupportManager ViewManager { get; set; }
+        internal MexDiagnosticManager Diagnostics { get; set; }
+        internal CacheSupportManager CacheManager { get; set; }
+
+        private readonly Thread coreExecutionThread;
+        private volatile bool continueRunning = true;
 
         private void CoreThreadLoop() {
             int idleCount = 0;
 
             //Bilge.Log("MexCore::CoreThreadLoop is initialised");
-            while (m_continueRunning) {
+            while (continueRunning) {
                 try {
                     // Autorefresh has been changed to be timer based rather than instance based.
 
@@ -50,7 +67,7 @@ namespace Plisky.FlimFlam {
                             MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.MexIsIdle, UserMessageType.InformationMessage, "ZzzzZZzzzZ");
                             // At this point the app hasnt recieved a message in a while and is therefore this thread is going to go to sleep.
                             for (int killTime = 0; killTime < 1000; killTime++) {
-                                if (WorkManager.WorkOutstanding || (!m_continueRunning) || MexCore.TheCore.MessageManager.IncomingMessagesQueued) {
+                                if (WorkManager.WorkOutstanding || (!continueRunning) || MexCore.TheCore.MessageManager.IncomingMessagesQueued) {
                                     //Bilge.Log("MexCore::CoreThreadLoop - Awoken, work has arrived");
                                     break;
                                 }
@@ -61,6 +78,7 @@ namespace Plisky.FlimFlam {
                     }
                 } catch (Exception ex) {
 #if DEBUG
+                    MexCore.TheCore.LogEveryting("MexCrash", "MainLoop");
                     Utility.LogExceptionToTempFile("MexCore - Main Loop - Crash.", ex);
 
                     if (Debugger.IsAttached) {
@@ -76,14 +94,14 @@ namespace Plisky.FlimFlam {
         }
 
         internal bool CoreShutdownRequested {
-            get { return !m_continueRunning; }
+            get { return !continueRunning; }
         }
 
         /// <summary>
         /// Called when a request to shut the application down is made - this should nicely shut down all of our applications
         /// </summary>
         internal void ShutDownCore() {
-            m_continueRunning = false;
+            continueRunning = false;
             WorkManager.ShutDown();
             DataManager.ShutDown();
             MessageManager.ShutDown();
@@ -101,14 +119,14 @@ namespace Plisky.FlimFlam {
             // Place initialisation job requests in the queue.
             // TODO : DO I need this ? WorkManager.AddJob(new Job_ApplyOptionsForUser());
 
-            m_coreExecutionThread.Start();
+            coreExecutionThread.Start();
         }
 
         internal void PokeCoreThread() {
             //Bilge.Log("MexCore::Core::PokeCorethread called");
-            if (m_coreExecutionThread.ThreadState == System.Threading.ThreadState.WaitSleepJoin) {
+            if (coreExecutionThread.ThreadState == System.Threading.ThreadState.WaitSleepJoin) {
                 //Bilge.Log("MexCore::Core::PokeCoreThread -> Core thread caught sleeping on the job and woken up....");
-                m_coreExecutionThread.Interrupt();
+                coreExecutionThread.Interrupt();
             }
         }
 
@@ -147,7 +165,7 @@ namespace Plisky.FlimFlam {
             CacheManager = new CacheSupportManager();
 
             //Bilge.Log("MexCore::MexCore - Starting CoreWorkerThread");
-            m_coreExecutionThread = new Thread(new ThreadStart(CoreThreadLoop)) {
+            coreExecutionThread = new Thread(new ThreadStart(CoreThreadLoop)) {
                 Name = "MexCoreThread"
             };
 
@@ -158,7 +176,7 @@ namespace Plisky.FlimFlam {
 
         #region static singleton support methods
 
-        internal static MexCore TheCore = null;
+        internal static MexCore TheCore { get; set; } = null;
 
         static MexCore() {
             //Bilge.Log("MexCore, Static Constructor :: Core Called for the first time  - bringing MexCore online");
@@ -169,7 +187,7 @@ namespace Plisky.FlimFlam {
         #endregion static singleton support methods
 
         internal string DiagnosticsText() {
-            return "Core Execution Thread : Alive(" + m_coreExecutionThread.IsAlive.ToString() + ")" + m_coreExecutionThread.ThreadState.ToString();
+            return "Core Execution Thread : Alive(" + coreExecutionThread.IsAlive.ToString() + ")" + coreExecutionThread.ThreadState.ToString();
         }
     }
 }

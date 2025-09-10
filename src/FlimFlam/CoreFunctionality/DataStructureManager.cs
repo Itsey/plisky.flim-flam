@@ -17,13 +17,13 @@ using Plisky.Plumbing;
 
 */
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     internal class DataStructureManager {
         internal ReaderWriterLock DataStructuresLock;
 
         internal string DiagnosticsText() {
-            StringBuilder diagReturnString = new StringBuilder();
+            var diagReturnString = new StringBuilder();
 
             diagReturnString.Append("Non traced app entries : " + this.NonTracedApplicationEntries.Count.ToString() + "\r\n");
             for (int i = 0; i < this.TracedApplications.Count; i++) {
@@ -150,8 +150,8 @@ namespace Plisky.FlimFlam {
             }
             // Check for multiple threads
             if ((!TracedApplications[physicalIndex].ContainsMoreThanOneThread)) {
-                if (TracedApplications[physicalIndex].CurrentlyUsedThreadIdx.Length == 0) {
-                    TracedApplications[physicalIndex].CurrentlyUsedThreadIdx = newEvt.ThreadID;
+                if (string.IsNullOrWhiteSpace(TracedApplications[physicalIndex].CurrentlyUsedThreadIdx)) {
+                    TracedApplications[physicalIndex].CurrentlyUsedThreadIdx = newEvt.ThreadID ?? string.Empty;
                 } else {
                     TracedApplications[physicalIndex].ContainsMoreThanOneThread = (TracedApplications[physicalIndex].CurrentlyUsedThreadIdx != newEvt.ThreadID);
                     if (TracedApplications[physicalIndex].ContainsMoreThanOneThread) { insertionCausedChangeToProcesses = true; }
@@ -301,11 +301,11 @@ namespace Plisky.FlimFlam {
                         this.TracedApplications.TracedApplicationsDataRWL.ReleaseReaderLock();
                     }
                 }
-            } catch (ApplicationException aex) {
+            } catch (ApplicationException) {
                 //Bilge.Dump(aex, "Likely timeout trying to retrieve a reader lock in visit every event in order method");
                 if (finalCallback != null) { finalCallback(false); }
                 return false;
-            } catch (Exception ex) {
+            } catch (Exception) {
                 //Bilge.Dump(ex, "something wrong visiting each of the traced applications, exception occurred");
                 if (finalCallback != null) { finalCallback(false); }
                 throw;
@@ -399,7 +399,7 @@ namespace Plisky.FlimFlam {
             // often come in a group the last one found could be cached.
             //Bilge.Log("INNEFFICIENT --> Cache the last one as its likely that we hit it again, as truncates often come in heards");
 
-            TracedApplication ta = MexCore.TheCore.DataManager.TracedApplications[thePid, machineName];
+            var ta = MexCore.TheCore.DataManager.TracedApplications[thePid, machineName];
             if (ta != null) {
                 return ta.EventEntries[ta.EventEntries.Count];
             } else {
@@ -494,7 +494,7 @@ namespace Plisky.FlimFlam {
         }
 
         internal ProcessSummary[] GetAllProcessSummaries() {
-            ProcessSummary[] pss = new ProcessSummary[MexCore.TheCore.DataManager.TracedApplications.Count];
+            var pss = new ProcessSummary[MexCore.TheCore.DataManager.TracedApplications.Count];
             int theIdx = 0;
 
             this.TracedApplications.TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
@@ -702,7 +702,7 @@ namespace Plisky.FlimFlam {
                 } finally {
                     if (iGrabbed) { DataStructuresLock.ReleaseWriterLock(); }
                 }
-            } catch (ApplicationException aex) {
+            } catch (ApplicationException) {
                 //Bilge.Dump(aex, "PurgeAllData, timeout occured trying to get the writer lock");
                 //Bilge.Warning("Timeout occured waiting for a writer lock to purge, what do we do now!? Exception swallowed ");
             }
@@ -723,7 +723,7 @@ namespace Plisky.FlimFlam {
                     //Bilge.Log("PurgeAll -> releasing writer lock");
                     DataStructuresLock.ReleaseWriterLock();
                 }
-            } catch (ApplicationException aex) {
+            } catch (ApplicationException) {
                 //Bilge.Dump(aex, "PurgeAllData, timeout occured trying to get the writer lock");
                 //Bilge.Warning("Timeout occured waiting for a writer lock to purge, what do we do now!? Exception swallowed ");
             }
@@ -838,7 +838,7 @@ namespace Plisky.FlimFlam {
 
 #if DEBUG
             // Do not start at a logical place - this will help identify when the physical index is being passed outside of the datamanger
-            Random r = new Random();
+            var r = new Random();
             m_tracedAppVirtualIndexLastUsed = r.Next(24999);
 #else
       m_tracedAppVirtualIndexLastUsed=-1;
@@ -861,7 +861,7 @@ namespace Plisky.FlimFlam {
 #endif
                     DataStructuresLock.ReleaseWriterLock();
                 }
-            } catch (ApplicationException aex) {
+            } catch (ApplicationException) {
                 //Bilge.Dump(aex, "Create DataStructureManager, timeout occured trying to get the writer lock");
                 //Bilge.Warning("Timeout occured waiting for a writer lock to purge, what do we do now!? Exception swallowed ");
             }

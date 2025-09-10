@@ -18,7 +18,7 @@ namespace Plisky.FlimFlam {
         internal override void ExecuteJob() {
             //Bilge.Log("Mex::WorkManager >> Found Notify_NewEventAdded request, asking view manager to do it");
             //Bilge.Warning("Mex::WorkManager >> WARNING >> Should check for duplicate jobs here.  TODO");
-            //MexCore.TheCore.ViewManager.ProcessNewEventNotification(m_affectedIndex);
+            //MexCore.TheCore.ViewManager.ProcessNewEventNotification(affectedIndex);
             //MexCore.TheCore.ViewManager.ProcessNewAlertNotification();
             MexCore.TheCore.ViewManager.ProcessAlertNotification();
         }
@@ -41,14 +41,14 @@ namespace Plisky.FlimFlam {
     }
 
     internal class Job_NotifyKnownProcessUpdate : Job_Notification {
-        private int m_virtIndexOfUpdatedProcess = 0;
+        private int virtIndexOfUpdatedProcess = 0;
 
         internal Job_NotifyKnownProcessUpdate() {
-            m_virtIndexOfUpdatedProcess = -1; // all ?
+            virtIndexOfUpdatedProcess = -1; // all ?
         }
 
         internal Job_NotifyKnownProcessUpdate(int virtIdentityOfUpdatedProcess) {
-            m_virtIndexOfUpdatedProcess = virtIdentityOfUpdatedProcess;
+            virtIndexOfUpdatedProcess = virtIdentityOfUpdatedProcess;
         }
 
         internal override bool CanPushBackUpStack() {
@@ -59,8 +59,8 @@ namespace Plisky.FlimFlam {
             //Bilge.Log("Mex::WorkManager >> Found ProcessChangeNotificationJob request, asking view manager to do it");
             //Bilge.Warning("Mex::WorkManager >> WARNING >> Should check for duplicate jobs here.  TODO");
 
-            if (m_virtIndexOfUpdatedProcess >= 0) {
-                MexCore.TheCore.ViewManager.ProcessChangeNotification(m_virtIndexOfUpdatedProcess);
+            if (virtIndexOfUpdatedProcess >= 0) {
+                MexCore.TheCore.ViewManager.ProcessChangeNotification(virtIndexOfUpdatedProcess);
             } else {
                 MexCore.TheCore.ViewManager.ProcessChangeNotification(null);
             }
@@ -85,10 +85,10 @@ namespace Plisky.FlimFlam {
     }
 
     internal class Job_NotifyNewEventAdded : Job_Notification {
-        private int m_affectedIndex;
+        private int affectedIndex;
 
         internal Job_NotifyNewEventAdded(int appAffectedIndex) {
-            m_affectedIndex = appAffectedIndex;
+            affectedIndex = appAffectedIndex;
         }
 
         internal override bool CanPushBackUpStack() {
@@ -98,7 +98,7 @@ namespace Plisky.FlimFlam {
         internal override void ExecuteJob() {
             //Bilge.Log("Mex::WorkManager >> Found Notify_NewEventAdded request, asking view manager to do it");
             //Bilge.Warning("Mex::WorkManager >> WARNING >> Should check for duplicate jobs here.  TODO");
-            MexCore.TheCore.ViewManager.ProcessNewEventNotification(m_affectedIndex);
+            MexCore.TheCore.ViewManager.ProcessNewEventNotification(affectedIndex);
         }
 
         internal override string GetIdentifier() {

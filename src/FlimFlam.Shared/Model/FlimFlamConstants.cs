@@ -151,7 +151,7 @@ namespace Plisky.Plumbing {
                 case TraceCommandTypes.ResourceEat: return "Resource Allocation";
                 case TraceCommandTypes.ResourcePuke: return "Resource DeAllocation";
                 case TraceCommandTypes.ResourceCount: return "Resource Value Setting";
-                // TODO: case TraceCommandTypes.CommandData: return "XML Command";
+                case TraceCommandTypes.CommandData: return "XML Command";
                 case TraceCommandTypes.Custom: return "Custom Command";
                 case TraceCommandTypes.Unknown: return "Unknown Command";
                 case TraceCommandTypes.Standard: return "Standard Command";

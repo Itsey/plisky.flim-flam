@@ -16,6 +16,8 @@
         }
 
         internal bool Compare(EventEntry toThis) {
+            if (lastEvent==null) { return true; }
+
             bool result = true;
             if (lastEvent.LineNumber != toThis.LineNumber) {
                 result = false;

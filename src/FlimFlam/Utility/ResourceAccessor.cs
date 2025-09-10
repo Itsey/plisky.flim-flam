@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Resources;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     internal class ResourceAccessor : IAppHelpAbstraction {
 
@@ -29,7 +29,7 @@ namespace Plisky.FlimFlam {
         }
 
         public string GetRawResourceString(string identifier) {
-            ResourceManager rm = new ResourceManager("OldFlimFlam.Resources.MexResources", this.GetType().Assembly);
+            ResourceManager rm = new ResourceManager("FlimFlamUI.Resources.MexResources", this.GetType().Assembly);
             return rm.GetString(identifier);
         }
 

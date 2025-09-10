@@ -4,7 +4,6 @@ namespace Plisky.FlimFlam {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using Flurl;
@@ -224,7 +223,10 @@ namespace Plisky.FlimFlam {
         // DUAL MODE
         private readonly OriginIdentityStore store = new();
 
+#if DEBUG
+        private bool dualMode = false;
         private ImportParser newImporter;
+#endif
 
         private readonly EventRecieverForComparisons comparer = new();
         private DataParser dp = null;
@@ -240,25 +242,20 @@ namespace Plisky.FlimFlam {
                 return;
             }
 
-#if true
-            newImporter ??= new ImportParser(store);
-            dp ??= new DataParser(store, newImporter, comparer);
-#endif
-
-            var appIndexesAffectedByImport = new List<int>();
-
-            var startTime = DateTime.Now;   // how long have we been running
-            var overallStartTime = DateTime.Now;
-
-            FileStream everythingStream = null;
-            StreamWriter everythingLog = null;
-
-            if (MexCore.TheCore.Options.PersistEverything) {
-                everythingStream = new FileStream(MexCore.TheCore.Options.CurrentFilename, FileMode.Append, FileAccess.Write);
-                everythingLog = new StreamWriter(everythingStream);
-            }
-
             try {
+
+                newImporter ??= new ImportParser(store);
+                dp ??= new DataParser(store, newImporter, comparer);
+
+
+
+                var appIndexesAffectedByImport = new List<int>();
+
+                var startTime = DateTime.Now;   // how long have we been running
+                var overallStartTime = DateTime.Now;
+
+
+
                 do {
                     if (m_shutdownRequested) {
                         //Bilge.Log("Aborting import as shutdown has been requested.");
@@ -272,9 +269,8 @@ namespace Plisky.FlimFlam {
                         continue;
                     }
 
-                    if (MexCore.TheCore.Options.PersistEverything) {
-                        everythingLog.WriteLine("\"" + nextEvent.MachineName + "\",\"" + nextEvent.Pid + "\",\"" + nextEvent.MessageString + "\",\"" + "DE\"");
-                    }
+                    MexCore.TheCore.LogEveryting("IncommingMessageManager", nextEvent.MessageString);
+
 
                     if (MexCore.TheCore.Options.RemoveDuplicatesOnImport) {
                         bool dupeFound = true;
@@ -291,7 +287,7 @@ namespace Plisky.FlimFlam {
                             }
                         }
                     }
-                    // DUAL MODE
+
                     var rae = new RawApplicationEvent() {
                         ArrivalTime = nextEvent.TimeRecieved,
                         OriginId = store.GetOriginIdentity(nextEvent.MachineName, nextEvent.Pid.ToString()),
@@ -299,9 +295,15 @@ namespace Plisky.FlimFlam {
                         Process = nextEvent.Pid.ToString(),
                         Text = nextEvent.MessageString
                     };
-                    dp.AddRawEvent(rae);
 
-                    // END DUAL MODE
+                    if (dualMode) {
+                        // DUAL MODE
+
+                        dp.AddRawEvent(rae);
+
+                        // END DUAL MODE
+                    }
+
                     EventEntry ee = null;
                     string tempMachineName = null;
                     bool legacyMode = false;
@@ -653,17 +655,14 @@ namespace Plisky.FlimFlam {
                         }
                     }
                 } while ((m_incommingMsgQueue.Count > 0) && doAll);
-            } finally {
-                if (MexCore.TheCore.Options.PersistEverything) {
-                    everythingLog.Close();
-                    everythingStream.Close();
-                    everythingLog.Dispose();
-                    everythingStream.Dispose();
-                }
-            }
 
-            foreach (int appAffectedIdx in appIndexesAffectedByImport) {
-                MexCore.TheCore.WorkManager.AddJob(new Job_NotifyNewEventAdded(appAffectedIdx));
+
+                foreach (int appAffectedIdx in appIndexesAffectedByImport) {
+                    MexCore.TheCore.WorkManager.AddJob(new Job_NotifyNewEventAdded(appAffectedIdx));
+                }
+            } catch (Exception ex) {
+                Utility.LogExceptionToTempFile("MexCore - Main Loop - Crash.", ex);
+                throw;
             }
         }
 
@@ -673,29 +672,32 @@ namespace Plisky.FlimFlam {
                 Secondary = ee.SecondaryMessage,
                 OccuredAt = DateTime.Now
             };
+            try {
+                if (ee.SecondaryMessage.EndsWith("{ \r\n")) {
+                    ee.SecondaryMessage = ee.SecondaryMessage[..^4] + "}";
+                    //ee.SecondaryMessage  = ee.SecondaryMessage.Replace("\"", "'");
+                    ee.SecondaryMessage = ee.SecondaryMessage.Replace("\" \"", "\", \"");
 
-            if (ee.SecondaryMessage.EndsWith("{ \r\n")) {
-                ee.SecondaryMessage = ee.SecondaryMessage[..^4] + "}";
-                //ee.SecondaryMessage  = ee.SecondaryMessage.Replace("\"", "'");
-                ee.SecondaryMessage = ee.SecondaryMessage.Replace("\" \"", "\", \"");
+                    var ap = System.Text.Json.JsonSerializer.Deserialize<AlertEntryProperties>(ee.SecondaryMessage);
+                    ee.SupportingData = ap;
 
-                var ap = System.Text.Json.JsonSerializer.Deserialize<AlertEntryProperties>(ee.SecondaryMessage);
-                ee.SupportingData = ap;
-
-                if (MexCore.TheCore.Options.AutoPurgeApplicationOnMatchingName) {
-                    foreach (var l in MexCore.TheCore.DataManager.GetAllProcessSummaries()) {
-                        if (l.ProcLabel == ap.AppName) {
-                            MexCore.TheCore.DataManager.PurgeKnownApplication(l.InternalIndex);
+                    if (MexCore.TheCore.Options.AutoPurgeApplicationOnMatchingName) {
+                        foreach (var l in MexCore.TheCore.DataManager.GetAllProcessSummaries()) {
+                            if (l.ProcLabel == ap.AppName) {
+                                MexCore.TheCore.DataManager.PurgeKnownApplication(l.InternalIndex);
+                            }
                         }
                     }
+
+                    int idx = MexCore.TheCore.DataManager.PlaceNewEventIntoDataStructure(ee, nextEventPid, tempMachineName);
+                    var ta = MexCore.TheCore.DataManager.GetKnownApplication(idx);
+                    ta.ProcessLabel = ap.AppName;
                 }
 
-                int idx = MexCore.TheCore.DataManager.PlaceNewEventIntoDataStructure(ee, nextEventPid, tempMachineName);
-                var ta = MexCore.TheCore.DataManager.GetKnownApplication(idx);
-                ta.ProcessLabel = ap.AppName;
+                _ = MexCore.TheCore.DataManager.PlaceAlertInoDataStructure(ae);
+            } catch (Exception ex) {
+                Utility.LogExceptionToTempFile("MexCore - ManageAlertEvent - Crash.", ex);
             }
-
-            _ = MexCore.TheCore.DataManager.PlaceAlertInoDataStructure(ae);
             return ee;
         }
 

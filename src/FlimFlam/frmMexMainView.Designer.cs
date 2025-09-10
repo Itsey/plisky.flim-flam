@@ -389,7 +389,7 @@
             btnConnectToURI.TabIndex = 46;
             ttpMexTooltips.SetToolTip(btnConnectToURI, "Toggles auto refresh.");
             btnConnectToURI.UseVisualStyleBackColor = true;
-            btnConnectToURI.Click += btnConnectToURI_Click;
+            btnConnectToURI.Click += ConnectToURI_Click;
             // 
             // imgsMexIcons
             // 
@@ -450,7 +450,7 @@
             btnAlert.Size = new System.Drawing.Size(64, 28);
             btnAlert.TabIndex = 45;
             btnAlert.Text = "Alerts";
-            btnAlert.Click += btnAlert_Click;
+            btnAlert.Click += Alert_Click;
             // 
             // btnTransient
             // 
@@ -463,7 +463,7 @@
             btnTransient.Size = new System.Drawing.Size(64, 28);
             btnTransient.TabIndex = 45;
             btnTransient.Text = "Trans.";
-            btnTransient.Click += BtnTransient_Click;
+            btnTransient.Click += Transient_Click;
             // 
             // btnPurgeThis
             // 
@@ -477,7 +477,7 @@
             btnPurgeThis.TabIndex = 44;
             btnPurgeThis.Text = "Purge";
             btnPurgeThis.UseVisualStyleBackColor = true;
-            btnPurgeThis.Click += btnPurgeThis_Click;
+            btnPurgeThis.Click += PurgeThis_Click;
             // 
             // pnlQuickProcessLinkHolder
             // 
@@ -503,7 +503,7 @@
             llbScrollRight.TabIndex = 1;
             llbScrollRight.TabStop = true;
             llbScrollRight.Text = " »  ";
-            llbScrollRight.LinkClicked += llbScrollRight_LinkClicked;
+            llbScrollRight.LinkClicked += ScrollRight_LinkClicked;
             // 
             // llbScrollLeft
             // 
@@ -515,7 +515,7 @@
             llbScrollLeft.TabIndex = 0;
             llbScrollLeft.TabStop = true;
             llbScrollLeft.Text = " «  ";
-            llbScrollLeft.LinkClicked += llbScrollLeft_LinkClicked;
+            llbScrollLeft.LinkClicked += ScrollLeft_LinkClicked;
             // 
             // btnAdditional
             // 
@@ -529,7 +529,7 @@
             btnAdditional.Size = new System.Drawing.Size(12, 20);
             btnAdditional.TabIndex = 42;
             btnAdditional.UseVisualStyleBackColor = true;
-            btnAdditional.Click += btnAdditional_Click;
+            btnAdditional.Click += Additional_Click;
             // 
             // btnAutoRefreshQuick
             // 
@@ -546,7 +546,7 @@
             btnAutoRefreshQuick.TabIndex = 41;
             ttpMexTooltips.SetToolTip(btnAutoRefreshQuick, "Toggles auto refresh.");
             btnAutoRefreshQuick.UseVisualStyleBackColor = true;
-            btnAutoRefreshQuick.Click += btnAutoRefreshQuick_Click;
+            btnAutoRefreshQuick.Click += AutoRefreshQuick_Click;
             // 
             // btnAutoScrollQuick
             // 
@@ -563,7 +563,7 @@
             btnAutoScrollQuick.TabIndex = 40;
             ttpMexTooltips.SetToolTip(btnAutoScrollQuick, "Toggles Auto scroll");
             btnAutoScrollQuick.UseVisualStyleBackColor = true;
-            btnAutoScrollQuick.Click += btnAutoScrollQuick_Click;
+            btnAutoScrollQuick.Click += AutoScrollQuick_Click;
             // 
             // btnSetTabTimings
             // 
@@ -576,7 +576,7 @@
             btnSetTabTimings.Size = new System.Drawing.Size(61, 28);
             btnSetTabTimings.TabIndex = 38;
             btnSetTabTimings.Text = "Timings";
-            btnSetTabTimings.Click += btnSetTabTimings_Click;
+            btnSetTabTimings.Click += SetTabTimings_Click;
             // 
             // btnSetTabCrossProcessView
             // 
@@ -585,11 +585,11 @@
             btnSetTabCrossProcessView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSetTabCrossProcessView.Location = new System.Drawing.Point(370, 39);
             btnSetTabCrossProcessView.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnSetTabCrossProcessView.Name = "btnSetTabCrossProcessView";
+            btnSetTabCrossProcessView.Name = "SetTabCrossProcessView";
             btnSetTabCrossProcessView.Size = new System.Drawing.Size(90, 28);
             btnSetTabCrossProcessView.TabIndex = 37;
             btnSetTabCrossProcessView.Text = "XProcess";
-            btnSetTabCrossProcessView.Click += btnSetTabCrossProcessView_Click;
+            btnSetTabCrossProcessView.Click += SetTabCrossProcessView_Click;
             // 
             // txtCurrentProcessLabel
             // 
@@ -601,7 +601,7 @@
             txtCurrentProcessLabel.Size = new System.Drawing.Size(110, 23);
             txtCurrentProcessLabel.TabIndex = 36;
             ttpMexTooltips.SetToolTip(txtCurrentProcessLabel, "Displays or sets the alias for the current process.");
-            txtCurrentProcessLabel.Leave += txtCurrentProcessLabel_Leave;
+            txtCurrentProcessLabel.Leave += CurrentProcessLabel_Leave;
             // 
             // btnSetTabProcessTreeView
             // 
@@ -614,7 +614,7 @@
             btnSetTabProcessTreeView.Size = new System.Drawing.Size(66, 28);
             btnSetTabProcessTreeView.TabIndex = 35;
             btnSetTabProcessTreeView.Text = "Tree";
-            btnSetTabProcessTreeView.Click += btnSetTabProcessTreeView_Click;
+            btnSetTabProcessTreeView.Click += SetTabProcessTreeView_Click;
             // 
             // cboMainViewQuickFilterChange
             // 
@@ -628,7 +628,7 @@
             cboMainViewQuickFilterChange.Size = new System.Drawing.Size(209, 23);
             cboMainViewQuickFilterChange.TabIndex = 32;
             ttpMexTooltips.SetToolTip(cboMainViewQuickFilterChange, "Loads a previously saved filter.");
-            cboMainViewQuickFilterChange.SelectedIndexChanged += cboMainViewQuickFilterChange_SelectedIndexChanged;
+            cboMainViewQuickFilterChange.SelectedIndexChanged += MainViewQuickFilterChange_SelectedIndexChanged;
             // 
             // btnShowOptions
             // 
@@ -643,7 +643,7 @@
             btnShowOptions.Text = "Options";
             ttpMexTooltips.SetToolTip(btnShowOptions, "Opens the Options Dialog.");
             btnShowOptions.UseVisualStyleBackColor = true;
-            btnShowOptions.Click += btnShowOptions_Click;
+            btnShowOptions.Click += ShowOptions_Click;
             // 
             // btnSetHighlight
             // 
@@ -657,7 +657,7 @@
             btnSetHighlight.TabIndex = 29;
             btnSetHighlight.Text = "HiLite";
             ttpMexTooltips.SetToolTip(btnSetHighlight, "Opens the Highlight Dialog");
-            btnSetHighlight.Click += btnSetHighlight_Click;
+            btnSetHighlight.Click += SetHighlight_Click;
             // 
             // btnSetTabResourceView
             // 
@@ -669,7 +669,7 @@
             btnSetTabResourceView.Size = new System.Drawing.Size(77, 28);
             btnSetTabResourceView.TabIndex = 19;
             btnSetTabResourceView.Text = "Resources";
-            btnSetTabResourceView.Click += btnResources_Click;
+            btnSetTabResourceView.Click += Resources_Click;
             // 
             // btnSetFilter
             // 
@@ -683,7 +683,7 @@
             btnSetFilter.TabIndex = 18;
             btnSetFilter.Text = "Filter";
             ttpMexTooltips.SetToolTip(btnSetFilter, "Opens the filter dialog.");
-            btnSetFilter.Click += btnSetFilter_Click;
+            btnSetFilter.Click += SetFilter_Click;
             // 
             // btnSetTabThreads
             // 
@@ -695,7 +695,7 @@
             btnSetTabThreads.Size = new System.Drawing.Size(70, 28);
             btnSetTabThreads.TabIndex = 17;
             btnSetTabThreads.Text = "Threads";
-            btnSetTabThreads.Click += btnSetTabThreads_Click;
+            btnSetTabThreads.Click += SetTabThreads_Click;
             // 
             // btnSetTabProcess
             // 
@@ -708,7 +708,7 @@
             btnSetTabProcess.Size = new System.Drawing.Size(69, 28);
             btnSetTabProcess.TabIndex = 15;
             btnSetTabProcess.Text = "Process";
-            btnSetTabProcess.Click += btnSetTabProcess_Click;
+            btnSetTabProcess.Click += SetTabProcess_Click;
             // 
             // btnSetTabMain
             // 
@@ -722,7 +722,7 @@
             btnSetTabMain.TabIndex = 14;
             btnSetTabMain.Text = "Main";
             btnSetTabMain.UseVisualStyleBackColor = false;
-            btnSetTabMain.Click += btnSetTabMain_Click;
+            btnSetTabMain.Click += SetTabMain_Click;
             // 
             // btnSemiPurgeCurrent
             // 
@@ -737,7 +737,7 @@
             btnSemiPurgeCurrent.TabIndex = 8;
             btnSemiPurgeCurrent.Text = "Clear";
             ttpMexTooltips.SetToolTip(btnSemiPurgeCurrent, "Removes trace information for the current process.");
-            btnSemiPurgeCurrent.Click += btnSemiPurgeCurrent_Click;
+            btnSemiPurgeCurrent.Click += SemiPurgeCurrent_Click;
             // 
             // txtOverViewSelectedProcName
             // 
@@ -764,7 +764,7 @@
             btnClearAll.TabIndex = 2;
             btnClearAll.Text = "Purge All";
             ttpMexTooltips.SetToolTip(btnClearAll, "Removes all process information and trace data.");
-            btnClearAll.Click += btnClearAll_Click;
+            btnClearAll.Click += ClearAll_Click;
             // 
             // btnRefresh
             // 
@@ -777,7 +777,7 @@
             btnRefresh.Size = new System.Drawing.Size(69, 30);
             btnRefresh.TabIndex = 0;
             btnRefresh.Text = "Refresh";
-            btnRefresh.Click += btnRefresh_Click;
+            btnRefresh.Click += Refresh_Click;
             // 
             // clmnLocationDetails
             // 
@@ -876,7 +876,7 @@
             sptSelector.TabIndex = 6;
             sptSelector.Text = "Select All";
             sptSelector.UseVisualStyleBackColor = true;
-            sptSelector.Click += sptSelector_Click;
+            sptSelector.Click += Selector_Click;
             // 
             // txtFilterStartsWith
             // 
@@ -898,7 +898,7 @@
             btnRefreshCPV.Text = "Refresh";
             ttpMexTooltips.SetToolTip(btnRefreshCPV, "Refreshes the list of logs after you change the selected processes.");
             btnRefreshCPV.UseVisualStyleBackColor = true;
-            btnRefreshCPV.Click += btnRefreshCPV_Click;
+            btnRefreshCPV.Click += RefreshCPV_Click;
             // 
             // clbAllKnownProcesses
             // 
@@ -932,8 +932,8 @@
             lvwCrossProcesList.TabIndex = 4;
             lvwCrossProcesList.UseCompatibleStateImageBehavior = false;
             lvwCrossProcesList.View = System.Windows.Forms.View.Details;
-            lvwCrossProcesList.SelectedIndexChanged += lvwCrossProcesList_SelectedIndexChanged;
-            lvwCrossProcesList.DoubleClick += lvwCrossProcesList_DoubleClick;
+            lvwCrossProcesList.SelectedIndexChanged += CrossProcesList_SelectedIndexChanged;
+            lvwCrossProcesList.DoubleClick += CrossProcesList_DoubleClick;
             // 
             // tabCrossProcessView
             // 
@@ -1010,7 +1010,7 @@
             spbtSelectThreads.TabIndex = 9;
             spbtSelectThreads.Text = "Select All";
             spbtSelectThreads.UseVisualStyleBackColor = true;
-            spbtSelectThreads.Click += spbtSelectThreads_Click;
+            spbtSelectThreads.Click += SelectThreads_Click;
             // 
             // btnRefreshThreadViewNow
             // 
@@ -1023,7 +1023,7 @@
             btnRefreshThreadViewNow.Size = new System.Drawing.Size(63, 27);
             btnRefreshThreadViewNow.TabIndex = 8;
             btnRefreshThreadViewNow.Text = "Refresh";
-            btnRefreshThreadViewNow.Click += btnRefreshThreadViewNow_Click_1;
+            btnRefreshThreadViewNow.Click += RefreshThreadViewNow_Click;
             // 
             // pnlMoreDetaills
             // 
@@ -1057,7 +1057,7 @@
             button1.Size = new System.Drawing.Size(88, 27);
             button1.TabIndex = 1;
             button1.Text = "button1";
-            button1.Click += button1_Click;
+            button1.Click += Button1_Click;
             // 
             // tabProcessTree
             // 
@@ -1105,7 +1105,7 @@
             btnRefreshTreeView.TabIndex = 7;
             btnRefreshTreeView.Text = "Refresh";
             btnRefreshTreeView.UseVisualStyleBackColor = true;
-            btnRefreshTreeView.Click += btnRefreshTreeView_Click;
+            btnRefreshTreeView.Click += RefreshTreeView_Click;
             // 
             // btnCollapseAll
             // 
@@ -1116,7 +1116,7 @@
             btnCollapseAll.TabIndex = 6;
             btnCollapseAll.Text = "Collapse All";
             btnCollapseAll.UseVisualStyleBackColor = true;
-            btnCollapseAll.Click += btnCollapseAll_Click;
+            btnCollapseAll.Click += CollapseAll_Click;
             // 
             // btnExpandAll
             // 
@@ -1127,7 +1127,7 @@
             btnExpandAll.TabIndex = 5;
             btnExpandAll.Text = "Expand All";
             btnExpandAll.UseVisualStyleBackColor = true;
-            btnExpandAll.Click += btnExpandAll_Click;
+            btnExpandAll.Click += ExpandAll_Click;
             // 
             // cboAppThreads
             // 
@@ -1154,28 +1154,28 @@
             ctxtPVCtxtMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { duplicateToolStripMenuItem, duplicateThisProcessToolStripMenuItem, showDetailsToolStripMenuItem, toolStripMenuItem1, copyToolStripMenuItem, toolStripMenuItem2, filterToolStripMenuItem, highlightToolStripMenuItem, setHighIndexMarkerToolStripMenuItem, hideThisEntryToolStripMenuItem });
             ctxtPVCtxtMenu.Name = "ctxtPVCtxtMenu";
             ctxtPVCtxtMenu.Size = new System.Drawing.Size(239, 176);
-            ctxtPVCtxtMenu.Opening += ctxtPVCtxtMenu_Opening;
+            ctxtPVCtxtMenu.Opening += PVCtxtMenu_Opening;
             // 
             // duplicateToolStripMenuItem
             // 
             duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
             duplicateToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             duplicateToolStripMenuItem.Text = "Copy Selection To New Process";
-            duplicateToolStripMenuItem.Click += duplicateToolStripMenuItem_Click;
+            duplicateToolStripMenuItem.Click += DuplicateToolStripMenuItem_Click;
             // 
             // duplicateThisProcessToolStripMenuItem
             // 
             duplicateThisProcessToolStripMenuItem.Name = "duplicateThisProcessToolStripMenuItem";
             duplicateThisProcessToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             duplicateThisProcessToolStripMenuItem.Text = "Duplicate This Process";
-            duplicateThisProcessToolStripMenuItem.Click += duplicateThisProcessToolStripMenuItem_Click;
+            duplicateThisProcessToolStripMenuItem.Click += DuplicateThisProcessToolStripMenuItem_Click;
             // 
             // showDetailsToolStripMenuItem
             // 
             showDetailsToolStripMenuItem.Name = "showDetailsToolStripMenuItem";
             showDetailsToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             showDetailsToolStripMenuItem.Text = "Show Details";
-            showDetailsToolStripMenuItem.Click += showDetailsToolStripMenuItem_Click;
+            showDetailsToolStripMenuItem.Click += ShowDetailsToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
@@ -1187,7 +1187,7 @@
             copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             copyToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             copyToolStripMenuItem.Text = "Copy";
-            copyToolStripMenuItem.Click += copyToolStripMenuItem_Click;
+            copyToolStripMenuItem.Click += CopyToolStripMenuItem_Click;
             // 
             // toolStripMenuItem2
             // 
@@ -1230,14 +1230,14 @@
             mnuCtxtFilterThreadsIncludeThis.Name = "mnuCtxtFilterThreadsIncludeThis";
             mnuCtxtFilterThreadsIncludeThis.Size = new System.Drawing.Size(194, 22);
             mnuCtxtFilterThreadsIncludeThis.Text = "Show Only This Thread";
-            mnuCtxtFilterThreadsIncludeThis.Click += mnuCtxtFilterThreadsIncludeThis_Click;
+            mnuCtxtFilterThreadsIncludeThis.Click += CtxtFilterThreadsIncludeThis_Click;
             // 
             // mnuCtxtFilterThreadsExcludeThis
             // 
             mnuCtxtFilterThreadsExcludeThis.Name = "mnuCtxtFilterThreadsExcludeThis";
             mnuCtxtFilterThreadsExcludeThis.Size = new System.Drawing.Size(194, 22);
             mnuCtxtFilterThreadsExcludeThis.Text = "Exclude this thread";
-            mnuCtxtFilterThreadsExcludeThis.Click += mnuCtxtFilterThreadsExcludeThis_Click;
+            mnuCtxtFilterThreadsExcludeThis.Click += CtxtFilterThreadsExcludeThis_Click;
             // 
             // excludeThisThreadToolStripMenuItem
             // 
@@ -1251,14 +1251,14 @@
             mnuCtxtFilterModulesIncludeThis.Name = "mnuCtxtFilterModulesIncludeThis";
             mnuCtxtFilterModulesIncludeThis.Size = new System.Drawing.Size(199, 22);
             mnuCtxtFilterModulesIncludeThis.Text = "Show Only This Module";
-            mnuCtxtFilterModulesIncludeThis.Click += mnuCtxtFilterModulesIncludeThis_Click;
+            mnuCtxtFilterModulesIncludeThis.Click += CtxtFilterModulesIncludeThis_Click;
             // 
             // mnuCtxtFilterModulesExcludeThis
             // 
             mnuCtxtFilterModulesExcludeThis.Name = "mnuCtxtFilterModulesExcludeThis";
             mnuCtxtFilterModulesExcludeThis.Size = new System.Drawing.Size(199, 22);
             mnuCtxtFilterModulesExcludeThis.Text = "Exclude this module";
-            mnuCtxtFilterModulesExcludeThis.Click += mnuCtxtFilterModulesExcludeThis_Click;
+            mnuCtxtFilterModulesExcludeThis.Click += CtxtFilterModulesExcludeThis_Click;
             // 
             // includeThisLocationToolStripMenuItem
             // 
@@ -1272,28 +1272,28 @@
             mnuCtxtFilterLocationsIncludeThis.Name = "mnuCtxtFilterLocationsIncludeThis";
             mnuCtxtFilterLocationsIncludeThis.Size = new System.Drawing.Size(200, 22);
             mnuCtxtFilterLocationsIncludeThis.Text = "Show only this location.";
-            mnuCtxtFilterLocationsIncludeThis.Click += mnuCtxtFilterLocationsIncludeThis_Click;
+            mnuCtxtFilterLocationsIncludeThis.Click += CtxtFilterLocationsIncludeThis_Click;
             // 
             // mnuCtxtFilterLocationsExcludeThis
             // 
             mnuCtxtFilterLocationsExcludeThis.Name = "mnuCtxtFilterLocationsExcludeThis";
             mnuCtxtFilterLocationsExcludeThis.Size = new System.Drawing.Size(200, 22);
             mnuCtxtFilterLocationsExcludeThis.Text = "Exclude this location";
-            mnuCtxtFilterLocationsExcludeThis.Click += mnuCtxtFilterLocationsExcludeThis_Click;
+            mnuCtxtFilterLocationsExcludeThis.Click += CtxtFilterLocationsExcludeThis_Click;
             // 
             // showOnlyThisClassToolStripMenuItem
             // 
             showOnlyThisClassToolStripMenuItem.Name = "showOnlyThisClassToolStripMenuItem";
             showOnlyThisClassToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             showOnlyThisClassToolStripMenuItem.Text = "Show only this class.";
-            showOnlyThisClassToolStripMenuItem.Click += showOnlyThisClassToolStripMenuItem_Click;
+            showOnlyThisClassToolStripMenuItem.Click += OnlyThisClassToolStripMenuItem_Click;
             // 
             // excludeThisClassToolStripMenuItem
             // 
             excludeThisClassToolStripMenuItem.Name = "excludeThisClassToolStripMenuItem";
             excludeThisClassToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             excludeThisClassToolStripMenuItem.Text = "Exclude this class";
-            excludeThisClassToolStripMenuItem.Click += excludeThisClassToolStripMenuItem_Click;
+            excludeThisClassToolStripMenuItem.Click += ExcludeThisClassToolStripMenuItem_Click;
             // 
             // highlightToolStripMenuItem
             // 
@@ -1308,7 +1308,7 @@
             highlightThisThreadColor1ToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             highlightThisThreadColor1ToolStripMenuItem.Tag = 0;
             highlightThisThreadColor1ToolStripMenuItem.Text = "Highlight This Thread (Color1)";
-            highlightThisThreadColor1ToolStripMenuItem.Click += highlightThisThreadColor1ToolStripMenuItem_Click;
+            highlightThisThreadColor1ToolStripMenuItem.Click += HighlightThisThreadColor1ToolStripMenuItem_Click;
             // 
             // toolStripMenuItem5
             // 
@@ -1320,7 +1320,7 @@
             mnuCtxtResetHighlightToolStripMenuItem.Name = "mnuCtxtResetHighlightToolStripMenuItem";
             mnuCtxtResetHighlightToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             mnuCtxtResetHighlightToolStripMenuItem.Text = "Reset Highlight";
-            mnuCtxtResetHighlightToolStripMenuItem.Click += mnuCtxtResetHighlightToolStripMenuItem_Click;
+            mnuCtxtResetHighlightToolStripMenuItem.Click += CtxtResetHighlightToolStripMenuItem_Click;
             // 
             // setHighIndexMarkerToolStripMenuItem
             // 
@@ -1339,21 +1339,21 @@
             mnuCtxtHideThisEntryToolStripMenuItem.Name = "mnuCtxtHideThisEntryToolStripMenuItem";
             mnuCtxtHideThisEntryToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             mnuCtxtHideThisEntryToolStripMenuItem.Text = "Hide This Entry";
-            mnuCtxtHideThisEntryToolStripMenuItem.Click += mnuCtxtHideThisEntryToolStripMenuItem_Click;
+            mnuCtxtHideThisEntryToolStripMenuItem.Click += CtxtHideThisEntryToolStripMenuItem_Click;
             // 
             // mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem
             // 
             mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem.Name = "mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem";
             mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem.Text = "Hide All Entries Before This Index";
-            mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem.Click += mnuCtxtHideAllEntriesTillNowToolStripMenuItem_Click;
+            mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem.Click += CtxtHideAllEntriesTillNowToolStripMenuItem_Click;
             // 
             // mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem
             // 
             mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem.Name = "mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem";
             mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem.Text = "Hide All Entries In This Process";
-            mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem.Click += mnuCtxtHideAllEntriesToolStripMenuItem_Click;
+            mnuCtxtHideAllEntriesInThisProcessToolStripMenuItem.Click += CtxtHideAllEntriesToolStripMenuItem_Click;
             // 
             // toolStripMenuItem4
             // 
@@ -1365,7 +1365,7 @@
             mnuCtxtUnhideAllToolStripMenuItem.Name = "mnuCtxtUnhideAllToolStripMenuItem";
             mnuCtxtUnhideAllToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             mnuCtxtUnhideAllToolStripMenuItem.Text = "Unhide All (Revert to filter)";
-            mnuCtxtUnhideAllToolStripMenuItem.Click += mnuCtxtUnhideAllToolStripMenuItem_Click;
+            mnuCtxtUnhideAllToolStripMenuItem.Click += CtxtUnhideAllToolStripMenuItem_Click;
             // 
             // tabProcessThreadView
             // 
@@ -1411,8 +1411,8 @@
             lvwThreadView.TabIndex = 1;
             lvwThreadView.UseCompatibleStateImageBehavior = false;
             lvwThreadView.View = System.Windows.Forms.View.Details;
-            lvwThreadView.SelectedIndexChanged += lvwThreadView_SelectedIndexChanged;
-            lvwThreadView.DoubleClick += lvwProcessView_DoubleClick;
+            lvwThreadView.SelectedIndexChanged += ThreadView_SelectedIndexChanged;
+            lvwThreadView.DoubleClick += ProcessView_DoubleClick;
             // 
             // splitter1
             // 
@@ -1461,9 +1461,9 @@
             lvwProcessView.TabIndex = 0;
             lvwProcessView.UseCompatibleStateImageBehavior = false;
             lvwProcessView.View = System.Windows.Forms.View.Details;
-            lvwProcessView.SelectedIndexChanged += lvwProcessView_SelectedIndexChanged;
-            lvwProcessView.DoubleClick += lvwProcessView_DoubleClick;
-            lvwProcessView.Resize += lvwProcessView_Resize;
+            lvwProcessView.SelectedIndexChanged += ProcessView_SelectedIndexChanged;
+            lvwProcessView.DoubleClick += ProcessView_DoubleClick;
+            lvwProcessView.Resize += ProcessView_Resize;
             // 
             // clmnThreadId
             // 
@@ -1603,7 +1603,7 @@
             lvwMainODSView.TabIndex = 0;
             lvwMainODSView.UseCompatibleStateImageBehavior = false;
             lvwMainODSView.View = System.Windows.Forms.View.Details;
-            lvwMainODSView.DoubleClick += lvwMainODSView_DoubleClick;
+            lvwMainODSView.DoubleClick += MainODSView_DoubleClick;
             // 
             // tabODSView
             // 
@@ -1643,7 +1643,7 @@
             tbcMainView.Size = new System.Drawing.Size(981, 508);
             tbcMainView.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             tbcMainView.TabIndex = 0;
-            tbcMainView.SizeChanged += tbcMainView_SizeChanged;
+            tbcMainView.SizeChanged += MainView_SizeChanged;
             // 
             // tabTimedView
             // 
@@ -1934,7 +1934,7 @@
             // 
             tmrUpdateUI.Enabled = true;
             tmrUpdateUI.Interval = 10000;
-            tmrUpdateUI.Tick += tmrUpdateUI_Tick;
+            tmrUpdateUI.Tick += TmrUpdateUI_Tick;
             // 
             // mnuMexMenu
             // 
@@ -1958,7 +1958,7 @@
             mnuFileOpen.Name = "mnuFileOpen";
             mnuFileOpen.Size = new System.Drawing.Size(103, 22);
             mnuFileOpen.Text = "&Open";
-            mnuFileOpen.Click += mnuFileOpen_Click;
+            mnuFileOpen.Click += FileOpen_Click;
             // 
             // mnuViewMenu
             // 
@@ -1977,14 +1977,14 @@
             mnuViewFilters.Name = "mnuViewFilters";
             mnuViewFilters.Size = new System.Drawing.Size(191, 22);
             mnuViewFilters.Text = "&Filters";
-            mnuViewFilters.Click += mnuViewFilters_Click;
+            mnuViewFilters.Click += ViewFilters_Click;
             // 
             // mnuViewHighlights
             // 
             mnuViewHighlights.Name = "mnuViewHighlights";
             mnuViewHighlights.Size = new System.Drawing.Size(191, 22);
             mnuViewHighlights.Text = "H&ighlights";
-            mnuViewHighlights.Click += mnuViewHighlights_Click;
+            mnuViewHighlights.Click += ViewHighlights_Click;
             // 
             // toolStripMenuItem6
             // 
@@ -2003,49 +2003,49 @@
             mnuViewViewsTimedView.Name = "mnuViewViewsTimedView";
             mnuViewViewsTimedView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsTimedView.Text = "&Timed";
-            mnuViewViewsTimedView.Click += mnuViewViewsTimedView_Click;
+            mnuViewViewsTimedView.Click += ViewViewsTimedView_Click;
             // 
             // mnuViewViewsMainView
             // 
             mnuViewViewsMainView.Name = "mnuViewViewsMainView";
             mnuViewViewsMainView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsMainView.Text = "&Main";
-            mnuViewViewsMainView.Click += mnuViewViewsMainView_Click;
+            mnuViewViewsMainView.Click += ViewViewsMainView_Click;
             // 
             // mnuViewViewsProcessView
             // 
             mnuViewViewsProcessView.Name = "mnuViewViewsProcessView";
             mnuViewViewsProcessView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsProcessView.Text = "&Process";
-            mnuViewViewsProcessView.Click += mnuViewViewsProcessView_Click;
+            mnuViewViewsProcessView.Click += ViewViewsProcessView_Click;
             // 
             // mnuViewViewsResourceView
             // 
             mnuViewViewsResourceView.Name = "mnuViewViewsResourceView";
             mnuViewViewsResourceView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsResourceView.Text = "&Resources";
-            mnuViewViewsResourceView.Click += mnuViewViewsResourceView_Click;
+            mnuViewViewsResourceView.Click += ViewViewsResourceView_Click;
             // 
             // mnuViewViewsTreeView
             // 
             mnuViewViewsTreeView.Name = "mnuViewViewsTreeView";
             mnuViewViewsTreeView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsTreeView.Text = "Pr&ocess Tree";
-            mnuViewViewsTreeView.Click += mnuViewViewsTreeView_Click;
+            mnuViewViewsTreeView.Click += ViewViewsTreeView_Click;
             // 
             // mnuViewViewsSetCrossProcessView
             // 
             mnuViewViewsSetCrossProcessView.Name = "mnuViewViewsSetCrossProcessView";
             mnuViewViewsSetCrossProcessView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsSetCrossProcessView.Text = "&Cross Process";
-            mnuViewViewsSetCrossProcessView.Click += mnuViewViewsSetCrossProcessview_Click;
+            mnuViewViewsSetCrossProcessView.Click += ViewViewsSetCrossProcessview_Click;
             // 
             // mnuViewViewsSetProcessThreadView
             // 
             mnuViewViewsSetProcessThreadView.Name = "mnuViewViewsSetProcessThreadView";
             mnuViewViewsSetProcessThreadView.Size = new System.Drawing.Size(158, 22);
             mnuViewViewsSetProcessThreadView.Text = "Process T&hreads";
-            mnuViewViewsSetProcessThreadView.Click += mnuViewViewsSetProcessThreadView_Click;
+            mnuViewViewsSetProcessThreadView.Click += ViewViewsSetProcessThreadView_Click;
             // 
             // toolStripMenuItem7
             // 
@@ -2057,14 +2057,14 @@
             promoteCurrentViewToolStripMenuItem.Name = "promoteCurrentViewToolStripMenuItem";
             promoteCurrentViewToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             promoteCurrentViewToolStripMenuItem.Text = "Pro&mote Current View";
-            promoteCurrentViewToolStripMenuItem.Click += mnuViewPromoteCurrent_Click;
+            promoteCurrentViewToolStripMenuItem.Click += ViewPromoteCurrent_Click;
             // 
             // mnuViewRefreshProcesses
             // 
             mnuViewRefreshProcesses.Name = "mnuViewRefreshProcesses";
             mnuViewRefreshProcesses.Size = new System.Drawing.Size(191, 22);
             mnuViewRefreshProcesses.Text = "Refresh Processes";
-            mnuViewRefreshProcesses.Click += mnuViewRefreshProcesses_Click;
+            mnuViewRefreshProcesses.Click += ViewRefreshProcesses_Click;
             // 
             // toolStripMenuItem9
             // 
@@ -2076,7 +2076,7 @@
             mnuViewAbout.Name = "mnuViewAbout";
             mnuViewAbout.Size = new System.Drawing.Size(191, 22);
             mnuViewAbout.Text = "About / Messages";
-            mnuViewAbout.Click += mnuViewAbout_Click;
+            mnuViewAbout.Click += ViewAbout_Click;
             // 
             // mnuCaptureMenu
             // 
@@ -2090,14 +2090,14 @@
             mnuCaptureToggleOds.Name = "mnuCaptureToggleOds";
             mnuCaptureToggleOds.Size = new System.Drawing.Size(201, 22);
             mnuCaptureToggleOds.Text = "Output Debug Strings";
-            mnuCaptureToggleOds.Click += mnuCaptureToggleOds_Click;
+            mnuCaptureToggleOds.Click += CaptureToggleOds_Click;
             // 
             // mnuCaptureToggleTCP
             // 
             mnuCaptureToggleTCP.Name = "mnuCaptureToggleTCP";
             mnuCaptureToggleTCP.Size = new System.Drawing.Size(201, 22);
             mnuCaptureToggleTCP.Text = "TCP Streamed Messages";
-            mnuCaptureToggleTCP.Click += mnuCaptureToggleTCP_Click;
+            mnuCaptureToggleTCP.Click += CaptureToggleTCP_Click;
             // 
             // mnuFindMenu
             // 
@@ -2112,7 +2112,7 @@
             mnuFindFind.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F;
             mnuFindFind.Size = new System.Drawing.Size(137, 22);
             mnuFindFind.Text = "&Find";
-            mnuFindFind.Click += mnuFindFind_Click;
+            mnuFindFind.Click += FindFind_Click;
             // 
             // mnuPurgeMenu
             // 
@@ -2127,7 +2127,7 @@
             mnuPurgePurgeThisProcess.Name = "mnuPurgePurgeThisProcess";
             mnuPurgePurgeThisProcess.Size = new System.Drawing.Size(209, 22);
             mnuPurgePurgeThisProcess.Text = "Purge This Process";
-            mnuPurgePurgeThisProcess.Click += mnuPurgePurgeThisProcess_Click;
+            mnuPurgePurgeThisProcess.Click += PurgePurgeThisProcess_Click;
             // 
             // mnuPurgeClearThisProcess
             // 
@@ -2135,14 +2135,14 @@
             mnuPurgeClearThisProcess.Name = "mnuPurgeClearThisProcess";
             mnuPurgeClearThisProcess.Size = new System.Drawing.Size(209, 22);
             mnuPurgeClearThisProcess.Text = "Clear This Process";
-            mnuPurgeClearThisProcess.Click += mnuPurgeClearThisProcess_Click;
+            mnuPurgeClearThisProcess.Click += PurgeClearThisProcess_Click;
             // 
             // mnuPurgePurgeAllProcesses
             // 
             mnuPurgePurgeAllProcesses.Name = "mnuPurgePurgeAllProcesses";
             mnuPurgePurgeAllProcesses.Size = new System.Drawing.Size(209, 22);
             mnuPurgePurgeAllProcesses.Text = "Purge All Processes";
-            mnuPurgePurgeAllProcesses.Click += mnuPurgePurgeAllProcesses_Click;
+            mnuPurgePurgeAllProcesses.Click += PurgePurgeAllProcesses_Click;
             // 
             // mnuPurgePurgeAllButThis
             // 
@@ -2150,7 +2150,7 @@
             mnuPurgePurgeAllButThis.Name = "mnuPurgePurgeAllButThis";
             mnuPurgePurgeAllButThis.Size = new System.Drawing.Size(209, 22);
             mnuPurgePurgeAllButThis.Text = "Purge All Other Processes";
-            mnuPurgePurgeAllButThis.Click += mnuPurgePurgeAllButThis_Click;
+            mnuPurgePurgeAllButThis.Click += PurgeAllButThis_Click;
             // 
             // mnuOptionsShowOptions
             // 
@@ -2171,35 +2171,35 @@
             mnuOptionsRefresh1Second.Name = "mnuOptionsRefresh1Second";
             mnuOptionsRefresh1Second.Size = new System.Drawing.Size(127, 22);
             mnuOptionsRefresh1Second.Text = "&1 Second";
-            mnuOptionsRefresh1Second.Click += mnuOptionsRefresh1Second_Click;
+            mnuOptionsRefresh1Second.Click += OptionsRefresh1Second_Click;
             // 
             // mnuOptionsRefresh2Seconds
             // 
             mnuOptionsRefresh2Seconds.Name = "mnuOptionsRefresh2Seconds";
             mnuOptionsRefresh2Seconds.Size = new System.Drawing.Size(127, 22);
             mnuOptionsRefresh2Seconds.Text = "&2 Seconds";
-            mnuOptionsRefresh2Seconds.Click += mnuOptionsRefresh2Seconds_Click;
+            mnuOptionsRefresh2Seconds.Click += OptionsRefresh2Seconds_Click;
             // 
             // mnuOptionsRefresh5Seconds
             // 
             mnuOptionsRefresh5Seconds.Name = "mnuOptionsRefresh5Seconds";
             mnuOptionsRefresh5Seconds.Size = new System.Drawing.Size(127, 22);
             mnuOptionsRefresh5Seconds.Text = "&5 Seconds";
-            mnuOptionsRefresh5Seconds.Click += mnuOptionsRefresh5Seconds_Click;
+            mnuOptionsRefresh5Seconds.Click += OptionsRefresh5Seconds_Click;
             // 
             // mnuOptionsRefreshPaused
             // 
             mnuOptionsRefreshPaused.Name = "mnuOptionsRefreshPaused";
             mnuOptionsRefreshPaused.Size = new System.Drawing.Size(127, 22);
             mnuOptionsRefreshPaused.Text = "&Paused";
-            mnuOptionsRefreshPaused.Click += mnuOptionsRefreshPaused_Click;
+            mnuOptionsRefreshPaused.Click += OptionsRefreshPaused_Click;
             // 
             // showOptionsToolStripMenuItem
             // 
             showOptionsToolStripMenuItem.Name = "showOptionsToolStripMenuItem";
             showOptionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             showOptionsToolStripMenuItem.Text = "&Options";
-            showOptionsToolStripMenuItem.Click += showOptionsToolStripMenuItem_Click;
+            showOptionsToolStripMenuItem.Click += ShowOptionsToolStripMenuItem_Click;
             // 
             // toolStripMenuItem8
             // 

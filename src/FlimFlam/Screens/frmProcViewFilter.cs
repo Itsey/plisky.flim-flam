@@ -7,13 +7,13 @@ using System.Windows.Forms;
 using Plisky.Diagnostics;
 using Plisky.Diagnostics.FlimFlam;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// Summary description for frmProcViewFilter.
     /// </summary>
     internal class frmProcViewFilter : System.Windows.Forms.Form {
-        internal bool FullRefreshRequired;
+        internal bool FullRefreshRequired { get; set; }
 
         // Determines when tickboxes being changed programatically
         private bool autochanging;
@@ -489,7 +489,7 @@ namespace Plisky.FlimFlam {
             this.btnOK.Size = new System.Drawing.Size(74, 23);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
-            this.btnOK.Click += new System.EventHandler(this.btnOKWithFullRefresh_Click);
+            this.btnOK.Click += new System.EventHandler(this.OKWithFullRefresh_Click);
             //
             // btnCancel
             //
@@ -510,7 +510,7 @@ namespace Plisky.FlimFlam {
             this.btnLoadMexDefaultFilter.Size = new System.Drawing.Size(74, 23);
             this.btnLoadMexDefaultFilter.TabIndex = 99;
             this.btnLoadMexDefaultFilter.Text = "Use Default";
-            this.btnLoadMexDefaultFilter.Click += new System.EventHandler(this.btnLoadMexDefaultFilter_Click);
+            this.btnLoadMexDefaultFilter.Click += new System.EventHandler(this.LoadMexDefaultFilter_Click);
             //
             // tbcFilterDetails
             //
@@ -1070,7 +1070,7 @@ namespace Plisky.FlimFlam {
             this.txtExcludeAllAboveThisIndex.Name = "txtExcludeAllAboveThisIndex";
             this.txtExcludeAllAboveThisIndex.Size = new System.Drawing.Size(89, 21);
             this.txtExcludeAllAboveThisIndex.TabIndex = 106;
-            this.txtExcludeAllAboveThisIndex.TextChanged += new System.EventHandler(this.txtExcludeAllAboveThisIndex_TextChanged);
+            this.txtExcludeAllAboveThisIndex.TextChanged += new System.EventHandler(this.ExcludeAllAboveThisIndex_TextChanged);
             //
             // txtExcludeAllBelowThisIndex
             //
@@ -1079,7 +1079,7 @@ namespace Plisky.FlimFlam {
             this.txtExcludeAllBelowThisIndex.Name = "txtExcludeAllBelowThisIndex";
             this.txtExcludeAllBelowThisIndex.Size = new System.Drawing.Size(89, 21);
             this.txtExcludeAllBelowThisIndex.TabIndex = 104;
-            this.txtExcludeAllBelowThisIndex.TextChanged += new System.EventHandler(this.txtExcludeAllBelowThisIndex_TextChanged);
+            this.txtExcludeAllBelowThisIndex.TextChanged += new System.EventHandler(this.ExcludeAllBelowThisIndex_TextChanged);
             //
             // chkEnableIndexFilter
             //
@@ -1090,7 +1090,7 @@ namespace Plisky.FlimFlam {
             this.chkEnableIndexFilter.TabIndex = 108;
             this.chkEnableIndexFilter.Text = "Use Index Filter";
             this.chkEnableIndexFilter.UseVisualStyleBackColor = true;
-            this.chkEnableIndexFilter.CheckedChanged += new System.EventHandler(this.chkEnableIndexFilter_CheckedChanged);
+            this.chkEnableIndexFilter.CheckedChanged += new System.EventHandler(this.EnableIndexFilter_CheckedChanged);
             //
             // label1
             //
@@ -1139,7 +1139,7 @@ namespace Plisky.FlimFlam {
             this.chkUseFilterOnLoad.TabIndex = 117;
             this.chkUseFilterOnLoad.Text = "Attempt to load this filter on start up.";
             this.chkUseFilterOnLoad.UseVisualStyleBackColor = true;
-            this.chkUseFilterOnLoad.CheckedChanged += new System.EventHandler(this.chkUseFilterOnLoad_CheckedChanged);
+            this.chkUseFilterOnLoad.CheckedChanged += new System.EventHandler(this.UseFilterOnLoad_CheckedChanged);
             //
             // lblSaveData
             //
@@ -1158,7 +1158,7 @@ namespace Plisky.FlimFlam {
             this.btnRefreshFilterDir.TabIndex = 115;
             this.btnRefreshFilterDir.Text = "Refresh";
             this.btnRefreshFilterDir.UseVisualStyleBackColor = true;
-            this.btnRefreshFilterDir.Click += new System.EventHandler(this.btnRefresh_Click);
+            this.btnRefreshFilterDir.Click += new System.EventHandler(this.Refresh_Click);
             //
             // txtFilterFilename
             //
@@ -1166,7 +1166,7 @@ namespace Plisky.FlimFlam {
             this.txtFilterFilename.Name = "txtFilterFilename";
             this.txtFilterFilename.Size = new System.Drawing.Size(98, 21);
             this.txtFilterFilename.TabIndex = 114;
-            this.txtFilterFilename.TextChanged += new System.EventHandler(this.txtFilterFilename_TextChanged);
+            this.txtFilterFilename.TextChanged += new System.EventHandler(this.FilterFilename_TextChanged);
             //
             // txtFilterDirectory
             //
@@ -1236,7 +1236,7 @@ namespace Plisky.FlimFlam {
             this.lbxAllMatchedFilters.Name = "lbxAllMatchedFilters";
             this.lbxAllMatchedFilters.Size = new System.Drawing.Size(295, 134);
             this.lbxAllMatchedFilters.TabIndex = 110;
-            this.lbxAllMatchedFilters.SelectedIndexChanged += new System.EventHandler(this.lbxAllMatchedFilters_SelectedIndexChanged);
+            this.lbxAllMatchedFilters.SelectedIndexChanged += new System.EventHandler(this.AllMatchedFilters_SelectedIndexChanged);
             //
             // chkAllowOverwrite
             //
@@ -1256,7 +1256,7 @@ namespace Plisky.FlimFlam {
             this.btnLoadFilterConfiguration.TabIndex = 108;
             this.btnLoadFilterConfiguration.Text = "Load";
             this.btnLoadFilterConfiguration.UseVisualStyleBackColor = true;
-            this.btnLoadFilterConfiguration.Click += new System.EventHandler(this.btnLoadFilterConfiguration_Click_1);
+            this.btnLoadFilterConfiguration.Click += new System.EventHandler(this.LoadFilterConfiguration_Click_1);
             //
             // btnSaveFilterConfiguration
             //
@@ -1266,7 +1266,7 @@ namespace Plisky.FlimFlam {
             this.btnSaveFilterConfiguration.TabIndex = 107;
             this.btnSaveFilterConfiguration.Text = "Save";
             this.btnSaveFilterConfiguration.UseVisualStyleBackColor = true;
-            this.btnSaveFilterConfiguration.Click += new System.EventHandler(this.btnSaveFilterConfiguration_Click);
+            this.btnSaveFilterConfiguration.Click += new System.EventHandler(this.SaveFilterConfiguration_Click);
             //
             // btnSetDefaultFilter
             //
@@ -1277,7 +1277,7 @@ namespace Plisky.FlimFlam {
             this.btnSetDefaultFilter.TabIndex = 107;
             this.btnSetDefaultFilter.Text = "Default";
             this.btnSetDefaultFilter.UseVisualStyleBackColor = true;
-            this.btnSetDefaultFilter.Click += new System.EventHandler(this.btnSetDefaultFilter_Click);
+            this.btnSetDefaultFilter.Click += new System.EventHandler(this.SetDefaultFilter_Click);
             //
             // cboQuickLoad
             //
@@ -1288,7 +1288,7 @@ namespace Plisky.FlimFlam {
             this.cboQuickLoad.Name = "cboQuickLoad";
             this.cboQuickLoad.Size = new System.Drawing.Size(161, 21);
             this.cboQuickLoad.TabIndex = 108;
-            this.cboQuickLoad.SelectedIndexChanged += new System.EventHandler(this.cboQuickLoad_SelectedIndexChanged);
+            this.cboQuickLoad.SelectedIndexChanged += new System.EventHandler(this.QuickLoad_SelectedIndexChanged);
             //
             // frmProcViewFilter
             //
@@ -1339,7 +1339,7 @@ namespace Plisky.FlimFlam {
 
         // End PopulateAFilterDialogFromStrings
 
-        private void btnLoadFilterConfiguration_Click_1(object sender, EventArgs e) {
+        private void LoadFilterConfiguration_Click_1(object sender, EventArgs e) {
             string filename = Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, lbxAllMatchedFilters.SelectedItem.ToString() + MexCore.TheCore.Options.FilterExtension);
 
             //Bilge.Assert(File.Exists(filename), "The filename selected from the list of filteres did not exist.  This should not be possible");
@@ -1348,7 +1348,7 @@ namespace Plisky.FlimFlam {
             tbcFilterDetails.SelectedTab = tabOptionsEvents;
         }
 
-        private void btnLoadMexDefaultFilter_Click(object sender, EventArgs e) {
+        private void LoadMexDefaultFilter_Click(object sender, EventArgs e) {
             ViewFilter vf = new ViewFilter();
             this.InitialiseFromExistingFilter(vf);
             this.DialogResult = DialogResult.OK;
@@ -1356,15 +1356,15 @@ namespace Plisky.FlimFlam {
             Close();
         }
 
-        private void btnOKWithFullRefresh_Click(object sender, System.EventArgs e) {
+        private void OKWithFullRefresh_Click(object sender, System.EventArgs e) {
             FullRefreshRequired = true;
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e) {
+        private void Refresh_Click(object sender, EventArgs e) {
             InitialiseLoadSaveScreen();
         }
 
-        private void btnSaveFilterConfiguration_Click(object sender, EventArgs e) {
+        private void SaveFilterConfiguration_Click(object sender, EventArgs e) {
             string fileName = Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, txtFilterFilename.Text + MexCore.TheCore.Options.FilterExtension);
             ViewFilter af = GetFilterFromDialog();
             ViewFilter.SaveFilterToFile(fileName, af, chkSaveIncludeThreads.Checked, chkSaveModules.Checked, chkSaveLocationInformation.Checked, chkSaveClassLocationInfo.Checked);
@@ -1372,19 +1372,19 @@ namespace Plisky.FlimFlam {
             RefreshFiltersList();
         }
 
-        private void btnSetDefaultFilter_Click(object sender, EventArgs e) {
+        private void SetDefaultFilter_Click(object sender, EventArgs e) {
             ViewFilter vf = new ViewFilter();
             this.InitialiseFromExistingFilter(vf);
             tbcFilterDetails.SelectedTab = tabOptionsEvents;
         }
 
-        private void cboQuickLoad_SelectedIndexChanged(object sender, EventArgs e) {
+        private void QuickLoad_SelectedIndexChanged(object sender, EventArgs e) {
             string filterName = cboQuickLoad.Text;
 
             filterName = Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, filterName + MexCore.TheCore.Options.FilterExtension);
 
             if (File.Exists(filterName)) {
-                ViewFilter vf = ViewFilter.LoadFilterFromFile(filterName);
+                var vf = ViewFilter.LoadFilterFromFile(filterName);
                 this.InitialiseFromExistingFilter(vf);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -1393,11 +1393,11 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void chkEnableIndexFilter_CheckedChanged(object sender, EventArgs e) {
+        private void EnableIndexFilter_CheckedChanged(object sender, EventArgs e) {
             txtExcludeAllAboveThisIndex.Enabled = txtExcludeAllBelowThisIndex.Enabled = chkEnableIndexFilter.Checked;
         }
 
-        private void chkUseFilterOnLoad_CheckedChanged(object sender, EventArgs e) {
+        private void UseFilterOnLoad_CheckedChanged(object sender, EventArgs e) {
             if (!autochanging) {
                 // when this is changed if a filter is selected then it should be loaded when Mex starts.
                 if (chkUseFilterOnLoad.Checked) {
@@ -1428,7 +1428,7 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void lbxAllMatchedFilters_SelectedIndexChanged(object sender, EventArgs e) {
+        private void AllMatchedFilters_SelectedIndexChanged(object sender, EventArgs e) {
             autochanging = true;
             if (lbxAllMatchedFilters.SelectedItem != null) {
                 txtFilterFilename.Text = lbxAllMatchedFilters.SelectedItem.ToString();
@@ -1458,7 +1458,7 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void txtExcludeAllAboveThisIndex_TextChanged(object sender, EventArgs e) {
+        private void ExcludeAllAboveThisIndex_TextChanged(object sender, EventArgs e) {
             int idxVal;
             if (!int.TryParse(txtExcludeAllAboveThisIndex.Text, out idxVal) || (idxVal < 0)) {
                 // error.
@@ -1470,7 +1470,7 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void txtExcludeAllBelowThisIndex_TextChanged(object sender, EventArgs e) {
+        private void ExcludeAllBelowThisIndex_TextChanged(object sender, EventArgs e) {
             int idxVal;
             if (!int.TryParse(txtExcludeAllBelowThisIndex.Text, out idxVal) || (idxVal < 0)) {
                 // error.
@@ -1482,7 +1482,7 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void txtFilterFilename_TextChanged(object sender, EventArgs e) {
+        private void FilterFilename_TextChanged(object sender, EventArgs e) {
             string potentialFilenameToSave = txtFilterFilename.Text.Trim();
 
             if ((potentialFilenameToSave.Length == 0) || (potentialFilenameToSave.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)) {

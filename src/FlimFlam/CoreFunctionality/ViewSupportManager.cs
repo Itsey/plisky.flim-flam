@@ -25,12 +25,12 @@ namespace Plisky.FlimFlam {
             ImageData
         }
 
-        internal ActiveFindStructure ActiveFind;
+        internal ActiveFindStructure ActiveFind { get; set; }
 
-        internal string LastViewSummary = "[None]";   // Used each time a view refresh is called, summarising the data displayed.
-        internal bool CancelCurrentViewOperation;
+        internal string LastViewSummary { get; set; } = "[None]";   // Used each time a view refresh is called, summarising the data displayed.
+        internal bool CancelCurrentViewOperation { get; set; }
 
-        internal ViewFilter CurrentFilter;
+        internal ViewFilter CurrentFilter { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal int KnownProcessCount {
@@ -110,19 +110,19 @@ namespace Plisky.FlimFlam {
             MexCore.TheCore.ViewManager.RefreshCurrentView(true);
         }
 
-        private long m_userNotificationCount;
-        private readonly List<string> m_userNotificationMessageLog = new();
+        private long userNotificationCount;
+        private readonly List<string> userNotificationMessageLog = new();
 
         internal void RenderUserNotificationLog(ListBox lbx) {
             lbx.Items.Clear();
-            foreach (string s in m_userNotificationMessageLog) {
+            foreach (string s in userNotificationMessageLog) {
                 _ = lbx.Items.Add(s);
             }
         }
 
         internal string LastUserNotificationMessage {
             get {
-                return m_userNotificationMessageLog.Count == 0 ? string.Empty : m_userNotificationMessageLog[^1];
+                return userNotificationMessageLog.Count == 0 ? string.Empty : userNotificationMessageLog[^1];
             }
         }
 
@@ -179,12 +179,12 @@ namespace Plisky.FlimFlam {
             }
 
             lastMessageWritten = msg;
-            m_userNotificationCount++;
-            theMsg = m_userNotificationCount.ToString("0000") + " >" + mstype.ToString() + " > " + theMsg;
-            m_userNotificationMessageLog.Add(theMsg);
+            userNotificationCount++;
+            theMsg = userNotificationCount.ToString("0000") + " >" + mstype.ToString() + " > " + theMsg;
+            userNotificationMessageLog.Add(theMsg);
 
-            if (m_userNotificationMessageLog.Count > MexCore.TheCore.Options.NoUserNotificationsToStoreInLog) {
-                m_userNotificationMessageLog.RemoveAt(0);
+            if (userNotificationMessageLog.Count > MexCore.TheCore.Options.NoUserNotificationsToStoreInLog) {
+                userNotificationMessageLog.RemoveAt(0);
             }
 
             if (MexCore.TheCore.Options.InteractiveNotifications) {
@@ -192,8 +192,8 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        internal HighlightRequestsStore CurrentHighlightOptions;
-        private bool m_highlightChangeCausesRefresh;
+        internal HighlightRequestsStore CurrentHighlightOptions { get; set; }
+        private bool highlightChangeCausesRefresh;
 
         /// <summary>
         /// This is used on a callback visiting each event entry, hekce why it uses the globals
@@ -207,17 +207,17 @@ namespace Plisky.FlimFlam {
             triggerRefresh &= CurrentHighlightOptions.ApplyDefaultHighlighting(ee);
 
             if (triggerRefresh && (appIdx == SelectedTracedAppIdx)) {
-                m_highlightChangeCausesRefresh = true;
+                highlightChangeCausesRefresh = true;
             }
 
             return true; // Continue with the search
         }
 
         internal bool HighlightUpdateComplete(bool everyEntryVisited) {
-            if (m_highlightChangeCausesRefresh && (RegisterForSelectedProcessRefreshRequired != null)) {
+            if (highlightChangeCausesRefresh && (RegisterForSelectedProcessRefreshRequired != null)) {
                 RegisterForSelectedProcessRefreshRequired(false);
             }
-            m_highlightChangeCausesRefresh = false;
+            highlightChangeCausesRefresh = false;
             return true; // ?
         }
 
@@ -785,7 +785,7 @@ namespace Plisky.FlimFlam {
             ta.EventEntries[idxMatch].LastVisitedFilterResult = false;
         }
 
-        internal int m_processViewPhysicalOffsetCache;
+        internal int processViewPhysicalOffsetCache;
 
         internal void RefreshStatusText(Label lblTitle, Label lblText) {
             var ta = MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx);
@@ -915,7 +915,7 @@ namespace Plisky.FlimFlam {
                     int loopStartOffset;
 
                     if (incremental) {
-                        loopStartOffset = m_processViewPhysicalOffsetCache;
+                        loopStartOffset = processViewPhysicalOffsetCache;
                     } else {
                         loopStartOffset = 0;
                         lvwTheView.Items.Clear();
@@ -1003,7 +1003,7 @@ namespace Plisky.FlimFlam {
                     }
 
                     //if (updateOccured) {  // This is necessary otherwise when it skips the loop it sets the last cache back to 0
-                    m_processViewPhysicalOffsetCache = ta.EventEntries.Count;
+                    processViewPhysicalOffsetCache = ta.EventEntries.Count;
                     // }
                 } finally {
                     ta.EventEntries.EventEntriesRWL.ReleaseReaderLock();
@@ -1293,25 +1293,25 @@ namespace Plisky.FlimFlam {
             if (includeTheseThreads.Count == 0) { return; }
             #endregion entry code
 
-            const int ColumnWidth_Index = 50;
-            const int BoarderWidth = 16;
+            const int COLUMNWIDTH_INDEX = 50;
+            const int BOARDERWIDTH = 16;
 
-            int AvailableWidth = lvwDrawThreads.Width - (BoarderWidth + ColumnWidth_Index);
+            int availableWidth = lvwDrawThreads.Width - (BOARDERWIDTH + COLUMNWIDTH_INDEX);
             lvwDrawThreads.BeginUpdate();
             try {
                 lvwDrawThreads.Columns.Clear();
                 lvwDrawThreads.Items.Clear();
                 _ = lvwDrawThreads.Columns.Add("Index", "Index");
-                lvwDrawThreads.Columns["Index"].Width = ColumnWidth_Index;
+                lvwDrawThreads.Columns["Index"].Width = COLUMNWIDTH_INDEX;
 
                 var ta = MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx);
 
                 ta.EventEntries.EventEntriesRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
                 //Bilge.ResourceGrab(ta.EventEntries.EventEntriesRWL, "EventEntriesRWL");
                 try {
-                    int ThreadColumnWidth = AvailableWidth / includeTheseThreads.Count;
-                    if (ThreadColumnWidth < 50) {
-                        ThreadColumnWidth = 50;
+                    int threadColumnWidth = availableWidth / includeTheseThreads.Count;
+                    if (threadColumnWidth < 50) {
+                        threadColumnWidth = 50;
                     }
 
                     for (int i = 0; i < includeTheseThreads.Count; i++) {
@@ -1320,7 +1320,7 @@ namespace Plisky.FlimFlam {
                             ? ta.ThreadNames[includeTheseThreads[i].KeyIdentity]
                             : includeTheseThreads[i].DisplayIdentity;
                         _ = lvwDrawThreads.Columns.Add(name, name);
-                        lvwDrawThreads.Columns[name].Width = ThreadColumnWidth;
+                        lvwDrawThreads.Columns[name].Width = threadColumnWidth;
                     }
 
                     foreach (EventEntry ee in ta.EventEntries) {
@@ -1480,7 +1480,7 @@ namespace Plisky.FlimFlam {
 
         #region Main View Screen Support Functions
 
-        private long m_lastUsedCountOfsetForMain;
+        private long lastUsedCountOfsetForMain;
 
         /// <summary>
         /// This method will be called by the view to present us with a list view that should be populated iwth the event entries from the main ODS output.  This includes some
@@ -1507,7 +1507,7 @@ namespace Plisky.FlimFlam {
                     startingIdx = 0;
                     lvwTheMainView.Items.Clear();
                 } else {
-                    startingIdx = m_lastUsedCountOfsetForMain;
+                    startingIdx = lastUsedCountOfsetForMain;
                 }
 
                 for (long loop = startingIdx; loop < MexCore.TheCore.DataManager.NonTracedApplicationEntries.Count; loop++) {
@@ -1530,7 +1530,7 @@ namespace Plisky.FlimFlam {
                 } // End foreach
 
                 // Important we gather the length before unlocking it
-                m_lastUsedCountOfsetForMain = MexCore.TheCore.DataManager.NonTracedApplicationEntries.Count;
+                lastUsedCountOfsetForMain = MexCore.TheCore.DataManager.NonTracedApplicationEntries.Count;
             } finally {
                 //Bilge.ResourceFree(MexCore.TheCore.DataManager.NonTracedApplicationEntries.NonTracedApplicationsDataRWL, "NonTracedApplicationsDataRWL");
                 MexCore.TheCore.DataManager.NonTracedApplicationEntries.NonTracedApplicationsDataRWL.ReleaseReaderLock();
@@ -2157,7 +2157,7 @@ namespace Plisky.FlimFlam {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         private int GetNextExceptionIndex(int eeidx, TracedApplication ta) {
             var ee = ta.EventEntries[eeidx];
-            long EXCEPTIONTYPEMATCH = (uint)TraceCommandTypes.ExcStart | (uint)TraceCommandTypes.ExceptionBlock | (uint)TraceCommandTypes.ExcEnd | (uint)TraceCommandTypes.ExceptionData;
+            const long EXCEPTIONTYPEMATCH = (uint)TraceCommandTypes.ExcStart | (uint)TraceCommandTypes.ExceptionBlock | (uint)TraceCommandTypes.ExcEnd | (uint)TraceCommandTypes.ExceptionData;
 
             string threadIdMatch = ee.CurrentThreadKey;
             for (int i = eeidx + 1; i < ta.EventEntries.Count; i++) {
@@ -2431,7 +2431,7 @@ namespace Plisky.FlimFlam {
 
         #region Timed View Support Functions
 
-        private ListView m_listViewToFillForTimedView;
+        private ListView listViewToFillForTimedView;
 
         private bool EveryEntryInOrderCallbackForTimedView(EventEntry ee, NonTracedApplicationEntry nta, int indexOfApp) {
             var lvi = new ListViewItem();
@@ -2453,7 +2453,7 @@ namespace Plisky.FlimFlam {
                         }
                     }
 
-                    _ = m_listViewToFillForTimedView.Items.Add(lvi);
+                    _ = listViewToFillForTimedView.Items.Add(lvi);
                     return false;
                 }
             }
@@ -2474,7 +2474,7 @@ namespace Plisky.FlimFlam {
                                 lvi.ForeColor = nta.ViewData.foregroundHighlightColor;
                             }
                         }
-                        _ = m_listViewToFillForTimedView.Items.Add(lvi);
+                        _ = listViewToFillForTimedView.Items.Add(lvi);
                         return false;
                     }
                 }
@@ -2500,11 +2500,11 @@ namespace Plisky.FlimFlam {
             lvwView.SuspendLayout();
             lvwView.BeginUpdate();
             try {
-                m_listViewToFillForTimedView = lvwView;
+                listViewToFillForTimedView = lvwView;
                 LastViewSummary = !MexCore.TheCore.DataManager.VisitEveryEventEntryInOrder(new DataStructureManager.VisitEachEntryCallback(EveryEntryInOrderCallbackForTimedView), null)
                     ? "Refresh Cancelled"
                     : "Refresh Done.";
-                m_listViewToFillForTimedView = null;
+                listViewToFillForTimedView = null;
             } finally {
                 lvwView.EndUpdate();
                 lvwView.ResumeLayout();
@@ -2699,19 +2699,19 @@ namespace Plisky.FlimFlam {
 
         internal delegate void SelectedProcessRefreshRequired(bool incrementalOk);
 
-        internal delegate void ViewerOptionsRefreshRequired(string[] ListOfFilters);
+        internal delegate void ViewerOptionsRefreshRequired(string[] listOfFilters);
 
         internal delegate void CurrentViewChanged(bool incrementalOK);
 
-        internal CurrentViewChanged RegisterForCurrentViewChanges;
+        internal CurrentViewChanged RegisterForCurrentViewChanges { get; set; }
 
-        internal SelectedProcessChanged RegisterForSelectedProcessChanges;
-        internal ProcessListChanged RegisterForProcessListChanges;
+        internal SelectedProcessChanged RegisterForSelectedProcessChanges { get; set; }
+        internal ProcessListChanged RegisterForProcessListChanges { get; set; }
 
         /// <summary>
         /// Called when the selected process has altered and a refresh needs to occur. Eg semi purge / highlight change / new event added
         /// </summary>
-        internal SelectedProcessRefreshRequired RegisterForSelectedProcessRefreshRequired;
+        internal SelectedProcessRefreshRequired RegisterForSelectedProcessRefreshRequired { get; set; }
 
         #endregion delegate and property support for registering for notification changes
 

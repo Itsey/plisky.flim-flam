@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+[assembly: SupportedOSPlatform("windows")]
 
 namespace Plisky.UIWinforms.Controls {
 

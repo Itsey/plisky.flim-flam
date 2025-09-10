@@ -1,7 +1,7 @@
 //using Plisky.Plumbing.Legacy;
 using System.Windows.Forms;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// Summary description for frmDiagnosticsScreen.
@@ -65,7 +65,7 @@ namespace Plisky.FlimFlam {
             this.btnRefreshDiagnostics.Size = new System.Drawing.Size(280, 23);
             this.btnRefreshDiagnostics.TabIndex = 1;
             this.btnRefreshDiagnostics.Text = "btnRefreshDiagnostics";
-            this.btnRefreshDiagnostics.Click += new System.EventHandler(this.btnRefreshDiagnostics_Click);
+            this.btnRefreshDiagnostics.Click += new System.EventHandler(this.RefreshDiagnostics_Click);
             //
             // txtAppData
             //
@@ -100,7 +100,7 @@ namespace Plisky.FlimFlam {
 
         #endregion Windows Form Designer generated code
 
-        private void btnRefreshDiagnostics_Click(object sender, System.EventArgs e) {
+        private void RefreshDiagnostics_Click(object sender, System.EventArgs e) {
             //Bilge.Log("About to request diagnostics.");
             //Bilge.TimeStart("DianosticsRefresh");
             long deepInspect = -1;

@@ -6,7 +6,7 @@
         public const string LOGMESSAGE = "#LOG#";
         public const string LOGMESSAGEVERB = "#LGV#";
         public const string LOGMESSAGEMINI = "#LGM#";
-        public const string publicMSG = "#INT#";
+        public const string INTERNALMSG = "#INT#";
         public const string TRACEMESSAGEIN = "#TRI#";
         public const string TRACEMESSAGEOUT = "#TRO#";
         //public const string TRACEMESSAGE    = "#TRC#";

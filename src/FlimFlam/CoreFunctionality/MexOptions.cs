@@ -12,9 +12,9 @@ using Plisky.Plumbing;
 /// Summary description for MexOptions.  Class must be public for serialization into the iso store.
 /// </summary>
 public class MexOptions {
-    private bool m_filterDefault_SaveThreads;
-    private int m_pushbackCountDelayLimitForInteractiveJobs = 10;
-    private bool m_xRefWarningsToMain;
+    private bool filterDefault_SaveThreads;
+    private int pushbackCountDelayLimitForInteractiveJobs = 10;
+    private bool xRefWarningsToMain;
 
     /// <summary>
     /// The identifier that is used to work out which lines within an ADPLus style log are identifiers
@@ -112,8 +112,8 @@ public class MexOptions {
     /// Decides whether thread information is saved with filters by default.
     /// </summary>
     public bool FilterDefaultSaveThreads {
-        get { return m_filterDefault_SaveThreads; }
-        set { m_filterDefault_SaveThreads = value; }
+        get { return filterDefault_SaveThreads; }
+        set { filterDefault_SaveThreads = value; }
     }
 
     /// <summary>
@@ -205,8 +205,8 @@ public class MexOptions {
     /// How many times a job can be moved back up the queue
     /// </summary>
     public int PushbackCountDelayLimitForInteractiveJobs {
-        get { return m_pushbackCountDelayLimitForInteractiveJobs; }
-        set { m_pushbackCountDelayLimitForInteractiveJobs = value; }
+        get { return pushbackCountDelayLimitForInteractiveJobs; }
+        set { pushbackCountDelayLimitForInteractiveJobs = value; }
     }
 
     /// <summary>
@@ -342,8 +342,8 @@ public class MexOptions {
     /// Place warning messages in ods view
     /// </summary>
     public bool XRefWarningsToMain {
-        get { return m_xRefWarningsToMain; }
-        set { m_xRefWarningsToMain = value; }
+        get { return xRefWarningsToMain; }
+        set { xRefWarningsToMain = value; }
     }
 
     /// <summary>

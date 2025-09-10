@@ -6,10 +6,10 @@ using Plisky.Diagnostics.FlimFlam;
 namespace Plisky.FlimFlam { 
 
     internal class Job_ActivateODSGatherer : BaseJob {
-        private bool m_activatethegatherer;
+        private bool activateTheGatherer;
 
         internal Job_ActivateODSGatherer(bool activate) {
-            m_activatethegatherer = activate;
+            activateTheGatherer = activate;
         }
 
         internal override bool CanPushBackUpStack() {
@@ -19,7 +19,7 @@ namespace Plisky.FlimFlam {
 
         internal override void ExecuteJob() {
             //Bilge.Log("Mex::WorkManager >> Found ActivateODS Gatherer request, asking MessageManager to activate ODS capture");
-            if (m_activatethegatherer) {
+            if (activateTheGatherer) {
                 // Having this enabled while debugging is nasty.
                 if (!Debugger.IsAttached) {
                     MexCore.TheCore.MessageManager.ActivateODSGatherer();
@@ -47,7 +47,7 @@ namespace Plisky.FlimFlam {
 
             // Essentially if there is another one which is the same then remove the other one, if its different then remove this one, as there
             // is no point turning it on then immediately off etc.
-            if (alt.m_activatethegatherer == m_activatethegatherer) {
+            if (alt.activateTheGatherer == activateTheGatherer) {
                 return JobVerificationResults.CurrentJobRendersFutureJobRedundant;
             } else {
                 return JobVerificationResults.FutureJobRendersCurrentJobRedundant;
@@ -90,10 +90,10 @@ namespace Plisky.FlimFlam {
     }
 
     internal class Job_ChangeTCPGathererState : BaseJob {
-        private bool m_changeStateToActivate;
+        private bool changeStateToActivate;
 
         internal Job_ChangeTCPGathererState(bool activate) {
-            m_changeStateToActivate = activate;
+            changeStateToActivate = activate;
         }
 
         internal override bool CanPushBackUpStack() {
@@ -102,9 +102,9 @@ namespace Plisky.FlimFlam {
         }
 
         internal override void ExecuteJob() {
-            //Bilge.Log("Executing job Job_ChangeTCPGathererState", "Bringing the gatherer " + (m_changeStateToActivate ? "Online" : "Offline"));
+            //Bilge.Log("Executing job Job_ChangeTCPGathererState", "Bringing the gatherer " + (changeStateToActivate ? "Online" : "Offline"));
 
-            if (m_changeStateToActivate) {
+            if (changeStateToActivate) {
                 MexCore.TheCore.MessageManager.ActivateTCPGatherer();
             } else {
                 MexCore.TheCore.MessageManager.DeactivateTCPGatherer();
@@ -127,7 +127,7 @@ namespace Plisky.FlimFlam {
             Job_ChangeTCPGathererState alt = alternative as Job_ChangeTCPGathererState;
             if (alt == null) { return JobVerificationResults.None; }
 
-            if (alt.m_changeStateToActivate == m_changeStateToActivate) {
+            if (alt.changeStateToActivate == changeStateToActivate) {
                 return JobVerificationResults.CurrentJobRendersFutureJobRedundant;
             } else {
                 return JobVerificationResults.FutureJobRendersCurrentJobRedundant;
@@ -136,16 +136,16 @@ namespace Plisky.FlimFlam {
     } // End Job_ActivateTCPGatherer
 
     internal class Job_LoadTraceFile : BaseJob {
-        internal string AssignIdentToProcess;
-        private string m_fileName;
-        private bool m_initialised;
-        private FileImportMethod m_useThisImportMethod;
+        internal string assignIdentToProcess;
+        private string fileName;
+        private bool initialised;
+        private FileImportMethod useThisImportMethod;
 
         internal Job_LoadTraceFile(string filename, FileImportMethod fmo) {
-            m_fileName = filename;
-            m_useThisImportMethod = fmo;
+            fileName = filename;
+            useThisImportMethod = fmo;
 
-            m_initialised = true;
+            initialised = true;
         }
 
         internal override bool CanPushBackUpStack() {
@@ -154,7 +154,7 @@ namespace Plisky.FlimFlam {
 
         internal override void ExecuteJob() {
             //Bilge.Log("Mex::WorkManager >> Found LoadFile Request, asking MessageManager to load file");
-            MexCore.TheCore.MessageManager.LoadMessagesFromFile(m_fileName, m_useThisImportMethod);
+            MexCore.TheCore.MessageManager.LoadMessagesFromFile(fileName, useThisImportMethod);
         }
 
         internal override string GetIdentifier() {
@@ -164,12 +164,12 @@ namespace Plisky.FlimFlam {
         internal override bool InitialiseJob(out bool requiresNotificationSuspense) {
             requiresNotificationSuspense = true;
 
-            //Bilge.Assert(m_fileName != null, "Filename cant be null for the loadfromfile job being pulled from joq queue");
-            //Bilge.Assert(File.Exists(m_fileName), "Filename does not exist, loadfromfile job cannot perfor on an empty file");
+            //Bilge.Assert(fileName != null, "Filename cant be null for the loadfromfile job being pulled from joq queue");
+            //Bilge.Assert(File.Exists(fileName), "Filename does not exist, loadfromfile job cannot perfor on an empty file");
 
-            if (!File.Exists(m_fileName)) { m_initialised = false; }
+            if (!File.Exists(fileName)) { initialised = false; }
 
-            return m_initialised;
+            return initialised;
         }
 
         internal override void PerformPostJob() {

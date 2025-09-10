@@ -13,16 +13,16 @@
     using Plisky.Diagnostics.FlimFlam;
 
     public partial class frmMexMainView : Form {
-        internal MexStatus ViewerStatus;
+        internal MexStatus ViewerStatus { get; set; }
         private readonly System.Windows.Forms.Timer tmr = new();
 
         private const string MEXISO_APP_IDENT = "Mex_2_0";
         private const string MEX_SETTINGSFILENAME = "AppSettings.xml";
         private const string MEX_OPTIONSFILENAME = "AppOptions.xml";
-        private static MexCore Core; // Default null
+        private static MexCore Core { get; set; }
 
-        internal static ImageList AppImages;
-        private List<frmViewInAWindow> m_PromotedViews;
+        internal static ImageList AppImages { get; set; }
+        private List<frmViewInAWindow> PromotedViews { get; set; }
 
         // In order to delegate this we need to make it a member to get at it from the redraw parameter less delegate
 
@@ -34,16 +34,16 @@
 
         public frmMexMainView() {
             InitializeComponent();
-            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All", null, tsHandler_Click));
-            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select None", null, tsHandler_Click));
-            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All Starting With", null, tsHandler_Click));
-            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Clear then select all starting with:", null, tsHandler_Click));
-            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All Not Starting With", null, tsHandler_Click));
-            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Experimental Purge", null, tsHandler_Click));
+            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All", null, Handler_Click));
+            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select None", null, Handler_Click));
+            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All Starting With", null, Handler_Click));
+            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Clear then select all starting with:", null, Handler_Click));
+            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All Not Starting With", null, Handler_Click));
+            _ = sptSelector.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Experimental Purge", null, Handler_Click));
 
-            _ = spbtSelectThreads.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All", null, tsThreadViewHandler_Click));
-            _ = spbtSelectThreads.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select None", null, tsThreadViewHandler_Click));
-            _ = spbtSelectThreads.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Invert Selection", null, tsThreadViewHandler_Click));
+            _ = spbtSelectThreads.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select All", null, ThreadViewHandler_Click));
+            _ = spbtSelectThreads.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Select None", null, ThreadViewHandler_Click));
+            _ = spbtSelectThreads.ContextMenuStrip.Items.Add(new ToolStripMenuItem("Invert Selection", null, ThreadViewHandler_Click));
 
             Core = MexCore.TheCore;
 
@@ -61,12 +61,12 @@
             }
         }
 
-        private void sptSelector_Click(object sender, EventArgs e) {
-            var tsmi = new ToolStripMenuItem("Select All", null, tsHandler_Click);
-            tsHandler_Click(tsmi, null);
+        private void Selector_Click(object sender, EventArgs e) {
+            var tsmi = new ToolStripMenuItem("Select All", null, Handler_Click);
+            Handler_Click(tsmi, null);
         }
 
-        private void tsHandler_Click(object sender, EventArgs e) {
+        private void Handler_Click(object sender, EventArgs e) {
             string sendText = ((ToolStripMenuItem)sender).Text;
             string matchText = txtFilterStartsWith.Text.ToLower();
 
@@ -132,7 +132,7 @@
             //Bilge.Log("Called");
         }
 
-        private void tsThreadViewHandler_Click(object sender, EventArgs e) {
+        private void ThreadViewHandler_Click(object sender, EventArgs e) {
             string sendText = sender == null ? "Select All" : ((ToolStripMenuItem)sender).Text;
             switch (sendText) {
                 case "Select All":
@@ -331,7 +331,7 @@
             lvwProcessView.Columns[3].Width = theWidth;
         }
 
-        private void mnuFileOpen_Click(object sender, System.EventArgs e) {
+        private void FileOpen_Click(object sender, System.EventArgs e) {
             using var ofd = new frmOpenDialog();
             ofd.InitialiseDialog(ViewerStatus.LastLoadedFile, ViewerStatus.FileMostRecentlyUsedList);
             if (ofd.ShowDialog() == DialogResult.OK) {
@@ -341,7 +341,7 @@
                 MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.ImportFileStarts, UserMessageType.InformationMessage, ofd.Filename);
 
                 var jltf = new Job_LoadTraceFile(ofd.Filename, fim) {
-                    AssignIdentToProcess = ofd.GetLabelIdent()
+                    assignIdentToProcess = ofd.GetLabelIdent()
                 };
 
                 if (!asynch) {
@@ -460,7 +460,7 @@
                 if ((tbcMainView.SelectedTab == tabProcessThreadView) || (tbcMainView.SelectedTab == tabProcessTree)
                     || (tbcMainView.SelectedTab == tabProcessView) || (tbcMainView.SelectedTab == tabTimingsView)
                     || (tbcMainView.SelectedTab == tabResourceView)) {
-                    btnRefresh_Click(null, null);
+                    Refresh_Click(null, null);
                 }
             }
         }
@@ -670,7 +670,7 @@
             RefreshCurrentView(false);
         }
 
-        private void btnRefresh_Click(object sender, System.EventArgs e) {
+        private void Refresh_Click(object sender, System.EventArgs e) {
             RefreshCurrentView();
         }
 
@@ -903,7 +903,7 @@
         private void UpdateCurrentViewAfterRequest(bool incrementalOK) {
             //Bilge.Log("UI recieved update notification requesting a refresh of the current process", "Incremental value " + incrementalOK.ToString());
 
-            var elapsed = DateTime.Now - m_lastRefreshNotfication;
+            var elapsed = DateTime.Now - lastRefreshNotfication;
             if (elapsed.TotalSeconds < MexCore.TheCore.Options.NoSecondsForUIUpdate) {
                 //Bilge.VerboseLog("Refresh being ignored because came too frequently, queueing up a refresh request for later");
                 // If the messages are coming too frequently we dont refresh, however we put a refresh job on the queue because if this is the
@@ -912,7 +912,7 @@
                 triggerRefreshisIncremental = incrementalOK;
             } else {
                 timerTriggeredRefreshRequired = false;
-                m_lastRefreshNotfication = DateTime.Now;
+                lastRefreshNotfication = DateTime.Now;
 
                 if (InvokeRequired) {
                     //Bilge.FurtherInfo("Switching back to UI thread to perform refresh");
@@ -950,30 +950,30 @@
             }
         }
 
-        private void UpdateFollowingOptionsChangeNotification(string[] ListOfFilters) {
+        private void UpdateFollowingOptionsChangeNotification(string[] listOfFilters) {
             if (InvokeRequired) {
-                _ = Invoke(new stringArrayMethodInvoker(RefreshScreenFromOptionsView), ListOfFilters);
+                _ = Invoke(new stringArrayMethodInvoker(RefreshScreenFromOptionsView), listOfFilters);
             } else {
                 //Bilge.Warning("How come this is being called on the UI thread, check how this came about");
-                RefreshScreenFromOptionsView(ListOfFilters);
+                RefreshScreenFromOptionsView(listOfFilters);
             }
         }
 
-        private DateTime m_lastRefreshNotfication = DateTime.MinValue;
+        private DateTime lastRefreshNotfication = DateTime.MinValue;
 
         private void UpdateFollowingNewEventsArrivedForSelectedApp(bool incrementalOk) {
             // a new event has arrived.
             if (Core.Options.AutoRefresh) {
                 // If this is the case then we need to refresh the current view when things change, however we dont want to do this too frequently
                 // as it causes flicker.  Therefore we check if its appropriate before doing a refresh.
-                var elapsed = DateTime.Now - m_lastRefreshNotfication;
+                var elapsed = DateTime.Now - lastRefreshNotfication;
                 if (elapsed.TotalSeconds < MexCore.TheCore.Options.NoSecondsForUIUpdate) {
                     //Bilge.VerboseLog("Refresh being ignored because came too frequently, queueing up a refresh request for later");
                     // If the messages are coming too frequently we dont refresh, however we put a refresh job on the queue because if this is the
                     // last message then we wont get another refresh request and the output will be innaccurate.
                     MexCore.TheCore.ViewManager.RequestViewRefreshNotification(incrementalOk);
                 } else {
-                    m_lastRefreshNotfication = DateTime.Now;
+                    lastRefreshNotfication = DateTime.Now;
 
                     // The ViewSupportManager might be running on a different thread.  Therefore time to backinvoke to me.
                     if (InvokeRequired) {
@@ -986,9 +986,9 @@
             }
         }
 
-        private void RefreshScreenFromOptionsView(string[] ListOfFilters) {
+        private void RefreshScreenFromOptionsView(string[] listOfFilters) {
             cboMainViewQuickFilterChange.Items.Clear();
-            cboMainViewQuickFilterChange.Items.AddRange(ListOfFilters);
+            cboMainViewQuickFilterChange.Items.AddRange(listOfFilters);
             cboMainViewQuickFilterChange.Text = " > Quick Load Filter <";
         }
 
@@ -1010,8 +1010,8 @@
 
                 // Start capturing ODS and TCP
                 //Bilge.Log("Requesting TCP and ODS Capture is started");
-                mnuCaptureToggleOds_Click(null, null);
-                mnuCaptureToggleTCP_Click(null, null);
+                CaptureToggleOds_Click(null, null);
+                CaptureToggleTCP_Click(null, null);
             } finally {
                 //Bilge.X();
             }
@@ -1019,7 +1019,7 @@
 
         #endregion Form Events
 
-        private void btnPurgeCurrent_Click(object sender, System.EventArgs e) {
+        private void PurgeCurrent_Click(object sender, System.EventArgs e) {
             RequestPurgeSelectedProcess();
         }
 
@@ -1037,7 +1037,7 @@
             lvwProcessView.Items.Clear();
         }
 
-        private void lvwProcessView_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void ProcessView_SelectedIndexChanged(object sender, System.EventArgs e) {
             if (lvwProcessView.SelectedItems.Count == 0) {
                 //Bilge.Log("WARNING!!!! --> SelectedIndexChanged when there were no selected items on process view.  More info cant display properly");
                 txtSelectedEntryDetails.Text = string.Empty;
@@ -1188,25 +1188,25 @@
             tbcMainView.SelectedTab = tabCrossProcessView;
         }
 
-        private void btnSetTabMain_Click(object sender, System.EventArgs e) {
+        private void SetTabMain_Click(object sender, System.EventArgs e) {
             AlterScreenEnableState(ScreenEnabledStates.AbleToPurgeAndClearThis);
             SelectMainView(true);
         }
 
-        private void btnSetTabProcess_Click(object sender, System.EventArgs e) {
+        private void SetTabProcess_Click(object sender, System.EventArgs e) {
             //Bilge.Assert(MexCore.TheCore.ViewManager.IsCurrentSelectedAppValid, "The currently selected application is not valid, this will cause problems in a moment.");
             SelectProcessView();
         }
 
-        private void btnSetTabTimings_Click(object sender, System.EventArgs e) {
+        private void SetTabTimings_Click(object sender, System.EventArgs e) {
             SelectTimingsView();
         }
 
-        private void btnResources_Click(object sender, System.EventArgs e) {
+        private void Resources_Click(object sender, System.EventArgs e) {
             SelectResourceView();
         }
 
-        private void btnSetTabThreads_Click(object sender, System.EventArgs e) {
+        private void SetTabThreads_Click(object sender, System.EventArgs e) {
             SelectThreadView();
         }
 
@@ -1352,7 +1352,7 @@
             Core.ViewManager.RefreshView_ProcessThread(lvwThreadView, selectedThreads, chkSynchThreads.Checked);
         }
 
-        private void vscrAllThreadBoxes_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void VscrAllThreadBoxes_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
             try {
                 int selectDelta = 0;
 
@@ -1370,7 +1370,7 @@
             }
         }
 
-        private void btnSetFilter_Click(object sender, System.EventArgs e) {
+        private void SetFilter_Click(object sender, System.EventArgs e) {
             //Bilge.EnterSection("Setting Filter Options");
             using var fpvf = new frmProcViewFilter();
             if (Core.ViewManager.SelectedTracedAppIdx != -1) {
@@ -1393,17 +1393,17 @@
             //Bilge.LeaveSection();
         }
 
-        private void mnuCaptureToggleOds_Click(object sender, System.EventArgs e) {
+        private void CaptureToggleOds_Click(object sender, System.EventArgs e) {
             mnuCaptureToggleOds.Checked = !mnuCaptureToggleOds.Checked;
             Core.ViewManager.RequestChangeODSGathererState(mnuCaptureToggleOds.Checked);
         }
 
-        private void mnuCaptureToggleTCP_Click(object sender, EventArgs e) {
+        private void CaptureToggleTCP_Click(object sender, EventArgs e) {
             mnuCaptureToggleTCP.Checked = !mnuCaptureToggleTCP.Checked;
             Core.ViewManager.RequestChangeTCPGathererState(mnuCaptureToggleTCP.Checked);
         }
 
-        private void mnuFindFind_Click(object sender, System.EventArgs e) {
+        private void FindFind_Click(object sender, System.EventArgs e) {
             using var ffd = new frmFindDialog();
             PositionDialogOverView(ffd, false);
 
@@ -1440,11 +1440,11 @@
             }
         }
 
-        private void btnSetHighlight_Click(object sender, System.EventArgs e) {
+        private void SetHighlight_Click(object sender, System.EventArgs e) {
             Core.ViewManager.UpdateHighlight();
         }
 
-        private void btnSemiPurgeCurrent_Click(object sender, System.EventArgs e) {
+        private void SemiPurgeCurrent_Click(object sender, System.EventArgs e) {
             if (tbcMainView.SelectedTab == tabODSView) {
                 Core.DataManager.PurgeUnknownApplications();
                 RefreshCurrentView();
@@ -1459,7 +1459,7 @@
             RequestClearSelectedProcess();
         }
 
-        private void lvwProcessView_DoubleClick(object sender, System.EventArgs e) {
+        private void ProcessView_DoubleClick(object sender, System.EventArgs e) {
             var chosenListView = (ListView)sender;
 
             if (chosenListView.SelectedItems.Count == 0) {
@@ -1473,7 +1473,7 @@
 
             long idx = (long)lvi.Tag;
 
-            bool FilterChangedDueToDialog = false;
+            bool filterChangedDueToDialog = false;
 
             var msgType = Core.ViewManager.DetermineMessageTypeForView(ref idx);
             switch (msgType) {
@@ -1483,12 +1483,12 @@
 
                         Core.ViewManager.PopulateExceptionDetailsScreen(fed.lbxExceptionHeirachy, fed.txtExceptionSummary, fed.txtExceptionLocationFilename, fed.txtExceptionLocationLineNo, idx);
                         fed.InitialiseOnceDatasIn(idx);
-                        FilterChangedDueToDialog = fed.ShowDialog() == DialogResult.Yes;
+                        filterChangedDueToDialog = fed.ShowDialog() == DialogResult.Yes;
                     }
                     break;
 
                 case ViewSupportManager.ExtendedDetailsMode.LogMessage:
-                    FilterChangedDueToDialog = DisplayLogMessageExtendedDetails(idx, FilterChangedDueToDialog);
+                    filterChangedDueToDialog = DisplayLogMessageExtendedDetails(idx, filterChangedDueToDialog);
                     break;
 
                 case ViewSupportManager.ExtendedDetailsMode.Error:
@@ -1505,7 +1505,7 @@
                     break;
             }
 
-            if (FilterChangedDueToDialog) {
+            if (filterChangedDueToDialog) {
                 // Some of these dialogs let you request to exclude the thing that you just saw or some element of it.  If this is the case then
                 // they update the filter directly but depend on us to tell the view to physically refresh itself to take advantage of the
                 // new filtering options that are in place.
@@ -1534,7 +1534,7 @@
             }
         }
 
-        private bool DisplayLogMessageExtendedDetails(long idx, bool FilterChangedDueToDialog) {
+        private bool DisplayLogMessageExtendedDetails(long idx, bool filterChangedDueToDialog) {
             using (var fed = new frmExtendedDetails()) {
                 // Restore size settings from last time
 
@@ -1549,7 +1549,7 @@
                 #endregion size and position the form
 
                 Core.ViewManager.PopulateLogMessageDetailsScreen(idx, fed.txtDebugEntry, fed.txtSecondaryMessage, fed.txtEntryFurtherDetails);
-                FilterChangedDueToDialog = fed.ShowDialog() == DialogResult.Yes;
+                filterChangedDueToDialog = fed.ShowDialog() == DialogResult.Yes;
 
                 // Remember end size settings.
 
@@ -1562,7 +1562,7 @@
 
                 #endregion store the size information that they finished with
             }
-            return FilterChangedDueToDialog;
+            return filterChangedDueToDialog;
         }
 
         private static void DisplayAssertionExtendedDetails(long idx) {
@@ -1577,11 +1577,11 @@
             SetMainViewFollowingPurgeAll();
         }
 
-        private void btnClearAll_Click(object sender, System.EventArgs e) {
+        private void ClearAll_Click(object sender, System.EventArgs e) {
             RequestClearAllData();
         }
 
-        private void lvwMainODSView_DoubleClick(object sender, System.EventArgs e) {
+        private void MainODSView_DoubleClick(object sender, System.EventArgs e) {
             /*if (lvwMainODSView.SelectedItems.Count == 0) {
                //Bilge.Warning("WARNING!!!! --> SelectedIndexChanged when there were no selected items on main view.  More info cant display properly");
                 return;
@@ -1616,7 +1616,7 @@
             return MexViews.Unknown;
         }
 
-        private void btnDoFind_Click(object sender, EventArgs e) {
+        private void DoFind_Click(object sender, EventArgs e) {
             ExecuteFind(false);
         }
 
@@ -1636,7 +1636,7 @@
             }
 
             switch (GetCurrentlySelectedView()) {
-                case MexViews.MainView: mnuFindFind_Click(null, null); break;
+                case MexViews.MainView: FindFind_Click(null, null); break;
                 case MexViews.ProcessView: MexCore.TheCore.ViewManager.ProcView_Find(lvwProcessView, incrementalFind, currentFindIncrementalIndexPreference); break;
                 case MexViews.ProcessTreeView: throw new NotImplementedException();
                 case MexViews.ResourceView: throw new NotImplementedException();
@@ -1669,31 +1669,31 @@
             }
         }
 
-        private void btnShowOptions_Click(object sender, EventArgs e) {
+        private void ShowOptions_Click(object sender, EventArgs e) {
             ShowOptionsScreen();
         }
 
-        private void btnCancelRefresh_Click(object sender, EventArgs e) {
+        private void CancelRefresh_Click(object sender, EventArgs e) {
             Core.ViewManager.CancelCurrentViewOperation = true;
         }
 
-        private void btnSetTabProcessTreeView_Click(object sender, EventArgs e) {
+        private void SetTabProcessTreeView_Click(object sender, EventArgs e) {
             SelectTreeView();
         }
 
-        private void btnRefreshThreadViewNow_Click_1(object sender, EventArgs e) {
+        private void RefreshThreadViewNow_Click(object sender, EventArgs e) {
             RefreshCurrentView();
         }
 
-        private void btnExpandAll_Click(object sender, EventArgs e) {
+        private void ExpandAll_Click(object sender, EventArgs e) {
             tvwProcTraceTree.ExpandAll();
         }
 
-        private void btnCollapseAll_Click(object sender, EventArgs e) {
+        private void CollapseAll_Click(object sender, EventArgs e) {
             tvwProcTraceTree.CollapseAll();
         }
 
-        private void mnuPurgePurgeAllButThis_Click(object sender, EventArgs e) {
+        private void PurgeAllButThis_Click(object sender, EventArgs e) {
             //Bilge.Log("User Requests PurgeAllButthis from menu.");
             Core.ViewManager.RequestPurgeAllExceptCurrentlySelected();
         }
@@ -1735,7 +1735,7 @@
             }
         }
 
-        private void duplicateThisProcessToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void DuplicateThisProcessToolStripMenuItem_Click(object sender, EventArgs e) {
             //Bilge.Assert(lvwProcessView.SelectedItems.Count > 1, " Invalid call to set index range");
             var fcd = new frmCreateDuplicate();
             //this.PositionDialogOverView(fcd, true);
@@ -1745,7 +1745,7 @@
             }
         }
 
-        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void DuplicateToolStripMenuItem_Click(object sender, EventArgs e) {
             //Bilge.Assert(lvwProcessView.SelectedItems.Count > 1, " Invalid call to set index range");
 
             long currentStartIndex = (long)lvwProcessView.SelectedItems[0].Tag;
@@ -1760,19 +1760,19 @@
             }
         }
 
-        private void txtCurrentProcessLabel_Leave(object sender, EventArgs e) {
+        private void CurrentProcessLabel_Leave(object sender, EventArgs e) {
             //Bilge.Log("Viewer setting label for current process to " + txtCurrentProcessLabel.Text);
             Core.ViewManager.SetNameOfCurrentProcess(txtCurrentProcessLabel.Text);
             RedrawProcessLists();
         }
 
-        private void mnuCtxtHideAllEntriesToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void CtxtHideAllEntriesToolStripMenuItem_Click(object sender, EventArgs e) {
             // Hides all of the entries that this application knows of.
             Core.ViewManager.MaskEventEntries();
             RefreshCurrentView(false);
         }
 
-        private void mnuCtxtHideAllEntriesTillNowToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void CtxtHideAllEntriesTillNowToolStripMenuItem_Click(object sender, EventArgs e) {
             //Bilge.Assert(lvwProcessView.SelectedItems.Count > 0, " Context menu for hiding the selected items should not be enabled when no items selected");
             if (lvwProcessView.SelectedItems.Count == 0) {
                 //Bilge.Warning("User has clicked the context menu and this has taken focus and selection awsay from lvwProcessView, making the click invalid");
@@ -1783,7 +1783,7 @@
             RefreshCurrentView(false);
         }
 
-        private void mnuCtxtHideThisEntryToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void CtxtHideThisEntryToolStripMenuItem_Click(object sender, EventArgs e) {
             //Bilge.Assert(lvwProcessView.SelectedItems.Count > 0, " Context menu for hiding the selected items should not be enabled when no items selected");
             for (int i = 0; i < lvwProcessView.SelectedItems.Count; i++) {
                 long nextIdx = (long)lvwProcessView.SelectedItems[i].Tag;
@@ -1792,8 +1792,8 @@
             RefreshCurrentView(false);
         }
 
-        private void showDetailsToolStripMenuItem_Click(object sender, EventArgs e) {
-            lvwProcessView_DoubleClick(sender, e);
+        private void ShowDetailsToolStripMenuItem_Click(object sender, EventArgs e) {
+            ProcessView_DoubleClick(sender, e);
         }
 
         #region context menu filters for process view.
@@ -1879,47 +1879,47 @@
             RefreshCurrentView(false);
         } // ApplySelectionToFilter
 
-        private void mnuCtxtFilterThreadsIncludeThis_Click(object sender, EventArgs e) {
+        private void CtxtFilterThreadsIncludeThis_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, true, true, false, false, false);
         }
 
-        private void mnuCtxtFilterThreadsExcludeThis_Click(object sender, EventArgs e) {
+        private void CtxtFilterThreadsExcludeThis_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, false, true, false, false, false);
         }
 
-        private void mnuCtxtFilterModulesIncludeThis_Click(object sender, EventArgs e) {
+        private void CtxtFilterModulesIncludeThis_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, true, false, false, true, false);
         }
 
-        private void mnuCtxtFilterModulesExcludeThis_Click(object sender, EventArgs e) {
+        private void CtxtFilterModulesExcludeThis_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, false, false, false, true, false);
         }
 
-        private void mnuCtxtFilterLocationsIncludeThis_Click(object sender, EventArgs e) {
+        private void CtxtFilterLocationsIncludeThis_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, true, false, true, false, false);
         }
 
-        private void mnuCtxtFilterLocationsExcludeThis_Click(object sender, EventArgs e) {
+        private void CtxtFilterLocationsExcludeThis_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, false, false, true, false, false);
         }
 
-        private void showOnlyThisClassToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void OnlyThisClassToolStripMenuItem_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, true, false, false, false, true);
         }
 
-        private void excludeThisClassToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void ExcludeThisClassToolStripMenuItem_Click(object sender, EventArgs e) {
             ApplySelectionToFilter((long)lvwProcessView.SelectedItems[0].Tag, false, false, false, false, true);
         }
 
         #endregion context menu filters for process view.
 
-        private void mnuViewPromoteCurrent_Click(object sender, EventArgs e) {
+        private void ViewPromoteCurrent_Click(object sender, EventArgs e) {
             // Takes the current view and extracts it to a view window.
             var fvw = new frmViewInAWindow();
             PositionDialogOverView(fvw, true);
-            m_PromotedViews ??= new List<frmViewInAWindow>();
+            PromotedViews ??= new List<frmViewInAWindow>();
 
-            m_PromotedViews.Add(fvw);
+            PromotedViews.Add(fvw);
 
             bool populated = false;
 
@@ -1961,15 +1961,15 @@
             fvw.Show();
         }
 
-        private void btnRefreshCPV_Click(object sender, EventArgs e) {
+        private void RefreshCPV_Click(object sender, EventArgs e) {
             RefreshCrossProcessViewItself();
         }
 
-        private void btnSetTabCrossProcessView_Click(object sender, EventArgs e) {
+        private void SetTabCrossProcessView_Click(object sender, EventArgs e) {
             SelectCrossProcessView();
         }
 
-        private void lvwCrossProcesList_SelectedIndexChanged(object sender, EventArgs e) {
+        private void CrossProcesList_SelectedIndexChanged(object sender, EventArgs e) {
             // This seems to get called even when no items are selected, wierdly.
             if (lvwCrossProcesList.SelectedItems.Count == 0) { return; }
 
@@ -1979,7 +1979,7 @@
             txtCpvMoreDetails.Text = Core.ViewManager.GetMoreInfoForEventIndexGlobally(gidx);
         }
 
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e) {
             var clippy = new StringBuilder();
 
             foreach (ListViewItem lvi in lvwProcessView.SelectedItems) {
@@ -1989,7 +1989,7 @@
             Clipboard.SetText(clippy.ToString());
         }
 
-        private void mnuPurgePurgeThisProcess_Click(object sender, EventArgs e) {
+        private void PurgePurgeThisProcess_Click(object sender, EventArgs e) {
             PerformSelectedProcessPurge();  // the main view is still valid therefore we switch to it.
         }
 
@@ -1998,15 +1998,15 @@
             SetMainViewFollowingPurgeOne();
         }
 
-        private void mnuPurgeClearThisProcess_Click(object sender, EventArgs e) {
+        private void PurgeClearThisProcess_Click(object sender, EventArgs e) {
             RequestClearSelectedProcess();
         }
 
-        private void mnuPurgePurgeAllProcesses_Click(object sender, EventArgs e) {
+        private void PurgePurgeAllProcesses_Click(object sender, EventArgs e) {
             RequestClearAllData();
         }
 
-        private void cboMainViewQuickFilterChange_SelectedIndexChanged(object sender, EventArgs e) {
+        private void MainViewQuickFilterChange_SelectedIndexChanged(object sender, EventArgs e) {
             //Bilge.E();
             try {
                 if (cboMainViewQuickFilterChange.Text != " > Refresh List <") {
@@ -2030,7 +2030,7 @@
             }
         }
 
-        private void highlightThisThreadColor1ToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void HighlightThisThreadColor1ToolStripMenuItem_Click(object sender, EventArgs e) {
             int tagval = (int)(sender as ToolStripMenuItem).Tag;
 
             long nextIdx = (long)lvwProcessView.SelectedItems[0].Tag;
@@ -2047,47 +2047,47 @@
 
         #region hook up the menus that do the same as the buttons
 
-        private void mnuViewOptions_Click(object sender, EventArgs e) {
-            btnShowOptions_Click(sender, e);
+        private void ViewOptions_Click(object sender, EventArgs e) {
+            ShowOptions_Click(sender, e);
         }
 
-        private void mnuViewHighlights_Click(object sender, EventArgs e) {
-            btnSetHighlight_Click(sender, e);
+        private void ViewHighlights_Click(object sender, EventArgs e) {
+            SetHighlight_Click(sender, e);
         }
 
-        private void mnuViewViewsTimedView_Click(object sender, EventArgs e) {
+        private void ViewViewsTimedView_Click(object sender, EventArgs e) {
             if (MessageBox.Show("Timed view takes a very long time to display.  Are you sure?", "Perf Warning", MessageBoxButtons.YesNo) == DialogResult.Yes) {
                 SelectTimedView();
             }
         }
 
-        private void mnuViewViewsMainView_Click(object sender, EventArgs e) {
-            btnSetTabMain_Click(sender, e);
+        private void ViewViewsMainView_Click(object sender, EventArgs e) {
+            SetTabMain_Click(sender, e);
         }
 
-        private void mnuViewViewsProcessView_Click(object sender, EventArgs e) {
-            btnSetTabProcess_Click(sender, e);
+        private void ViewViewsProcessView_Click(object sender, EventArgs e) {
+            SetTabProcess_Click(sender, e);
         }
 
-        private void mnuViewViewsResourceView_Click(object sender, EventArgs e) {
-            btnResources_Click(sender, e);
+        private void ViewViewsResourceView_Click(object sender, EventArgs e) {
+            Resources_Click(sender, e);
         }
 
-        private void mnuViewViewsTreeView_Click(object sender, EventArgs e) {
-            btnSetTabProcessTreeView_Click(sender, e);
+        private void ViewViewsTreeView_Click(object sender, EventArgs e) {
+            SetTabProcessTreeView_Click(sender, e);
         }
 
         #endregion hook up the menus that do the same as the buttons
 
-        private void mnuViewViewsSetCrossProcessview_Click(object sender, EventArgs e) {
-            btnSetTabCrossProcessView_Click(sender, e);
+        private void ViewViewsSetCrossProcessview_Click(object sender, EventArgs e) {
+            SetTabCrossProcessView_Click(sender, e);
         }
 
-        private void mnuViewViewsSetProcessThreadView_Click(object sender, EventArgs e) {
-            btnSetTabThreads_Click(sender, e);
+        private void ViewViewsSetProcessThreadView_Click(object sender, EventArgs e) {
+            SetTabThreads_Click(sender, e);
         }
 
-        private void tmrUpdateUI_Tick(object sender, EventArgs e) {
+        private void TmrUpdateUI_Tick(object sender, EventArgs e) {
             string s = Core.ViewManager.QueuedMessagesCount;
 
             tslStatusLabel1.Text = "Q[ " + s + " ]";
@@ -2103,7 +2103,7 @@
             tsStatusLabelTime.Text = "at " + s;
 
             if (timerTriggeredRefreshRequired) {
-                var elapsed = DateTime.Now - m_lastRefreshNotfication;
+                var elapsed = DateTime.Now - lastRefreshNotfication;
 
                 if (elapsed.TotalSeconds < MexCore.TheCore.Options.NoSecondsForUIUpdate) {
                     // Dont do the refresh this time around.
@@ -2115,14 +2115,14 @@
             }
         }
 
-        private void btnUserMessages_Click(object sender, EventArgs e) {
+        private void UserMessages_Click(object sender, EventArgs e) {
         }
 
-        private void mnuViewFilters_Click(object sender, EventArgs e) {
-            btnSetFilter_Click(sender, e);
+        private void ViewFilters_Click(object sender, EventArgs e) {
+            SetFilter_Click(sender, e);
         }
 
-        private void ctxtPVCtxtMenu_Opening(object sender, CancelEventArgs e) {
+        private void PVCtxtMenu_Opening(object sender, CancelEventArgs e) {
             bool enableStateForItemSelected = lvwProcessView.SelectedItems.Count > 0;
 
             mnuCtxtFilterLocationsExcludeThis.Enabled = enableStateForItemSelected;
@@ -2133,7 +2133,7 @@
             mnuCtxtHideAllEntriesBeforeThisIndexToolStripMenuItem.Enabled = enableStateForItemSelected;
         }
 
-        private void mnuCtxtUnhideAllToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void CtxtUnhideAllToolStripMenuItem_Click(object sender, EventArgs e) {
             ForceFilterUpdateOnDisplay();
         }
 
@@ -2146,16 +2146,16 @@
             RefreshCurrentView(false);
         }
 
-        private void mnuCtxtResetHighlightToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void CtxtResetHighlightToolStripMenuItem_Click(object sender, EventArgs e) {
             Core.ViewManager.ReapplyHighlight();
         }
 
-        private void btnAutoRefreshQuick_Click(object sender, EventArgs e) {
+        private void AutoRefreshQuick_Click(object sender, EventArgs e) {
             Core.Options.AutoRefresh = !Core.Options.AutoRefresh;
             RefreshQuickIcons();
         }
 
-        private void btnAutoScrollQuick_Click(object sender, EventArgs e) {
+        private void AutoScrollQuick_Click(object sender, EventArgs e) {
             Core.Options.AutoScroll = !Core.Options.AutoScroll;
             RefreshQuickIcons();
         }
@@ -2187,25 +2187,25 @@
             }
         }
 
-        private void mnuOptionsRefresh1Second_Click(object sender, EventArgs e) {
+        private void OptionsRefresh1Second_Click(object sender, EventArgs e) {
             SetRefreshTime(1);
         }
 
-        private void mnuOptionsRefresh2Seconds_Click(object sender, EventArgs e) {
+        private void OptionsRefresh2Seconds_Click(object sender, EventArgs e) {
             SetRefreshTime(2);
         }
 
-        private void mnuOptionsRefresh5Seconds_Click(object sender, EventArgs e) {
+        private void OptionsRefresh5Seconds_Click(object sender, EventArgs e) {
             SetRefreshTime(5);
         }
 
-        private void mnuOptionsRefreshPaused_Click(object sender, EventArgs e) {
-            btnAutoRefreshQuick_Click(sender, e);
+        private void OptionsRefreshPaused_Click(object sender, EventArgs e) {
+            AutoRefreshQuick_Click(sender, e);
         }
 
         private AdditionalData currentAdditionalData; // Default null
 
-        private void btnAdditional_Click(object sender, EventArgs e) {
+        private void Additional_Click(object sender, EventArgs e) {
             if (tbcMainView.SelectedTab == tabTimingsView) {
                 using var tads = new frmTimingsAdditionalScreen();
                 tads.SetScreenFromAddtionalData(currentAdditionalData);
@@ -2241,22 +2241,22 @@
             _ = fmum.ShowDialog();
         }
 
-        private void showOptionsToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void ShowOptionsToolStripMenuItem_Click(object sender, EventArgs e) {
             ShowOptionsScreen();
         }
 
-        private void lvwProcessView_Resize(object sender, EventArgs e) {
+        private void ProcessView_Resize(object sender, EventArgs e) {
             ResizeProcessViewColumns();
         }
 
-        private void tbcMainView_SizeChanged(object sender, EventArgs e) {
+        private void MainView_SizeChanged(object sender, EventArgs e) {
             // Needed to redraw correctly on resize for the list views.
             if ((tbcMainView.SelectedTab == tabProcessView) || (tbcMainView.SelectedTab == tabProcessThreadView)) {
-                btnRefresh_Click(sender, e);
+                Refresh_Click(sender, e);
             }
         }
 
-        private void lvwThreadView_SelectedIndexChanged(object sender, EventArgs e) {
+        private void ThreadView_SelectedIndexChanged(object sender, EventArgs e) {
             if (lvwThreadView.SelectedItems.Count == 0) {
                 //Bilge.Log("WARNING!!!! --> SelectedIndexChanged when there were no selected items on lvwThreadView view.  More info cant display properly");
                 txtThreadViewDetails.Text = string.Empty;
@@ -2275,11 +2275,11 @@
             txtThreadViewDetails.Text = s;
         }
 
-        private void btnRefreshTreeView_Click(object sender, EventArgs e) {
+        private void RefreshTreeView_Click(object sender, EventArgs e) {
             ExecuteTreeViewRefreshCommand();
         }
 
-        private void lvwCrossProcesList_DoubleClick(object sender, EventArgs e) {
+        private void CrossProcesList_DoubleClick(object sender, EventArgs e) {
             if (lvwCrossProcesList.SelectedItems.Count == 1) {
                 long gIdx = (long)lvwCrossProcesList.SelectedItems[0].Tag;
 
@@ -2291,13 +2291,13 @@
             }
         }
 
-        private void llbScrollRight_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        private void ScrollRight_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             llbScrollLeft.Enabled = true;
             processLinkLabelFirstOffset++;
             RedrawProcessLists();
         }
 
-        private void llbScrollLeft_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        private void ScrollLeft_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             //Bilge.Assert(processLinkLabelFirstOffset > 0, "The label offset is in an invalid state for this control to be enabled");
 
             llbScrollRight.Enabled = true;
@@ -2309,34 +2309,34 @@
             RedrawProcessLists();
         }
 
-        private void mnuViewRefreshProcesses_Click(object sender, EventArgs e) {
+        private void ViewRefreshProcesses_Click(object sender, EventArgs e) {
             RedrawProcessLists();
         }
 
-        private void mnuViewAbout_Click(object sender, EventArgs e) {
+        private void ViewAbout_Click(object sender, EventArgs e) {
             using var fmum = new frmMexUserMessages();
             fmum.InitialiseFromMessageStore();
             _ = fmum.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e) {
+        private void Button1_Click(object sender, EventArgs e) {
             using var fds = new frmDiagnosticsScreen();
             _ = fds.ShowDialog();
         }
 
-        private void btnPurgeThis_Click(object sender, EventArgs e) {
+        private void PurgeThis_Click(object sender, EventArgs e) {
             PerformSelectedProcessPurge();
         }
 
-        private void spbtSelectThreads_Click(object sender, EventArgs e) {
-            tsThreadViewHandler_Click(null, null);
+        private void SelectThreads_Click(object sender, EventArgs e) {
+            ThreadViewHandler_Click(null, null);
         }
 
-        private void BtnTransient_Click(object sender, EventArgs e) {
+        private void Transient_Click(object sender, EventArgs e) {
             SelectTransientView();
         }
 
-        private void btnAlert_Click(object sender, EventArgs e) {
+        private void Alert_Click(object sender, EventArgs e) {
             SelectAlertView();
         }
 
@@ -2359,7 +2359,7 @@
             }
         }
 
-        private void btnConnectToURI_Click(object sender, EventArgs e) {
+        private void ConnectToURI_Click(object sender, EventArgs e) {
             using var f = new frmConnectToEndpoint();
             if (f.ShowDialog() == DialogResult.OK) {
             }

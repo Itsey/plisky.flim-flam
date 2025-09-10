@@ -1832,19 +1832,19 @@
                 if (include) {
                     allValues = Core.ViewManager.GetAllAdditionalLocations();
                     for (int i = 0; i < allValues.Count; i++) {
-                        if (allValues[i] != ee.MoreLocationData) {
+                        if (allValues[i] != ee.moreLocationData) {
                             MexCore.TheCore.ViewManager.CurrentFilter.AppendLocationExclusion(allValues[i]);
                         }
                     }
                 } else {
-                    MexCore.TheCore.ViewManager.CurrentFilter.AppendLocationExclusion(ee.MoreLocationData);
+                    MexCore.TheCore.ViewManager.CurrentFilter.AppendLocationExclusion(ee.moreLocationData);
                 }
             }
 
-            if (doClass && (ee.MoreLocationData.Length > 0)) {
-                int idx = ee.MoreLocationData.IndexOf("::");
+            if (doClass && (ee.moreLocationData.Length > 0)) {
+                int idx = ee.moreLocationData.IndexOf("::");
                 if (idx > 0) {
-                    string thisEntrysClass = ee.MoreLocationData[..idx];
+                    string thisEntrysClass = ee.moreLocationData[..idx];
 
                     if (include) {
                         allValues = Core.ViewManager.GetAllAdditionalLocations();
@@ -1867,12 +1867,12 @@
                 if (include) {
                     allValues = Core.ViewManager.GetAllModules();
                     for (int i = 0; i < allValues.Count; i++) {
-                        if (allValues[i] != ee.Module) {
+                        if (allValues[i] != ee.module) {
                             MexCore.TheCore.ViewManager.CurrentFilter.AppendModuleExclusion(allValues[i]);
                         }
                     }
                 } else {
-                    MexCore.TheCore.ViewManager.CurrentFilter.AppendModuleExclusion(ee.Module);
+                    MexCore.TheCore.ViewManager.CurrentFilter.AppendModuleExclusion(ee.module);
                 }
             }
             MexCore.TheCore.ViewManager.CurrentFilter.EndFilterUpdate();
@@ -2035,7 +2035,7 @@
 
             long nextIdx = (long)lvwProcessView.SelectedItems[0].Tag;
 
-            MexCore.TheCore.ViewManager.CurrentHighlightOptions.DefaultHighlightColoring[tagval].matchCase = MexCore.TheCore.ViewManager.GetEventEntryFromSelectedAppByIndex(nextIdx).ThreadID;
+            MexCore.TheCore.ViewManager.CurrentHighlightOptions.DefaultHighlightColoring[tagval].matchCase = MexCore.TheCore.ViewManager.GetEventEntryFromSelectedAppByIndex(nextIdx).threadID;
             tagval++;
             tagval %= MexCore.TheCore.ViewManager.CurrentHighlightOptions.DefaultHighlightColoring.Length;
             (sender as ToolStripMenuItem).Tag = tagval;

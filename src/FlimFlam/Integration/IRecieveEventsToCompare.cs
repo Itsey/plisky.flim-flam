@@ -19,13 +19,13 @@
             if (lastEvent==null) { return true; }
 
             bool result = true;
-            if (lastEvent.LineNumber != toThis.LineNumber) {
+            if (lastEvent.LineNumber != toThis.lineNumber) {
                 result = false;
             }
-            if (lastEvent.MethodName != toThis.Module) {
+            if (lastEvent.MethodName != toThis.module) {
                 result = false;
             }
-            if (lastEvent.NetThreadId != toThis.ThreadNetId) {
+            if (lastEvent.NetThreadId != toThis.threadNetId) {
                 result = false;
             }
 
@@ -44,7 +44,7 @@
                 case Plisky.Diagnostics.TraceCommandTypes.AssertionFailed:
                 case Plisky.Diagnostics.TraceCommandTypes.MoreInfo:
                     // Only check the text for a subset of message types where the two parsers behave identically.
-                    if (lastEvent.Text != toThis.DebugMessage) {
+                    if (lastEvent.Text != toThis.debugMessage) {
                         result = false;
                     }
                     break;

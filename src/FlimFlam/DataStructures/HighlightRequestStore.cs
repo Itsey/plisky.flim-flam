@@ -23,26 +23,26 @@ namespace Plisky.FlimFlam {
         internal bool ApplyDefaultHighlighting(EventEntry ee) {
             foreach (Coloring cr in DefaultHighlightColoring) {
                 if (cr.matchCase.Length > 0) {
-                    if (ee.ThreadID == cr.matchCase) {
-                        bool highlightIsTheSame = ee.ViewData.isValid;
-                        highlightIsTheSame = highlightIsTheSame && ((ee.ViewData.isForegroundHighlighted && cr.ForeColorSpecified) && (ee.ViewData.foregroundHighlightColor == cr.foregroundColor));
-                        highlightIsTheSame = highlightIsTheSame && ((ee.ViewData.isBackgroundHighlighted && cr.BackColorSpecified) && (ee.ViewData.backgroundHighlightColor == cr.backgroundColor));
+                    if (ee.threadID == cr.matchCase) {
+                        bool highlightIsTheSame = ee.viewData.isValid;
+                        highlightIsTheSame = highlightIsTheSame && ((ee.viewData.isForegroundHighlighted && cr.ForeColorSpecified) && (ee.viewData.foregroundHighlightColor == cr.foregroundColor));
+                        highlightIsTheSame = highlightIsTheSame && ((ee.viewData.isBackgroundHighlighted && cr.BackColorSpecified) && (ee.viewData.backgroundHighlightColor == cr.backgroundColor));
 
                         if (highlightIsTheSame) {
                             // There was a match made but it was already applied to this element.  Therefore no changes.
                             return false;
                         } else {
                             if (cr.ForeColorSpecified) {
-                                ee.ViewData.foregroundHighlightColor = cr.foregroundColor;
-                                ee.ViewData.isForegroundHighlighted = true;
+                                ee.viewData.foregroundHighlightColor = cr.foregroundColor;
+                                ee.viewData.isForegroundHighlighted = true;
                             }
 
                             if (cr.BackColorSpecified) {
-                                ee.ViewData.backgroundHighlightColor = cr.backgroundColor;
-                                ee.ViewData.isBackgroundHighlighted = true;
+                                ee.viewData.backgroundHighlightColor = cr.backgroundColor;
+                                ee.viewData.isBackgroundHighlighted = true;
                             }
 
-                            ee.ViewData.isValid = true;
+                            ee.viewData.isValid = true;
 
                             return true;
                         }
@@ -55,8 +55,8 @@ namespace Plisky.FlimFlam {
         internal bool ModifyEventEntryForHighlight(EventEntry ee) {
             // first check to see if there is any highlight data.
             if ((HighlightRequests == null) || (HighlightRequests.Count == 0)) {
-                if ((ee.ViewData.isValid) && (ee.ViewData.isHighlighted)) {
-                    ee.ViewData.isHighlighted = false;
+                if ((ee.viewData.isValid) && (ee.viewData.isHighlighted)) {
+                    ee.viewData.isHighlighted = false;
                     return true;
                 }
                 return false;
@@ -73,7 +73,7 @@ namespace Plisky.FlimFlam {
                 }
 
                 if ((!matchMade) && ahr.MakeMatchUsingString) {
-                    string eventEntryCombinedString = ee.DebugMessage + "#X#" + ee.SecondaryMessage + "#X#" + ee.Module + "#X#" + ee.CurrentThreadKey;
+                    string eventEntryCombinedString = ee.debugMessage + "#X#" + ee.secondaryMessage + "#X#" + ee.module + "#X#" + ee.CurrentThreadKey;
 
                     if (!ahr.CaseSensitive) {
                         ahr.ComparisonStringToMatchOn = ahr.ComparisonStringToMatchOn.ToLower();
@@ -92,25 +92,25 @@ namespace Plisky.FlimFlam {
 
                     // Split this out into a few lines as it was getting too complex to read.  Essentially we judge that the highlight is the same only if
                     // the specifictions and the colors are the same between the desired highlight and the existing highlight.
-                    bool highlightIsTheSame = ee.ViewData.isValid;
-                    highlightIsTheSame = highlightIsTheSame && ((ee.ViewData.isForegroundHighlighted && ahr.ForeColorSpecified) && (ee.ViewData.foregroundHighlightColor == ahr.ForegroundColor));
-                    highlightIsTheSame = highlightIsTheSame && ((ee.ViewData.isBackgroundHighlighted && ahr.BackColorSpecified) && (ee.ViewData.backgroundHighlightColor == ahr.BackgroundColor));
+                    bool highlightIsTheSame = ee.viewData.isValid;
+                    highlightIsTheSame = highlightIsTheSame && ((ee.viewData.isForegroundHighlighted && ahr.ForeColorSpecified) && (ee.viewData.foregroundHighlightColor == ahr.ForegroundColor));
+                    highlightIsTheSame = highlightIsTheSame && ((ee.viewData.isBackgroundHighlighted && ahr.BackColorSpecified) && (ee.viewData.backgroundHighlightColor == ahr.BackgroundColor));
 
                     if (highlightIsTheSame) {
                         // There was a match made but it was already applied to this element.  Therefore no changes.
                         return false;
                     } else {
                         if (ahr.ForeColorSpecified) {
-                            ee.ViewData.foregroundHighlightColor = ahr.ForegroundColor;
-                            ee.ViewData.isForegroundHighlighted = true;
+                            ee.viewData.foregroundHighlightColor = ahr.ForegroundColor;
+                            ee.viewData.isForegroundHighlighted = true;
                         }
 
                         if (ahr.BackColorSpecified) {
-                            ee.ViewData.backgroundHighlightColor = ahr.BackgroundColor;
-                            ee.ViewData.isBackgroundHighlighted = true;
+                            ee.viewData.backgroundHighlightColor = ahr.BackgroundColor;
+                            ee.viewData.isBackgroundHighlighted = true;
                         }
 
-                        ee.ViewData.isValid = true;
+                        ee.viewData.isValid = true;
 
                         return true;
                     }
@@ -118,8 +118,8 @@ namespace Plisky.FlimFlam {
             } // end for each of the highlights to apply
 
             // if we get here then there was no match for the current highlight selection.
-            if ((ee.ViewData.isValid) && (ee.ViewData.isHighlighted)) {
-                ee.ViewData.isHighlighted = false;
+            if ((ee.viewData.isValid) && (ee.viewData.isHighlighted)) {
+                ee.viewData.isHighlighted = false;
                 return true;
             } else {
                 return false;

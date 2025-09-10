@@ -1,7 +1,7 @@
 //using Plisky.Plumbing.Legacy;
 using System;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     internal interface IDiagnosticSupport {
 
@@ -16,7 +16,7 @@ namespace Plisky.FlimFlam {
     /// Summary description for MexDiagnosticManager.
     /// </summary>
     internal class MexDiagnosticManager {
-        private string m_machineName;
+        private string machineName;
 
         internal MexDiagnosticManager() {
             //
@@ -26,10 +26,10 @@ namespace Plisky.FlimFlam {
 
         internal string ThisMachineName {
             get {
-                if (m_machineName == null) {
-                    m_machineName = Environment.MachineName;
+                if (machineName == null) {
+                    machineName = Environment.MachineName;
                 }
-                return m_machineName;
+                return machineName;
             }
         }
 

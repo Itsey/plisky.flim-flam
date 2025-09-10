@@ -160,7 +160,7 @@ namespace Plisky.FlimFlam {
         }
         internal int AddEventEntry(EventEntry newone) {
             int idx = EventEntries.Add(newone);
-            TimeLastMessageRecvd = newone.m_timeMessageRecieved;
+            TimeLastMessageRecvd = newone.TimeMessageRecieved;
             if (newone.cmdType == TraceCommandTypes.Custom) {
                 lock (customDataStore) {
                     customDataStore.Add(newone);
@@ -207,23 +207,23 @@ namespace Plisky.FlimFlam {
             KeyDisplayRepresentation result;
             switch (MexCore.TheCore.Options.ThreadDisplayOption) {
                 case ThreadDisplayMode.UseDotNetThread:
-                    result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ee.ThreadNetId);
+                    result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ee.threadNetId);
                     break;
                 case ThreadDisplayMode.UseOSThread:
-                    result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ee.ThreadID);
+                    result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ee.threadID);
                     break;
                 case ThreadDisplayMode.DefaultUseThreadNameAndOS:
                     if (ThreadNames.ContainsKey(ee.CurrentThreadKey)) {
-                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ThreadNames[ee.CurrentThreadKey] + " on " + ee.ThreadID);
+                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ThreadNames[ee.CurrentThreadKey] + " on " + ee.threadID);
                     } else {
-                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ee.ThreadNetId + " on " + ee.ThreadID);
+                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ee.threadNetId + " on " + ee.threadID);
                     }
                     break;
                 case ThreadDisplayMode.ShowFullInformation:
                     if (ThreadNames.ContainsKey(ee.CurrentThreadKey)) {
-                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ThreadNames[ee.CurrentThreadKey] + " on " + ee.ThreadNetId + " on os: " + ee.ThreadID);
+                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, ThreadNames[ee.CurrentThreadKey] + " on " + ee.threadNetId + " on os: " + ee.threadID);
                     } else {
-                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, "Unknown on " + ee.ThreadNetId + " on os: " + ee.ThreadID);
+                        result = new KeyDisplayRepresentation(ee.CurrentThreadKey, "Unknown on " + ee.threadNetId + " on os: " + ee.threadID);
                     }
                     break;
                 default:

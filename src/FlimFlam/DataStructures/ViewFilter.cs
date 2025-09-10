@@ -237,7 +237,7 @@ namespace Plisky.FlimFlam {
             // TODO : Not sure that this belongs within the filter.
 
             uint internalTypeMatchMask = 0x0003E308;
-            return (ee.cmdType == TraceCommandTypes.ExceptionBlock) && (ee.DebugMessage == "EXCEPTIONEND")
+            return (ee.cmdType == TraceCommandTypes.ExceptionBlock) && (ee.debugMessage == "EXCEPTIONEND")
 || ((uint)ee.cmdType & internalTypeMatchMask) == (uint)ee.cmdType;
         }
 
@@ -802,7 +802,7 @@ namespace Plisky.FlimFlam {
 
             if ((m_inclusionStrings != null) && (m_inclusionStrings.Count > 0)) {
                 // check for inclusion strings
-                string debugCheckString = m_caseSensitive ? ee.DebugMessage : ee.DebugMessage.ToLower();
+                string debugCheckString = m_caseSensitive ? ee.debugMessage : ee.debugMessage.ToLower();
                 for (int i = 0; i < m_inclusionStrings.Count; i++) {
                     if (debugCheckString.IndexOf(m_inclusionStrings[i]) >= 0) {
                         ee.LastVisitedFilter = m_currentFilterIndex;
@@ -816,7 +816,7 @@ namespace Plisky.FlimFlam {
             if ((m_exclusionStrings != null) && (m_exclusionStrings.Count > 0)) {
                 // check for exclusion strings
 
-                string exclusionCheckString = m_caseSensitive ? ee.DebugMessage : ee.DebugMessage.ToLower();
+                string exclusionCheckString = m_caseSensitive ? ee.debugMessage : ee.debugMessage.ToLower();
                 for (int i = 0; i < m_exclusionStrings.Count; i++) {
                     if (exclusionCheckString.IndexOf(m_exclusionStrings[i]) >= 0) {
                         ee.LastVisitedFilter = m_currentFilterIndex;
@@ -827,10 +827,10 @@ namespace Plisky.FlimFlam {
             }// end if there are exclusion strings to worry about
 
             //Bilge.Assert(ee.Module != null, "The module value should not be null when checked by the filter, it should be empty if not known");
-            if ((m_excludedModules != null) && (ee.Module.Length > 0)) {
+            if ((m_excludedModules != null) && (ee.module.Length > 0)) {
                 //Bilge.Assert(m_excludedModules.Count > 0, "There should not be a module list of 0 entries");
 
-                if (m_excludedModules.Contains(ee.Module)) {
+                if (m_excludedModules.Contains(ee.module)) {
                     return false;
                 }
             }
@@ -846,24 +846,24 @@ namespace Plisky.FlimFlam {
             }
 
             //Bilge.Assert(ee.MoreLocationData != null, "The additional location data should not be null when checked by the filter, if its not known it should be empty");
-            if ((m_excludedLocationsClass != null) && (ee.MoreLocationData.Length > 0)) {
+            if ((m_excludedLocationsClass != null) && (ee.moreLocationData.Length > 0)) {
                 //Bilge.Assert(m_excludedLocationsClass.Count > 0, "This should not be callable when the number of excluded locations by class is 0");
 
-                int offsetOfColons = ee.MoreLocationData.IndexOf("::");
+                int offsetOfColons = ee.moreLocationData.IndexOf("::");
                 if (offsetOfColons > 0) {
                     // There is a class look alike
-                    string locForEntry = ee.MoreLocationData[..offsetOfColons];
+                    string locForEntry = ee.moreLocationData[..offsetOfColons];
 
                     if (m_excludedLocationsClass.Contains(locForEntry)) {
                         return false;
                     }
                 }
             }
-            if ((m_excludedLocationsFull != null) && (ee.MoreLocationData.Length > 0)) {
+            if ((m_excludedLocationsFull != null) && (ee.moreLocationData.Length > 0)) {
                 //Bilge.Assert(m_excludedLocationsFull.Count > 0, "This should not be callable when the number of excluded locations is 0");
 
                 ee.LastVisitedFilter = m_currentFilterIndex;
-                if (m_excludedLocationsFull.Contains(ee.MoreLocationData)) { // return true if its NOT in the exclusions
+                if (m_excludedLocationsFull.Contains(ee.moreLocationData)) { // return true if its NOT in the exclusions
                     return false;
                 }
             }

@@ -1,22 +1,17 @@
 using System;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// ProcessSummary contains the basic details about a known process ready for display.  This covers the process id, and name as well
     /// as its internal index.   The process summary struct is used for passing process details around the application.
     /// </summary>
     internal class ProcessSummary {
-        internal string FullTextDescription = string.Empty;
         internal bool hasMoreThanOnethread;
         internal bool hasResourceData;
         internal bool hasTimingData;
         internal bool hasTraceData;
-        internal int InternalIndex;
-        internal string Machine;
-        internal string ProcName = string.Empty;
         internal string settings = string.Empty;
-        internal int WindowsPid;
         private string displayNameValue = string.Empty;
         private string labelGivenToProcess = string.Empty;
         private string preferredRenderName;
@@ -102,6 +97,10 @@ namespace Plisky.FlimFlam {
             set { displayNameValue = value; }
         }
 
+        internal string FullTextDescription { get; set; } = string.Empty;
+        internal int InternalIndex { get; set; }
+        internal string Machine { get; set; }
+
         internal string PreferredRenderName {
             get {
                 if ((MexCore.TheCore.Options.UsePreferredNameInsteadOfProcessId) && (preferredRenderName != null) && (preferredRenderName.Length > 0)) {
@@ -125,6 +124,9 @@ namespace Plisky.FlimFlam {
                 }
             }
         }
+
+        internal string ProcName { get; set; } = string.Empty;
+        internal int WindowsPid { get; set; }
 
         public override string ToString() {
             return Machine + "\\" + WindowsPid + " (" + DisplayName + ")";

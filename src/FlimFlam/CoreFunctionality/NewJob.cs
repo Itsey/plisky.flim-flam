@@ -1,14 +1,14 @@
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// Summary description for NewJob.
     /// </summary>
     internal class NewJob {
-        internal JobList job;
-        internal object Param;
+        internal JobList Job { get; set; }
+        internal object Param { get; set; }
 
         internal NewJob(JobList jl, object par) {
-            job = jl;
+            Job = jl;
             Param = par;
         }
     }

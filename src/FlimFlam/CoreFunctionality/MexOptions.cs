@@ -12,9 +12,24 @@ using Plisky.Plumbing;
 /// Summary description for MexOptions.  Class must be public for serialization into the iso store.
 /// </summary>
 public class MexOptions {
+    internal List<string> workstationNameMappings = new();
     private bool filterDefault_SaveThreads;
     private int pushbackCountDelayLimitForInteractiveJobs = 10;
     private bool xRefWarningsToMain;
+
+    // when doing this copy the entries dont move them.
+    internal MexOptions() {
+        LoadOptionsDefaults();
+    }
+
+    // If a matching PID message comes through inject it into the event entry stream
+    /// <summary>
+    ///  when matching pids occur copy them not move them
+    /// </summary>
+    internal MexOptions(MexOptions mo) {
+        LoadOptionsDefaults();
+        PopulateFromMe(mo);
+    }
 
     /// <summary>
     /// The identifier that is used to work out which lines within an ADPLus style log are identifiers
@@ -349,27 +364,6 @@ public class MexOptions {
     /// <summary>
     /// putmatching pids into the application view
     /// </summary>
-
-    // If a matching PID message comes through inject it into the event entry stream
-    /// <summary>
-    ///  when matching pids occur copy them not move them
-    /// </summary>
-
-    // when doing this copy the entries dont move them.
-
-    #region Options related methods.
-
-    internal List<string> m_workstationNameMappings = new();
-
-    internal MexOptions() {
-        LoadOptionsDefaults();
-    }
-
-    internal MexOptions(MexOptions mo) {
-        LoadOptionsDefaults();
-        PopulateFromMe(mo);
-    }
-
     /// <summary>
     /// Returns a summary of the options that are currently loaded so that they can be displayed in the diagnostics view.
     /// </summary>
@@ -476,7 +470,7 @@ public class MexOptions {
     }
 
     internal void AddNameMappingForWorkstation(string phyiscalName, string displayName) {
-        m_workstationNameMappings.Add(phyiscalName + "\\" + displayName);
+        workstationNameMappings.Add(phyiscalName + "\\" + displayName);
     }
 
     /// <summary>
@@ -555,7 +549,7 @@ public class MexOptions {
     internal string GetPreferredWorkstationName(string hostName) {
         hostName = hostName.ToLower();
 
-        foreach (string s in m_workstationNameMappings) {
+        foreach (string s in workstationNameMappings) {
             string[] splt = s.Split('\\');
             string host = splt[0];
             string replace = splt[1];
@@ -690,6 +684,4 @@ public class MexOptions {
     }
 
     // End MexOptions.ApplyOptionstoApplication
-
-    #endregion Options related methods.
 }

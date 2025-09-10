@@ -1,22 +1,21 @@
 using System.Collections;
 using System.Windows.Forms;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam;
 
-    internal class SortListViewItemsByGIdx : IComparer {
+internal class SortListViewItemsByGIdx : IComparer {
 
-        #region IComparer Members
 
-        public int Compare(object x, object y) {
-            ListViewItem castX = (ListViewItem)x;
-            ListViewItem castY = (ListViewItem)y;
 
-            //Bilge.Assert(castX.Tag != null, " The element comparer assumes that the tag contains the glboal index");
-            //Bilge.Assert(castY.Tag != null, " The element comparer assumes that the tag contains the glboal index");
+    public int Compare(object x, object y) {
+        var castX = (ListViewItem)x;
+        var castY = (ListViewItem)y;
 
-            return (int)(((long)castX.Tag) - ((long)castY.Tag));
-        }
+        //Bilge.Assert(castX.Tag != null, " The element comparer assumes that the tag contains the glboal index");
+        //Bilge.Assert(castY.Tag != null, " The element comparer assumes that the tag contains the glboal index");
 
-        #endregion IComparer Members
+        return (int)(((long)castX.Tag) - ((long)castY.Tag));
     }
+
+
 }

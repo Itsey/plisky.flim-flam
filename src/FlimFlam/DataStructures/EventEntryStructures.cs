@@ -15,6 +15,26 @@ namespace Plisky.FlimFlam;
 internal class EventEntry {
     internal TraceCommandTypes cmdType;
 
+    internal string debugMessage;
+
+    internal string lineNumber;
+
+    // The type of this event
+    internal string module;
+
+    internal string moreLocationData;
+
+    internal string secondaryMessage;
+
+    // The more info part of the message
+    internal string threadID;
+
+    internal string threadNetId;
+
+    // Additional location data sent
+    // This is the result of that last filters visit and will be used again if filter.idx==lastvisitedfilter
+    internal ViewSpecificData viewData;
+
     public EventEntry(SingleOriginEvent copyMe) {
         this.cmdType = copyMe.Type; //Refactoring_TraceCommandTypes.MessageTypeToTraceCommandType(copyMe.Type);
         SetDebugMessage(copyMe.Text);
@@ -80,7 +100,6 @@ internal class EventEntry {
         }
     }
 
-    internal string debugMessage;
     internal long GlobalIndex { get; set; }
 
     // Globally assigned index.
@@ -91,28 +110,14 @@ internal class EventEntry {
     // Filters dont change much, this is the id of the last filter used
     internal bool LastVisitedFilterResult { get; set; }
 
-    internal string lineNumber;
-
-    // The type of this event
-    internal string module;
-
-    internal string moreLocationData;
-    internal string secondaryMessage;
     internal SupportingMessageData SupportingData { get; set; }
     internal Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
-
-    // The more info part of the message
-    internal string threadID;
-
-    internal string threadNetId;
     internal DateTime TimeMessageRecieved { get; set; }
     // OS ID of thread that caused message
 
     // .net ID of the thread that caused the message
 
-    // Additional location data sent
-    // This is the result of that last filters visit and will be used again if filter.idx==lastvisitedfilter
-    internal ViewSpecificData viewData;  // This is used by the views to store info such as highlighting and find matches.
+    // This is used by the views to store info such as highlighting and find matches.
 
     private string Vsnetdbgvw {
         get { return cmdType.ToString() + " idx : " + GlobalIndex.ToString(); }
@@ -131,7 +136,7 @@ internal class EventEntry {
         if ((obj.GetType() != typeof(EventEntry))) {
             throw new InvalidCastException("You can not compare an EventEntry with anything that is not an EventEntry");
         }
-        EventEntry ee = (EventEntry)obj;
+        var ee = (EventEntry)obj;
 
         bool result = true;
 
@@ -158,7 +163,7 @@ internal class EventEntry {
     }
 
     internal static EventEntry CreatePseudoEE(long newGlobalIndex, string debugMessage) {
-        EventEntry result = new EventEntry(newGlobalIndex, "Unknown", "00", "-1", debugMessage, "XRef::PidMatch", string.Empty);
+        var result = new EventEntry(newGlobalIndex, "Unknown", "00", "-1", debugMessage, "XRef::PidMatch", string.Empty);
         result.cmdType = TraceCommandTypes.LogMessage;
         result.viewData.isValid = false;
         return result;

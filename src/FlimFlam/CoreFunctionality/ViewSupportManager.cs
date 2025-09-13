@@ -334,11 +334,14 @@ internal class ViewSupportManager {
         var result = new List<string>();
 
         foreach (string s in fullLocationData) {
+            if (s==null) { continue; }
             int idx = s.IndexOf("::");
             if (idx > 0) {
                 string next = s[..idx];
-                if (!result.Contains(next)) {
-                    result.Add(next);
+                if (!string.IsNullOrWhiteSpace(next)) {
+                    if (!result.Contains(next)) {
+                        result.Add(next);
+                    }
                 }
             }
         }
@@ -562,10 +565,8 @@ internal class ViewSupportManager {
             TraceCommandTypes.ResourceEat => 4,
             TraceCommandTypes.ResourcePuke => 3,
             TraceCommandTypes.ResourceCount => 36,
-            _ => throw new InvalidOperationException("Enum Fail:  Converting TraceCommandType to known ImageID failed, this is an unknown TraceCommandType"),
-        };
-
-        //throw new InvalidOperationException("There should not be any situation where this code is reached");
+            _ => 0
+        };        
     }
 
     internal void RefreshView_Alerting(ListBox lbgAlertEntries, Label lblMostRecentText, Label lblSelectedAlertText, bool refreshMode) {

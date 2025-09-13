@@ -18,59 +18,59 @@ namespace Plisky.FlimFlam {
         /// The textual description of the filter to help describe it to the user
         /// </summary>
 
-        private bool m_caseSensitive;
-        private uint m_currentFilterIndex;
-        private List<string> m_excludedLocationsClass;
-        private List<string> m_excludedLocationsFull;
-        private List<string> m_excludedModules;
-        private List<KeyDisplayRepresentation> m_excludedThreads;
-        private uint m_excludeEventsAboveThisIndex;
-        private List<string> m_exclusionStrings;
-        private string m_filterDescription;
+        private bool caseSensitive;
+        private uint currentFilterIndex;
+        private List<string> excludedLocationsClass;
+        private List<string> excludedLocationsFull;
+        private List<string> excludedModules;
+        private List<KeyDisplayRepresentation> excludedThreads;
+        private uint excludeEventsAboveThisIndex;
+        private List<string> exclusionStrings;
+        private string filterDescription;
 
-        private bool m_filterMoreComplexThanType;
+        private bool filterMoreComplexThanType;
 
-        private uint m_flagsForInclude;
+        private uint flagsForInclude;
 
-        private List<string> m_inclusionStrings;
+        private List<string> inclusionStrings;
 
-        private bool m_useIndexBasedFilters;
+        private bool useIndexBasedFilters;
 
         /// <summary>
         /// Determines whether the inclusion and exclusion matching strings work in a case sensitive or insensitve way
         /// </summary>
         public bool CaseSensitive {
-            get { return m_caseSensitive; }
-            set { m_caseSensitive = value; }
+            get { return caseSensitive; }
+            set { caseSensitive = value; }
         }
 
         public uint CurrentFilterIndex {
-            get { return m_currentFilterIndex; }
-            set { m_currentFilterIndex = value; }
+            get { return currentFilterIndex; }
+            set { currentFilterIndex = value; }
         }
 
         public List<string> ExcludedLocationsClass {
-            get { return m_excludedLocationsClass; }
+            get { return excludedLocationsClass; }
         }
 
         public List<string> ExcludedLocationsFull {
-            get { return m_excludedLocationsFull; }
+            get { return excludedLocationsFull; }
         }
 
         public List<string> ExcludedModules {
-            get { return m_excludedModules; }
+            get { return excludedModules; }
         }
 
         public List<KeyDisplayRepresentation> ExcludedThreads {
-            get { return m_excludedThreads; }
+            get { return excludedThreads; }
         }
 
         /// <summary>
         /// The value for the exclusion for above this. Any filtered elements with an index greater than this will be filtered out.
         /// </summary>
         public uint ExcludeEventsAboveThisIndex {
-            get { return m_excludeEventsAboveThisIndex; }
-            set { m_excludeEventsAboveThisIndex = value; }
+            get { return excludeEventsAboveThisIndex; }
+            set { excludeEventsAboveThisIndex = value; }
         }
 
         /// <summary>
@@ -82,12 +82,12 @@ namespace Plisky.FlimFlam {
         }
 
         public List<string> ExclusionStrings {
-            get { return m_exclusionStrings; }
+            get { return exclusionStrings; }
         }
 
         public string FilterDescription {
-            get { return m_filterDescription; }
-            set { m_filterDescription = value; }
+            get { return filterDescription; }
+            set { filterDescription = value; }
         }
 
         /// <summary>
@@ -104,12 +104,12 @@ namespace Plisky.FlimFlam {
         // List of strings that include debug messages
 
         public uint FlagsForInclude {
-            get { return m_flagsForInclude; }
-            set { m_flagsForInclude = value; }
+            get { return flagsForInclude; }
+            set { flagsForInclude = value; }
         }
 
         public List<string> InclusionStrings {
-            get { return m_inclusionStrings; }
+            get { return inclusionStrings; }
         }
 
         /// <summary>
@@ -167,8 +167,8 @@ namespace Plisky.FlimFlam {
         /// Determines whether filtering on index is used
         /// </summary>
         public bool UseIndexBasedFilters {
-            get { return m_useIndexBasedFilters; }
-            set { m_useIndexBasedFilters = value; }
+            get { return useIndexBasedFilters; }
+            set { useIndexBasedFilters = value; }
         }
 
         #endregion Data used to store the actual index settings
@@ -176,18 +176,18 @@ namespace Plisky.FlimFlam {
         #region Getters, used to populate the filter options from an existing filter.
 
         internal List<string> GetAdditionalLocationClassExclusions() {
-            return m_excludedLocationsClass == null ? new List<string>() : m_excludedLocationsClass;
+            return excludedLocationsClass == null ? new List<string>() : excludedLocationsClass;
         }
 
         internal List<string> GetAdditonalLocationExclusions() {
-            return m_excludedLocationsFull == null ? new List<string>() : m_excludedLocationsFull;
+            return excludedLocationsFull == null ? new List<string>() : excludedLocationsFull;
         }
 
         internal string GetExclusionStrings() {
             var sb = new StringBuilder();
 
-            if ((m_exclusionStrings != null) && (m_exclusionStrings.Count > 0)) {
-                foreach (string s in m_exclusionStrings) {
+            if ((exclusionStrings != null) && (exclusionStrings.Count > 0)) {
+                foreach (string s in exclusionStrings) {
                     _ = sb.Append(s + ";");
                 }
             }
@@ -199,8 +199,8 @@ namespace Plisky.FlimFlam {
         internal string GetInclusionStrings() {
             var sb = new StringBuilder();
 
-            if ((m_inclusionStrings != null) && (m_inclusionStrings.Count > 0)) {
-                foreach (string s in m_inclusionStrings) {
+            if ((inclusionStrings != null) && (inclusionStrings.Count > 0)) {
+                foreach (string s in inclusionStrings) {
                     _ = sb.Append(s + ";");
                 }
             }
@@ -209,11 +209,11 @@ namespace Plisky.FlimFlam {
         }
 
         internal List<string> GetModuleExclusionNames() {
-            return m_excludedModules == null ? new List<string>() : m_excludedModules;
+            return excludedModules == null ? new List<string>() : excludedModules;
         }
 
         internal List<KeyDisplayRepresentation> GetThreadExclusionNames() {
-            return m_excludedThreads == null ? new List<KeyDisplayRepresentation>() : m_excludedThreads;
+            return excludedThreads == null ? new List<KeyDisplayRepresentation>() : excludedThreads;
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Plisky.FlimFlam {
         /// <param name="tct">The trace command type to check the filter against</param>
         /// <returns>True if this type is displayed after filter processing, false if the filter removes these types</returns>
         internal bool TraceMessageTypeIncludedByFilter(TraceCommandTypes tct) {
-            return (((uint)tct) & m_flagsForInclude) == (uint)tct;
+            return (((uint)tct) & flagsForInclude) == (uint)tct;
         }
 
         #endregion Getters, used to populate the filter options from an existing filter.
@@ -303,7 +303,7 @@ namespace Plisky.FlimFlam {
         internal bool GetIndexFilters(out string belowIndex, out string aboveThisIndex) {
             belowIndex = aboveThisIndex = string.Empty;
 
-            if (!m_useIndexBasedFilters) { return false; }
+            if (!useIndexBasedFilters) { return false; }
 
             belowIndex = UseBelowThisFilter ? ExcludeEventsBelowThisIndex.ToString() : string.Empty;
 
@@ -313,7 +313,7 @@ namespace Plisky.FlimFlam {
         }
 
         internal void SetIndexFilters(bool useFilters, string belowThisIndex, string aboveThisIndex) {
-            m_useIndexBasedFilters = useFilters;
+            useIndexBasedFilters = useFilters;
             if (!useFilters) {
                 return;   // if were not using them nothing left to do.
             }
@@ -365,9 +365,9 @@ namespace Plisky.FlimFlam {
         internal ViewFilter() {
             // Creates a default filter
 
-            m_currentFilterIndex = GetNewFilterIndex();
+            currentFilterIndex = GetNewFilterIndex();
             m_readonly = true;
-            m_flagsForInclude = 0x00001C85;
+            flagsForInclude = 0x0000FFFF; //0x00001C85;
         }
 
         /// <summary>
@@ -377,34 +377,34 @@ namespace Plisky.FlimFlam {
         /// <param name="vf"></param>
         internal ViewFilter(ViewFilter vf) {
             BeginFilterUpdate();
-            m_caseSensitive = vf.m_caseSensitive;
+            caseSensitive = vf.caseSensitive;
 
-            if (vf.m_excludedLocationsClass != null) {
-                m_excludedLocationsClass.AddRange(vf.m_excludedLocationsClass.ToArray());
+            if (vf.excludedLocationsClass != null) {
+                excludedLocationsClass.AddRange(vf.excludedLocationsClass.ToArray());
             }
 
-            if (vf.m_excludedLocationsFull != null) {
-                m_excludedLocationsFull.AddRange(vf.m_excludedLocationsFull.ToArray());
+            if (vf.excludedLocationsFull != null) {
+                excludedLocationsFull.AddRange(vf.excludedLocationsFull.ToArray());
             }
 
-            if (vf.m_excludedModules != null) {
-                m_excludedModules.AddRange(vf.m_excludedModules.ToArray());
+            if (vf.excludedModules != null) {
+                excludedModules.AddRange(vf.excludedModules.ToArray());
             }
 
-            if (vf.m_excludedThreads != null) {
-                m_excludedThreads.AddRange(vf.m_excludedThreads.ToArray());
+            if (vf.excludedThreads != null) {
+                excludedThreads.AddRange(vf.excludedThreads.ToArray());
             }
 
-            m_excludeEventsAboveThisIndex = vf.m_excludeEventsAboveThisIndex;
+            excludeEventsAboveThisIndex = vf.excludeEventsAboveThisIndex;
             ExcludeEventsBelowThisIndex = vf.ExcludeEventsBelowThisIndex;
 
-            if (vf.m_exclusionStrings != null) {
-                m_exclusionStrings.AddRange(vf.m_exclusionStrings.ToArray());
+            if (vf.exclusionStrings != null) {
+                exclusionStrings.AddRange(vf.exclusionStrings.ToArray());
             }
 
-            m_filterDescription = vf.m_filterDescription;
-            m_flagsForInclude = vf.m_flagsForInclude;
-            m_inclusionStrings = vf.m_inclusionStrings;
+            filterDescription = vf.filterDescription;
+            flagsForInclude = vf.flagsForInclude;
+            inclusionStrings = vf.inclusionStrings;
             UseAboveThisFilter = vf.UseAboveThisFilter;
             UseBelowThisFilter = vf.UseBelowThisFilter;
 
@@ -412,24 +412,24 @@ namespace Plisky.FlimFlam {
         }
 
         internal ViewFilter(uint flags, string[] include, string[] exclude) {
-            m_currentFilterIndex = GetNewFilterIndex();
+            currentFilterIndex = GetNewFilterIndex();
             m_readonly = true;
-            m_flagsForInclude = flags;
+            flagsForInclude = flags;
 
-            m_filterMoreComplexThanType = false;
+            filterMoreComplexThanType = false;
 
             if ((include != null) && (include.Length > 0)) {
-                m_filterMoreComplexThanType = true;
-                m_inclusionStrings = new List<string>();
-                m_inclusionStrings.AddRange(include);
+                filterMoreComplexThanType = true;
+                inclusionStrings = new List<string>();
+                inclusionStrings.AddRange(include);
             } else {
-                m_inclusionStrings = null;
+                inclusionStrings = null;
             }
 
             if ((exclude != null) && (exclude.Length > 0)) {
-                m_filterMoreComplexThanType = true;
-                m_exclusionStrings = new List<string>();
-                m_exclusionStrings.AddRange(exclude);
+                filterMoreComplexThanType = true;
+                exclusionStrings = new List<string>();
+                exclusionStrings.AddRange(exclude);
             }
         }
 
@@ -451,17 +451,17 @@ namespace Plisky.FlimFlam {
             }
 
             result.BeginFilterUpdate();
-            if ((result.m_excludedLocationsClass != null) && (result.m_excludedLocationsClass.Count == 0)) {
-                result.m_excludedLocationsClass = null;
+            if ((result.excludedLocationsClass != null) && (result.excludedLocationsClass.Count == 0)) {
+                result.excludedLocationsClass = null;
             }
-            if ((result.m_excludedLocationsFull != null) && (result.m_excludedLocationsFull.Count == 0)) {
-                result.m_excludedLocationsFull = null;
+            if ((result.excludedLocationsFull != null) && (result.excludedLocationsFull.Count == 0)) {
+                result.excludedLocationsFull = null;
             }
-            if ((result.m_excludedModules != null) && (result.m_excludedModules.Count == 0)) {
-                result.m_excludedModules = null;
+            if ((result.excludedModules != null) && (result.excludedModules.Count == 0)) {
+                result.excludedModules = null;
             }
-            if ((result.m_excludedThreads != null) && (result.m_excludedThreads.Count == 0)) {
-                result.m_excludedThreads = null;
+            if ((result.excludedThreads != null) && (result.excludedThreads.Count == 0)) {
+                result.excludedThreads = null;
             }
             // End update indicates that this is a new filter index.
             result.EndFilterUpdate();
@@ -477,16 +477,16 @@ namespace Plisky.FlimFlam {
 
                     thisFilter = new ViewFilter(thisFilter);
                     if (!includeThreads) {
-                        thisFilter.m_excludedThreads = null;
+                        thisFilter.excludedThreads = null;
                     }
                     if (!includeModules) {
-                        thisFilter.m_excludedModules = null;
+                        thisFilter.excludedModules = null;
                     }
                     if (!includeLocations) {
-                        thisFilter.m_excludedLocationsFull = null;
+                        thisFilter.excludedLocationsFull = null;
                     }
                     if (!includeClassLocations) {
-                        thisFilter.m_excludedLocationsClass = null;
+                        thisFilter.excludedLocationsClass = null;
                     }
                 }
 
@@ -506,7 +506,7 @@ namespace Plisky.FlimFlam {
         #region Set Filter Methods - this sets a part of the filter replacing the values
 
         internal void SetAllMessageTypesToNotIncluded() {
-            m_flagsForInclude = 0;
+            flagsForInclude = 0;
         }
 
         /// <summary>
@@ -530,31 +530,31 @@ namespace Plisky.FlimFlam {
                 return;
             }
 
-            m_caseSensitive = caseSensitve;
+            caseSensitive = caseSensitve;
 
             if ((includeStrings == null) || (includeStrings.Length == 0)) {
-                m_inclusionStrings = null;
+                inclusionStrings = null;
             } else {
-                m_inclusionStrings = new List<string>();
+                inclusionStrings = new List<string>();
                 if (!caseSensitve) {
                     for (int i = 0; i < includeStrings.Length; i++) {
-                        m_inclusionStrings.Add(includeStrings[i].ToLower());
+                        inclusionStrings.Add(includeStrings[i].ToLower());
                     }
                 } else {
-                    m_inclusionStrings.AddRange(includeStrings);
+                    inclusionStrings.AddRange(includeStrings);
                 }
             }
 
             if ((excludeStrings == null) || (excludeStrings.Length == 0)) {
-                m_exclusionStrings = null;
+                exclusionStrings = null;
             } else {
-                m_exclusionStrings = new List<string>();
+                exclusionStrings = new List<string>();
                 if (!caseSensitve) {
                     for (int i = 0; i < excludeStrings.Length; i++) {
-                        m_exclusionStrings.Add(excludeStrings[i].ToLower());
+                        exclusionStrings.Add(excludeStrings[i].ToLower());
                     }
                 } else {
-                    m_exclusionStrings.AddRange(excludeStrings);
+                    exclusionStrings.AddRange(excludeStrings);
                 }
             }
         }
@@ -577,7 +577,7 @@ namespace Plisky.FlimFlam {
                 return;
             }
 
-            m_flagsForInclude = GetFlagTypeByBools(incLogs, incVerbose, incInternal, incTin, incTout, incAss, incMor, incCmd, incErr, incWarn, incExB, incExD, incExE, incExS, incSecS, incSecE, ResE, ResP);
+            flagsForInclude = GetFlagTypeByBools(incLogs, incVerbose, incInternal, incTin, incTout, incAss, incMor, incCmd, incErr, incWarn, incExB, incExD, incExE, incExS, incSecS, incSecE, ResE, ResP);
         } // End SetMessageTypeInclude
 
         internal void SetMessageTypeIncludeByType(TraceCommandTypes tct, bool newValue) {
@@ -589,9 +589,9 @@ namespace Plisky.FlimFlam {
             #endregion entry code
 
             if (newValue) {
-                m_flagsForInclude |= (uint)tct;  // turn the bit on
+                flagsForInclude |= (uint)tct;  // turn the bit on
             } else {
-                m_flagsForInclude &= ~(uint)tct;  // turn the bit off
+                flagsForInclude &= ~(uint)tct;  // turn the bit off
             }
         }
 
@@ -610,13 +610,13 @@ namespace Plisky.FlimFlam {
 
             #endregion entry code
 
-            m_excludedModules = (excludeModuleNames == null) || (excludeModuleNames.Count == 0) ? null : excludeModuleNames;
+            excludedModules = (excludeModuleNames == null) || (excludeModuleNames.Count == 0) ? null : excludeModuleNames;
 
-            m_excludedThreads = (excludeThreadNames == null) || (excludeThreadNames.Count == 0) ? null : excludeThreadNames;
+            excludedThreads = (excludeThreadNames == null) || (excludeThreadNames.Count == 0) ? null : excludeThreadNames;
 
-            m_excludedLocationsFull = (excludeLocations == null) || (excludeLocations.Count == 0) ? null : excludeLocations;
+            excludedLocationsFull = (excludeLocations == null) || (excludeLocations.Count == 0) ? null : excludeLocations;
 
-            m_excludedLocationsClass = (excludeLocClasses == null) || (excludeLocClasses.Count == 0) ? null : excludeLocClasses;
+            excludedLocationsClass = (excludeLocClasses == null) || (excludeLocClasses.Count == 0) ? null : excludeLocClasses;
         } // End SetThreadsModulesLocations
 
         #endregion Set Filter Methods - this sets a part of the filter replacing the values
@@ -632,11 +632,11 @@ namespace Plisky.FlimFlam {
             #endregion entry code
 
             if ((newExcludeString == null) || (newExcludeString.Length == 0)) { return; }
-            if (!m_caseSensitive) { newExcludeString = newExcludeString.ToLower(); }
+            if (!caseSensitive) { newExcludeString = newExcludeString.ToLower(); }
 
-            m_exclusionStrings ??= new List<string>();
+            exclusionStrings ??= new List<string>();
 
-            m_exclusionStrings.Add(newExcludeString);
+            exclusionStrings.Add(newExcludeString);
         }
 
         internal void AppendIncludeString(string newIncludeString) {
@@ -648,37 +648,37 @@ namespace Plisky.FlimFlam {
             #endregion entry code
 
             if ((newIncludeString == null) || (newIncludeString.Length == 0)) { return; }
-            if (!m_caseSensitive) { newIncludeString = newIncludeString.ToLower(); }
+            if (!caseSensitive) { newIncludeString = newIncludeString.ToLower(); }
 
-            m_inclusionStrings ??= new List<string>();
-            m_inclusionStrings.Add(newIncludeString);
+            inclusionStrings ??= new List<string>();
+            inclusionStrings.Add(newIncludeString);
         }
 
         internal void AppendLocationExclusion(string theLocation) {
-            m_excludedLocationsFull ??= new List<string>();
-            if (!m_excludedLocationsFull.Contains(theLocation)) {
-                m_excludedLocationsFull.Add(theLocation);
+            excludedLocationsFull ??= new List<string>();
+            if (!excludedLocationsFull.Contains(theLocation)) {
+                excludedLocationsFull.Add(theLocation);
             }
         }
 
         internal void AppendLocClassExclusion(string theLocation) {
-            m_excludedLocationsClass ??= new List<string>();
-            if (!m_excludedLocationsClass.Contains(theLocation)) {
-                m_excludedLocationsClass.Add(theLocation);
+            excludedLocationsClass ??= new List<string>();
+            if (!excludedLocationsClass.Contains(theLocation)) {
+                excludedLocationsClass.Add(theLocation);
             }
         }
 
         internal void AppendModuleExclusion(string theModule) {
-            m_excludedModules ??= new List<string>();
-            if (!m_excludedModules.Contains(theModule)) {
-                m_excludedModules.Add(theModule);
+            excludedModules ??= new List<string>();
+            if (!excludedModules.Contains(theModule)) {
+                excludedModules.Add(theModule);
             }
         }
 
         internal void AppendThreadExclusion(KeyDisplayRepresentation threadId) {
-            m_excludedThreads ??= new List<KeyDisplayRepresentation>();
-            if (!m_excludedThreads.Contains(threadId)) {
-                m_excludedThreads.Add(threadId);
+            excludedThreads ??= new List<KeyDisplayRepresentation>();
+            if (!excludedThreads.Contains(threadId)) {
+                excludedThreads.Add(threadId);
             }
         }
 
@@ -697,10 +697,10 @@ namespace Plisky.FlimFlam {
             // Enable the caching on the objects themselves.  This costs ram but should be way faster for most types of filter.
             // This routine only applies the last used filter however IF the filter is more complex than the cmd type test which is already optimised.
 
-            if (ee.LastVisitedFilter == m_currentFilterIndex) { return ee.LastVisitedFilterResult; }
+            if (ee.LastVisitedFilter == currentFilterIndex) { return ee.LastVisitedFilterResult; }
 
             // Cache this filter index so until the filter changes this event entry can be processed rapidly.
-            ee.LastVisitedFilter = m_currentFilterIndex;
+            ee.LastVisitedFilter = currentFilterIndex;
 
             bool result = BaseIncludeEventEntry(ee);
 
@@ -709,13 +709,13 @@ namespace Plisky.FlimFlam {
         }
 
         internal bool IncludeThisEventEntryTimingsView(EventEntry ee) {
-            uint baseFlag = m_flagsForInclude;
+            uint baseFlag = flagsForInclude;
 
             // Alter the type filter to be only those which we are interested in for timed views.
-            m_flagsForInclude = TraceMessageFormat.SECTIONCOMMANDS;
+            flagsForInclude = TraceMessageFormat.SECTIONCOMMANDS;
 
             bool result = BaseIncludeEventEntry(ee);
-            m_flagsForInclude = baseFlag;
+            flagsForInclude = baseFlag;
 
             return result;
         }
@@ -726,24 +726,24 @@ namespace Plisky.FlimFlam {
             // TODO : Implement filter caching and measure the perf increase.
             // if (ee.LastVisitedFilter == m_currentFilterIndex) { return ee.LastVisitedFilterResult; }
 
-            if (!m_filterMoreComplexThanType) { return true; }
+            if (!filterMoreComplexThanType) { return true; }
 
             // For a non traced application event entry all we really need to worry about is whether or not any exclusion or inclusion
             // strings are being used.  We need to check both the PID and the message itself so that we can filter out any unwanted
             // messages or processes that are spamming us.
 
-            string debugCheckString = m_caseSensitive ? nta.DebugEntry : nta.DebugEntry.ToLower();
+            string debugCheckString = caseSensitive ? nta.DebugEntry : nta.DebugEntry.ToLower();
             debugCheckString += " " + nta.Pid.ToString();  // Add the pid to the search string.
 
             // Here we check for inclusion strings.  If we are using inclusion strings then the first thing that we need to do is
             // exclude the match so that it only gets inluded if an inclusion string matches.
 
-            if ((m_inclusionStrings != null) && (m_inclusionStrings.Count > 0)) {
+            if ((inclusionStrings != null) && (inclusionStrings.Count > 0)) {
                 includeIt = false;
 
                 // Do inclusion strings now, if no match is made bomb out.
-                for (int i = 0; i < m_inclusionStrings.Count; i++) {
-                    if (debugCheckString.IndexOf(m_inclusionStrings[i]) > 0) {
+                for (int i = 0; i < inclusionStrings.Count; i++) {
+                    if (debugCheckString.IndexOf(inclusionStrings[i]) > 0) {
                         includeIt = true;
                         break; // Go on to the inclusions
                     }
@@ -756,11 +756,11 @@ namespace Plisky.FlimFlam {
 
             // Now we check for exclusion strings, even if it was included only by an inclusion string it can still be excluded by
             // an exclusion string.  This
-            if ((m_exclusionStrings != null) && (m_exclusionStrings.Count > 0)) {
+            if ((exclusionStrings != null) && (exclusionStrings.Count > 0)) {
                 // check for exclusion strings
 
-                for (int i = 0; i < m_exclusionStrings.Count; i++) {
-                    if (debugCheckString.IndexOf(m_exclusionStrings[i]) > 0) {
+                for (int i = 0; i < exclusionStrings.Count; i++) {
+                    if (debugCheckString.IndexOf(exclusionStrings[i]) > 0) {
                         //ee.LastVisitedFilter = m_currentFilterIndex;
                         //ee.LastVisitedFilterResult = false;
                         // TODO : Add filter caching here.
@@ -777,19 +777,19 @@ namespace Plisky.FlimFlam {
             /* filter created in order of most likely reasons to fail therefore for performance tried to shift the types to the top then the
               inclusion / exclusion fitlers as these will be used the most.  Ive optimised this to be a single comparison so it should be very
               quick. */
-            if ((m_flagsForInclude & (uint)ee.cmdType) != (uint)ee.cmdType) {
+            if ((flagsForInclude & (uint)ee.cmdType) != (uint)ee.cmdType) {
                 return false;
             }
 
             // Performance cache to stop checking all of the complex filters in the default scenario.  Basically the default scenario only
             // filters on type therefore all of the good stuff coming up is pointless.
-            if (!m_filterMoreComplexThanType) {
+            if (!filterMoreComplexThanType) {
                 return true;
             }
 
             // Now we check for the more complicated filtering options such as index filtering
 
-            if (m_useIndexBasedFilters) {
+            if (useIndexBasedFilters) {
                 if (UseBelowThisFilter) {
                     if (ee.GlobalIndex < ExcludeEventsBelowThisIndex) {
                         return false;
@@ -800,12 +800,12 @@ namespace Plisky.FlimFlam {
                 }
             }
 
-            if ((m_inclusionStrings != null) && (m_inclusionStrings.Count > 0)) {
+            if ((inclusionStrings != null) && (inclusionStrings.Count > 0)) {
                 // check for inclusion strings
-                string debugCheckString = m_caseSensitive ? ee.debugMessage : ee.debugMessage.ToLower();
-                for (int i = 0; i < m_inclusionStrings.Count; i++) {
-                    if (debugCheckString.IndexOf(m_inclusionStrings[i]) >= 0) {
-                        ee.LastVisitedFilter = m_currentFilterIndex;
+                string debugCheckString = caseSensitive ? ee.debugMessage : ee.debugMessage.ToLower();
+                for (int i = 0; i < inclusionStrings.Count; i++) {
+                    if (debugCheckString.IndexOf(inclusionStrings[i]) >= 0) {
+                        ee.LastVisitedFilter = currentFilterIndex;
                         return true;  // matched one of the inclusion strings
                     }
                 } // End for each of the inclusion strings
@@ -813,13 +813,13 @@ namespace Plisky.FlimFlam {
                 return false; // none of the inclusion strings matched
             } // end if there are inclusionStrings to worry about
 
-            if ((m_exclusionStrings != null) && (m_exclusionStrings.Count > 0)) {
+            if ((exclusionStrings != null) && (exclusionStrings.Count > 0)) {
                 // check for exclusion strings
 
-                string exclusionCheckString = m_caseSensitive ? ee.debugMessage : ee.debugMessage.ToLower();
-                for (int i = 0; i < m_exclusionStrings.Count; i++) {
-                    if (exclusionCheckString.IndexOf(m_exclusionStrings[i]) >= 0) {
-                        ee.LastVisitedFilter = m_currentFilterIndex;
+                string exclusionCheckString = caseSensitive ? ee.debugMessage : ee.debugMessage.ToLower();
+                for (int i = 0; i < exclusionStrings.Count; i++) {
+                    if (exclusionCheckString.IndexOf(exclusionStrings[i]) >= 0) {
+                        ee.LastVisitedFilter = currentFilterIndex;
                         ee.LastVisitedFilterResult = false;
                         return false;  //  found a rejected one
                     }
@@ -827,26 +827,26 @@ namespace Plisky.FlimFlam {
             }// end if there are exclusion strings to worry about
 
             //Bilge.Assert(ee.Module != null, "The module value should not be null when checked by the filter, it should be empty if not known");
-            if ((m_excludedModules != null) && (ee.module.Length > 0)) {
+            if ((excludedModules != null) && (ee.module.Length > 0)) {
                 //Bilge.Assert(m_excludedModules.Count > 0, "There should not be a module list of 0 entries");
 
-                if (m_excludedModules.Contains(ee.module)) {
+                if (excludedModules.Contains(ee.module)) {
                     return false;
                 }
             }
 
             //Bilge.Assert(ee.CurrentThreadKey != null, "The thread id for an event entry should not be null when checked by the filter, if its not known it should be empty");
-            if ((m_excludedThreads != null) && (ee.CurrentThreadKey.Length > 0)) {
+            if ((excludedThreads != null) && (ee.CurrentThreadKey.Length > 0)) {
                 //Bilge.Assert(m_excludedThreads.Count > 0, "The threads to be excluded should not be of length 0");
 
                 // check for threads we specifically dont include.  This allows new threads to arrive and be included
-                if (KeyDisplayRepresentation.ContainsKey(m_excludedThreads, ee.CurrentThreadKey)) {  // return true if its NOT in the exclusions
+                if (KeyDisplayRepresentation.ContainsKey(excludedThreads, ee.CurrentThreadKey)) {  // return true if its NOT in the exclusions
                     return false;
                 }
             }
 
             //Bilge.Assert(ee.MoreLocationData != null, "The additional location data should not be null when checked by the filter, if its not known it should be empty");
-            if ((m_excludedLocationsClass != null) && (ee.moreLocationData.Length > 0)) {
+            if ((excludedLocationsClass != null) && (ee.moreLocationData.Length > 0)) {
                 //Bilge.Assert(m_excludedLocationsClass.Count > 0, "This should not be callable when the number of excluded locations by class is 0");
 
                 int offsetOfColons = ee.moreLocationData.IndexOf("::");
@@ -854,16 +854,16 @@ namespace Plisky.FlimFlam {
                     // There is a class look alike
                     string locForEntry = ee.moreLocationData[..offsetOfColons];
 
-                    if (m_excludedLocationsClass.Contains(locForEntry)) {
+                    if (excludedLocationsClass.Contains(locForEntry)) {
                         return false;
                     }
                 }
             }
-            if ((m_excludedLocationsFull != null) && (ee.moreLocationData.Length > 0)) {
+            if ((excludedLocationsFull != null) && (ee.moreLocationData.Length > 0)) {
                 //Bilge.Assert(m_excludedLocationsFull.Count > 0, "This should not be callable when the number of excluded locations is 0");
 
-                ee.LastVisitedFilter = m_currentFilterIndex;
-                if (m_excludedLocationsFull.Contains(ee.moreLocationData)) { // return true if its NOT in the exclusions
+                ee.LastVisitedFilter = currentFilterIndex;
+                if (excludedLocationsFull.Contains(ee.moreLocationData)) { // return true if its NOT in the exclusions
                     return false;
                 }
             }
@@ -887,10 +887,10 @@ namespace Plisky.FlimFlam {
             m_readonly = true;
 
             // This is an optimisation that skips a tonne of checking in the default case for most pople most of the time.
-            m_filterMoreComplexThanType = (m_excludedLocationsFull != null) || (m_excludedModules != null)
-                || (m_excludedThreads != null) || (m_excludedLocationsClass != null)
-                || m_useIndexBasedFilters || (m_exclusionStrings != null) || (m_inclusionStrings != null);
-            m_currentFilterIndex = GetNewFilterIndex();
+            filterMoreComplexThanType = (excludedLocationsFull != null) || (excludedModules != null)
+                || (excludedThreads != null) || (excludedLocationsClass != null)
+                || useIndexBasedFilters || (exclusionStrings != null) || (inclusionStrings != null);
+            currentFilterIndex = GetNewFilterIndex();
         }
 
         private static uint GetNewFilterIndex() {

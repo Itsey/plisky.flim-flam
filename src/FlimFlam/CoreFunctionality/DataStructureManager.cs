@@ -1,9 +1,10 @@
-////using Plisky.Plumbing.Legacy;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Plisky.Diagnostics;
+using Plisky.Diagnostics.FlimFlam;
 using Plisky.Plumbing;
 
 /*
@@ -107,6 +108,9 @@ internal class DataStructureManager {
     /// <exception cref="InvalidOperationException">Thrown if it was not possible to allocate the next internal TracedApplication storage</exception>
     /// <returns>The logical index of the application the event was inserted into.</returns>
     internal int PlaceNewEventIntoDataStructure(EventEntry newEvt, int thePid, string eventMachineName) {
+        if (newEvt == null) { return -1; }
+
+
         bool insertionCausedChangeToProcesses = false;
 
         int physicalIndex = TracedApplications.GetIndexOfApplication(thePid, eventMachineName);
@@ -134,35 +138,43 @@ internal class DataStructureManager {
         // check for trace in out etc.
         TracedApplications[physicalIndex].AddEventEntry(newEvt);
 
-        if (!TracedApplications[physicalIndex].ContainsCustomData && (FlimFlamTraceMessageFormat.IsCustom(newEvt.cmdType))) {
-            TracedApplications[physicalIndex].ContainsCustomData = true;
-            insertionCausedChangeToProcesses = true;
-        }
-
-        if ((!TracedApplications[physicalIndex].ContainsTraceData) && (TraceMessageFormat.IsTraceCommand(newEvt.cmdType))) {
-            TracedApplications[physicalIndex].ContainsTraceData = true;
-            insertionCausedChangeToProcesses = true;
-        }
-        // check for timing data
-        if ((!TracedApplications[physicalIndex].ContainsTimingData) && (TraceMessageFormat.IsSectionCommand(newEvt.cmdType))) {
-            TracedApplications[physicalIndex].ContainsTimingData = true;
-            insertionCausedChangeToProcesses = true;
-        }
-        // Check for multiple threads
-        if ((!TracedApplications[physicalIndex].ContainsMoreThanOneThread)) {
-            if (string.IsNullOrWhiteSpace(TracedApplications[physicalIndex].CurrentlyUsedThreadIdx)) {
-                TracedApplications[physicalIndex].CurrentlyUsedThreadIdx = newEvt.threadID ?? string.Empty;
-            } else {
-                TracedApplications[physicalIndex].ContainsMoreThanOneThread = (TracedApplications[physicalIndex].CurrentlyUsedThreadIdx != newEvt.threadID);
-                if (TracedApplications[physicalIndex].ContainsMoreThanOneThread) { insertionCausedChangeToProcesses = true; }
+        try {
+            if (!TracedApplications[physicalIndex].ContainsCustomData && (FlimFlamTraceMessageFormat.IsCustom(newEvt.cmdType))) {
+                TracedApplications[physicalIndex].ContainsCustomData = true;
+                insertionCausedChangeToProcesses = true;
             }
-        }
-        // Check for resource increments
-        if ((!TracedApplications[physicalIndex].ContainsResourceData) && (TraceMessageFormat.IsResourceCommand(newEvt.cmdType))) {
-            TracedApplications[physicalIndex].ContainsResourceData = true;
-            insertionCausedChangeToProcesses = true;
-        }
 
+            if ((!TracedApplications[physicalIndex].ContainsTraceData) && (TraceMessageFormat.IsTraceCommand(newEvt.cmdType))) {
+                TracedApplications[physicalIndex].ContainsTraceData = true;
+                insertionCausedChangeToProcesses = true;
+            }
+            // check for timing data
+            if ((!TracedApplications[physicalIndex].ContainsTimingData) && (TraceMessageFormat.IsSectionCommand(newEvt.cmdType))) {
+                TracedApplications[physicalIndex].ContainsTimingData = true;
+                insertionCausedChangeToProcesses = true;
+            }
+            // Check for multiple threads
+            if ((!TracedApplications[physicalIndex].ContainsMoreThanOneThread)) {
+                if (string.IsNullOrWhiteSpace(TracedApplications[physicalIndex].CurrentlyUsedThreadIdx)) {
+                    if (!string.IsNullOrEmpty(newEvt?.threadID)) {
+                        TracedApplications[physicalIndex].CurrentlyUsedThreadIdx = newEvt.threadID ?? string.Empty;
+                    }
+                } else {
+                    TracedApplications[physicalIndex].ContainsMoreThanOneThread = (TracedApplications[physicalIndex].CurrentlyUsedThreadIdx != newEvt.threadID);
+                    if (TracedApplications[physicalIndex].ContainsMoreThanOneThread) {
+                        insertionCausedChangeToProcesses = true;
+                    }
+                }
+            }
+            // Check for resource increments
+            if ((!TracedApplications[physicalIndex].ContainsResourceData) && (TraceMessageFormat.IsResourceCommand(newEvt.cmdType))) {
+                TracedApplications[physicalIndex].ContainsResourceData = true;
+                insertionCausedChangeToProcesses = true;
+            }
+        } catch (NullReferenceException nrx) {
+            MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.UnhandledExceptionOccured, UserMessageType.ErrorMessage, nrx.Message.ToString());
+            Utility.LogExceptionToTempFile("CrashProtect - InsertIntoTracedApp.",nrx, "dsm");
+        }
         #endregion Set values in traced app to determine the types of message that have been sent to this apps stream
 
         // Now we check whether a thread initialise was contained in this message, if it was we update the Traced Application thread
@@ -780,7 +792,7 @@ internal class DataStructureManager {
         tracedAppVirtualIndexLastUsed += new Random().Next(200);
         return tracedAppVirtualIndexLastUsed;
 #else
-  return ++m_tracedAppVirtualIndexLastUsed;
+  return ++tracedAppVirtualIndexLastUsed;
 #endif
     } // End Mex::DataManager::TracedAppGetNextVirtualIndex
 
@@ -840,7 +852,7 @@ internal class DataStructureManager {
         var r = new Random();
         tracedAppVirtualIndexLastUsed = r.Next(24999);
 #else
-  m_tracedAppVirtualIndexLastUsed=-1;
+  tracedAppVirtualIndexLastUsed=-1;
 #endif
 
         DataStructuresLock = new ReaderWriterLock();

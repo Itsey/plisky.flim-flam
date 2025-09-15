@@ -1,12 +1,9 @@
-﻿using Plisky.Diagnostics.FlimFlam;
+﻿namespace Plisky.FlimFlam; 
 
-namespace FFCoreShared {
+internal class UINotificationMessage {
 
-    internal class UINotificationMessage {
-
-        public UINotificationMessage(UserMessages msgType, UserMessageType msgStyle, string msg) {
-        }
-
-        public string MessageText { get; set; }
+    public UINotificationMessage(UserMessages msgType, UserMessageType msgStyle, string msg) {
     }
+
+    public string MessageText { get; set; }
 }

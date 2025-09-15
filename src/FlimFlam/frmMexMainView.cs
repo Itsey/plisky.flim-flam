@@ -1010,7 +1010,7 @@
 
                 // Start capturing ODS and TCP
                 //Bilge.Log("Requesting TCP and ODS Capture is started");
-                CaptureToggleOds_Click(null, null);
+                //CaptureToggleOds_Click(null, null);
                 CaptureToggleTCP_Click(null, null);
             } finally {
                 //Bilge.X();
@@ -1067,6 +1067,7 @@
             btnSetTabCrossProcessView.BackColor = Color.FromKnownColor(KnownColor.WhiteSmoke);
             btnSetTabTimings.BackColor = Color.FromKnownColor(KnownColor.WhiteSmoke);
             btnTransient.BackColor = Color.FromKnownColor(KnownColor.WhiteSmoke);
+            btnAlert.BackColor = Color.FromKnownColor(KnownColor.WhiteSmoke);
 
             if (b != null) {
                 b.BackColor = Color.FromKnownColor(KnownColor.LightCoral);

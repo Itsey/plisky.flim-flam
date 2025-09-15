@@ -1,4 +1,4 @@
-﻿namespace Plisky.Diagnostics.FlimFlam {
+﻿namespace Plisky.FlimFlam {
 
     /// <summary>
     /// The file import method determines how text files are read into the emx viewer.  This class must be public so that it can

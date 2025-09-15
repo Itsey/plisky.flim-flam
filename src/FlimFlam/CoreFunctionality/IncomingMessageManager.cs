@@ -525,10 +525,12 @@ public class IncomingMessageManager {
     internal void ActivateODSGatherer() {
         // The ODS Gatherer is long running and is created now.
         if (odsThread == null) {
+
             odsThread = new Thread(new ThreadStart(ODSDataGathererThread.InterceptODS)) {
                 Name = "MEX::ODSGathererThread"
             };
             odsThread.Start();
+
             //Bilge.Log("ODS gatherer thread is started.");
             MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.ODSListenerTurnedOn, UserMessageType.InformationMessage, "");
         } else {
@@ -608,7 +610,7 @@ public class IncomingMessageManager {
         }
     }
 
-    #endregion Gatherer support - ODS / TCP Gatherers
+#endregion Gatherer support - ODS / TCP Gatherers
 
     public void RegisterHttpDataImport(string uriToHit, bool repeatIt) {
         RefreshFromHttpSource(uriToHit);

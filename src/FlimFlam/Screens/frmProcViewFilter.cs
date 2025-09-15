@@ -56,7 +56,7 @@ namespace Plisky.FlimFlam {
         private CheckedListBox clbLocationClassFilter;
         private CheckedListBox clbModulesFilter;
         private CheckedListBox clbThreadsFilter;
-        private System.ComponentModel.IContainer components;
+        private readonly System.ComponentModel.IContainer components;
         private GroupBox groupBox1;
         private int higherIndexValue = int.MaxValue;
         private Label label1;
@@ -182,7 +182,7 @@ namespace Plisky.FlimFlam {
 
                     if (clbThreadsFilter.CheckedItems.Count != clbThreadsFilter.Items.Count) {
                         //Bilge.VerboseLog("Looking at the threads filter that was ticked.  clbThreadsfilter.CheckedItems.Count >0");
-                        threadExcludes = new List<KeyDisplayRepresentation>();
+                        threadExcludes = [];
                         foreach (KeyDisplayRepresentation s in clbThreadsFilter.Items) {
                             if (!clbThreadsFilter.CheckedItems.Contains(s)) {
                                 threadExcludes.Add(s);
@@ -192,7 +192,7 @@ namespace Plisky.FlimFlam {
 
                     if (clbModulesFilter.CheckedItems.Count != clbModulesFilter.Items.Count) {
                         //Bilge.VerboseLog("Looking at the modules filter that was ticked, clbModulesFilter.Checked.Count > 0");
-                        moduleExcludes = new List<string>();
+                        moduleExcludes = [];
 
                         foreach (string s in clbModulesFilter.Items) {
                             if (!clbModulesFilter.CheckedItems.Contains(s)) {
@@ -204,7 +204,7 @@ namespace Plisky.FlimFlam {
                     if (clbAdditionalLocationsFilter.CheckedItems.Count != clbAdditionalLocationsFilter.Items.Count) {
                         //Bilge.VerboseLog("Looking at the additional locations that were ticked, AdditionalLocationsFilter.Checked.Count >0");
 
-                        additionalLocationExcludes = new List<string>();
+                        additionalLocationExcludes = [];
 
                         foreach (string s in clbAdditionalLocationsFilter.Items) {
                             if (!clbAdditionalLocationsFilter.CheckedItems.Contains(s)) {
@@ -215,7 +215,7 @@ namespace Plisky.FlimFlam {
 
                     if (clbLocationClassFilter.CheckedItems.Count != clbLocationClassFilter.Items.Count) {
                         //Bilge.VerboseLog("Looking at the class location filter, clbLocationClassFilter.Checked.Count > 0");
-                        additionalLocationClassExcludes = new List<string>();
+                        additionalLocationClassExcludes = [];
                         foreach (string s in clbLocationClassFilter.Items) {
                             if (!clbLocationClassFilter.CheckedItems.Contains(s)) {
                                 additionalLocationClassExcludes.Add(s);
@@ -240,20 +240,25 @@ namespace Plisky.FlimFlam {
 
         internal void InitialiseForTracedApplication() {
             // Populate the dialog box for the selected application
-            List<KeyDisplayRepresentation> threadDisplayNames = MexCore.TheCore.ViewManager.GetThreadNameListForSelectedApp();
-            List<string> moduleDisplayNames = MexCore.TheCore.ViewManager.GetAllModules();
-            List<string> additionalLocationNames;
-            List<string> additionalLocationClasses;
-
-            MexCore.TheCore.ViewManager.GetAdditionalLocationsAndClasses(out additionalLocationNames, out additionalLocationClasses);
+            var threadDisplayNames = MexCore.TheCore.ViewManager.GetThreadNameListForSelectedApp();
+            var moduleDisplayNames = MexCore.TheCore.ViewManager.GetAllModules();
+            MexCore.TheCore.ViewManager.GetAdditionalLocationsAndClasses(out _, out var additionalLocationClasses);
 
             clbThreadsFilter.Items.Clear();
             clbModulesFilter.Items.Clear();
-            clbThreadsFilter.Items.AddRange(threadDisplayNames.ToArray());
-            clbModulesFilter.Items.AddRange(moduleDisplayNames.ToArray());
 
-            clbAdditionalLocationsFilter.Items.AddRange(threadDisplayNames.ToArray());
-            clbLocationClassFilter.Items.AddRange(additionalLocationClasses.ToArray());
+            if (threadDisplayNames != null) {
+                clbThreadsFilter.Items.AddRange(threadDisplayNames.ToArray());
+            }
+            if (moduleDisplayNames != null) {
+                clbModulesFilter.Items.AddRange(moduleDisplayNames.ToArray());
+            }
+            if (threadDisplayNames != null) {
+                clbAdditionalLocationsFilter.Items.AddRange(threadDisplayNames.ToArray());
+            }
+            if (additionalLocationClasses != null) {
+                clbLocationClassFilter.Items.AddRange(additionalLocationClasses.ToArray());
+            }
         }
 
         /// <summary>
@@ -276,7 +281,7 @@ namespace Plisky.FlimFlam {
                     PolpulateCheckedListBoxFromKeyDisplay(clbThreadsFilter, lbxUnmatchedThreads, MexCore.TheCore.ViewManager.GetThreadNameListForSelectedApp(), currentFilter.GetThreadExclusionNames());
 
                     // Now get all of the known locations and the known class locations and add them to their cboListboxes.
-                    List<string> additionalLocations = MexCore.TheCore.ViewManager.GetAllAdditionalLocations();
+                    var additionalLocations = MexCore.TheCore.ViewManager.GetAllAdditionalLocations();
                     PolpulateCheckedListBoxFromStringLists(clbAdditionalLocationsFilter, lbxLocAdditionalOverflow, additionalLocations, currentFilter.GetAdditonalLocationExclusions());
                     PolpulateCheckedListBoxFromStringLists(clbLocationClassFilter, lbxLocClassOverflow, MexCore.TheCore.ViewManager.GetAdditionalLocationClassesFromAdditionalLocations(additionalLocations), currentFilter.GetAdditionalLocationClassExclusions());
                 } else {
@@ -290,10 +295,8 @@ namespace Plisky.FlimFlam {
 
                 //Bilge.VerboseLog("Setting up the index filter information");
 
-                string belowidx;
-                string aboveidx;
 
-                if (currentFilter.GetIndexFilters(out belowidx, out aboveidx)) {
+                if (currentFilter.GetIndexFilters(out string belowidx, out string aboveidx)) {
                     chkEnableIndexFilter.Checked = true;
                     if (belowidx.Length == 0) { belowidx = "0"; }
                     if (aboveidx.Length == 0) { aboveidx = long.MaxValue.ToString(); }
@@ -320,24 +323,23 @@ namespace Plisky.FlimFlam {
         /// <param name="overflow">A Listbox of any ticked items that arent in the main list</param>
         /// <param name="completeListOfAllItems">The complete list of items to add to the checked list box</param>
         /// <param name="thoseItemsToBeTicked">The list of items that are to be ticked when added to the complete list box</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal void PolpulateCheckedListBoxFromKeyDisplay(CheckedListBox target, ListBox overflow, List<KeyDisplayRepresentation> completeListOfAllItems, List<KeyDisplayRepresentation> thoseItemsToBeTicked) {
             target.Items.Clear();
             overflow.Items.Clear();
 
             if (overflow != null) {
-                foreach (KeyDisplayRepresentation s in thoseItemsToBeTicked) {
+                foreach (var s in thoseItemsToBeTicked) {
                     if (!completeListOfAllItems.Contains(s)) {
-                        overflow.Items.Add(s);
+                        _ = overflow.Items.Add(s);
                     }
                 }
             }
 
-            foreach (KeyDisplayRepresentation s in completeListOfAllItems) {
+            foreach (var s in completeListOfAllItems) {
                 if (thoseItemsToBeTicked.Contains(s)) {
-                    target.Items.Add(s, false);
+                    _ = target.Items.Add(s, false);
                 } else {
-                    target.Items.Add(s, true);
+                    _ = target.Items.Add(s, true);
                 }
             }
         }
@@ -351,7 +353,6 @@ namespace Plisky.FlimFlam {
         /// <param name="overflow">A Listbox of any ticked items that arent in the main list</param>
         /// <param name="completeListOfAllItems">The complete list of items to add to the checked list box</param>
         /// <param name="thoseItemsToBeTicked">The list of items that are to be ticked when added to the complete list box</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         internal void PolpulateCheckedListBoxFromStringLists(CheckedListBox target, ListBox overflow, List<string> completeListOfAllItems, List<string> thoseItemsToBeTicked) {
             target.Items.Clear();
             overflow.Items.Clear();
@@ -359,16 +360,16 @@ namespace Plisky.FlimFlam {
             if (overflow != null) {
                 foreach (string s in thoseItemsToBeTicked) {
                     if (!completeListOfAllItems.Contains(s)) {
-                        overflow.Items.Add(s);
+                        _ = overflow.Items.Add(s);
                     }
                 }
             }
 
             foreach (string s in completeListOfAllItems) {
                 if (thoseItemsToBeTicked.Contains(s)) {
-                    target.Items.Add(s, false);
+                    _ = target.Items.Add(s, false);
                 } else {
-                    target.Items.Add(s, true);
+                    _ = target.Items.Add(s, true);
                 }
             }
         }
@@ -378,9 +379,7 @@ namespace Plisky.FlimFlam {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -392,947 +391,952 @@ namespace Plisky.FlimFlam {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmProcViewFilter));
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnLoadMexDefaultFilter = new System.Windows.Forms.Button();
-            this.tbcFilterDetails = new System.Windows.Forms.TabControl();
-            this.tabOptionsEvents = new System.Windows.Forms.TabPage();
-            this.pnlFilterButtons = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
-            this.chkmtfWarningMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfExceptionHeaders = new System.Windows.Forms.CheckBox();
-            this.chkmtfTraceExitMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfTraceEnterMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfErrorMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfAssertionMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfVerboseLogMessages = new System.Windows.Forms.CheckBox();
-            this.chkmtfIncludeLogs = new System.Windows.Forms.CheckBox();
-            this.chkCaseSensitive = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtFilterExcludeStrings = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.txtFilterIncludeStrings = new System.Windows.Forms.TextBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.pnlDockSplitContainer = new System.Windows.Forms.Panel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.clbModulesFilter = new System.Windows.Forms.CheckedListBox();
-            this.clbThreadsFilter = new System.Windows.Forms.CheckedListBox();
-            this.lbxUnmatchedModules = new System.Windows.Forms.ListBox();
-            this.lbxUnmatchedThreads = new System.Windows.Forms.ListBox();
-            this.btnClearUnmatchedModules = new System.Windows.Forms.Button();
-            this.btnClearUnmatchedThreads = new System.Windows.Forms.Button();
-            this.tabLocationFiltering = new System.Windows.Forms.TabPage();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.clbAdditionalLocationsFilter = new System.Windows.Forms.CheckedListBox();
-            this.clbLocationClassFilter = new System.Windows.Forms.CheckedListBox();
-            this.lbxLocAdditionalOverflow = new System.Windows.Forms.ListBox();
-            this.lbxLocClassOverflow = new System.Windows.Forms.ListBox();
-            this.btnClearAdditionalLocFilter = new System.Windows.Forms.Button();
-            this.btnClearLocClassOverflow = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label7 = new System.Windows.Forms.Label();
-            this.chkmtfSessionMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfChainMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfCommandMsgs = new System.Windows.Forms.CheckBox();
-            this.chkmtfInternalMessages = new System.Windows.Forms.CheckBox();
-            this.chkmtfResourceMessages = new System.Windows.Forms.CheckBox();
-            this.chkmtfExceptionContent = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtExcludeAllAboveThisIndex = new System.Windows.Forms.TextBox();
-            this.txtExcludeAllBelowThisIndex = new System.Windows.Forms.TextBox();
-            this.chkEnableIndexFilter = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.txtFilterExtension = new System.Windows.Forms.TextBox();
-            this.chkUseFilterOnLoad = new System.Windows.Forms.CheckBox();
-            this.lblSaveData = new System.Windows.Forms.Label();
-            this.btnRefreshFilterDir = new System.Windows.Forms.Button();
-            this.txtFilterFilename = new System.Windows.Forms.TextBox();
-            this.txtFilterDirectory = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkSaveModules = new System.Windows.Forms.CheckBox();
-            this.chkSaveClassLocationInfo = new System.Windows.Forms.CheckBox();
-            this.chkSaveLocationInformation = new System.Windows.Forms.CheckBox();
-            this.chkSaveIncludeThreads = new System.Windows.Forms.CheckBox();
-            this.lbxAllMatchedFilters = new System.Windows.Forms.ListBox();
-            this.chkAllowOverwrite = new System.Windows.Forms.CheckBox();
-            this.btnLoadFilterConfiguration = new System.Windows.Forms.Button();
-            this.btnSaveFilterConfiguration = new System.Windows.Forms.Button();
-            this.btnSetDefaultFilter = new System.Windows.Forms.Button();
-            this.cboQuickLoad = new System.Windows.Forms.ComboBox();
-            this.tbcFilterDetails.SuspendLayout();
-            this.tabOptionsEvents.SuspendLayout();
-            this.pnlFilterButtons.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.pnlDockSplitContainer.SuspendLayout();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.tabLocationFiltering.SuspendLayout();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.tabPage4.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
-            //
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmProcViewFilter));
+            btnOK = new Button();
+            btnCancel = new Button();
+            btnLoadMexDefaultFilter = new Button();
+            tbcFilterDetails = new TabControl();
+            tabOptionsEvents = new TabPage();
+            pnlFilterButtons = new Panel();
+            label8 = new Label();
+            chkmtfWarningMsgs = new CheckBox();
+            chkmtfExceptionHeaders = new CheckBox();
+            chkmtfTraceExitMsgs = new CheckBox();
+            chkmtfTraceEnterMsgs = new CheckBox();
+            chkmtfErrorMsgs = new CheckBox();
+            chkmtfAssertionMsgs = new CheckBox();
+            chkmtfVerboseLogMessages = new CheckBox();
+            chkmtfIncludeLogs = new CheckBox();
+            chkCaseSensitive = new CheckBox();
+            label4 = new Label();
+            txtFilterExcludeStrings = new TextBox();
+            label5 = new Label();
+            txtFilterIncludeStrings = new TextBox();
+            tabPage2 = new TabPage();
+            pnlDockSplitContainer = new Panel();
+            splitContainer1 = new SplitContainer();
+            clbModulesFilter = new CheckedListBox();
+            clbThreadsFilter = new CheckedListBox();
+            lbxUnmatchedModules = new ListBox();
+            lbxUnmatchedThreads = new ListBox();
+            btnClearUnmatchedModules = new Button();
+            btnClearUnmatchedThreads = new Button();
+            tabLocationFiltering = new TabPage();
+            splitContainer2 = new SplitContainer();
+            clbAdditionalLocationsFilter = new CheckedListBox();
+            clbLocationClassFilter = new CheckedListBox();
+            lbxLocAdditionalOverflow = new ListBox();
+            lbxLocClassOverflow = new ListBox();
+            btnClearAdditionalLocFilter = new Button();
+            btnClearLocClassOverflow = new Button();
+            tabPage3 = new TabPage();
+            panel2 = new Panel();
+            label7 = new Label();
+            chkmtfSessionMsgs = new CheckBox();
+            chkmtfChainMsgs = new CheckBox();
+            chkmtfCommandMsgs = new CheckBox();
+            chkmtfInternalMessages = new CheckBox();
+            chkmtfResourceMessages = new CheckBox();
+            chkmtfExceptionContent = new CheckBox();
+            label2 = new Label();
+            txtExcludeAllAboveThisIndex = new TextBox();
+            txtExcludeAllBelowThisIndex = new TextBox();
+            chkEnableIndexFilter = new CheckBox();
+            label1 = new Label();
+            tabPage4 = new TabPage();
+            txtFilterExtension = new TextBox();
+            chkUseFilterOnLoad = new CheckBox();
+            lblSaveData = new Label();
+            btnRefreshFilterDir = new Button();
+            txtFilterFilename = new TextBox();
+            txtFilterDirectory = new TextBox();
+            groupBox1 = new GroupBox();
+            chkSaveModules = new CheckBox();
+            chkSaveClassLocationInfo = new CheckBox();
+            chkSaveLocationInformation = new CheckBox();
+            chkSaveIncludeThreads = new CheckBox();
+            lbxAllMatchedFilters = new ListBox();
+            chkAllowOverwrite = new CheckBox();
+            btnLoadFilterConfiguration = new Button();
+            btnSaveFilterConfiguration = new Button();
+            btnSetDefaultFilter = new Button();
+            cboQuickLoad = new ComboBox();
+            tbcFilterDetails.SuspendLayout();
+            tabOptionsEvents.SuspendLayout();
+            pnlFilterButtons.SuspendLayout();
+            tabPage2.SuspendLayout();
+            pnlDockSplitContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            tabLocationFiltering.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+            splitContainer2.Panel1.SuspendLayout();
+            splitContainer2.Panel2.SuspendLayout();
+            splitContainer2.SuspendLayout();
+            tabPage3.SuspendLayout();
+            panel2.SuspendLayout();
+            tabPage4.SuspendLayout();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
+            // 
             // btnOK
-            //
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(426, 376);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(74, 23);
-            this.btnOK.TabIndex = 2;
-            this.btnOK.Text = "OK";
-            this.btnOK.Click += new System.EventHandler(this.OKWithFullRefresh_Click);
-            //
+            // 
+            btnOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnOK.DialogResult = DialogResult.OK;
+            btnOK.Location = new Point(505, 472);
+            btnOK.Name = "btnOK";
+            btnOK.Size = new Size(89, 28);
+            btnOK.TabIndex = 2;
+            btnOK.Text = "OK";
+            btnOK.Click += OKWithFullRefresh_Click;
+            // 
             // btnCancel
-            //
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(345, 376);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 3;
-            this.btnCancel.Text = "Cancel";
-            //
+            // 
+            btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCancel.DialogResult = DialogResult.Cancel;
+            btnCancel.Location = new Point(408, 472);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(90, 28);
+            btnCancel.TabIndex = 3;
+            btnCancel.Text = "Cancel";
+            // 
             // btnLoadMexDefaultFilter
-            //
-            this.btnLoadMexDefaultFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLoadMexDefaultFilter.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnLoadMexDefaultFilter.Location = new System.Drawing.Point(259, 376);
-            this.btnLoadMexDefaultFilter.Name = "btnLoadMexDefaultFilter";
-            this.btnLoadMexDefaultFilter.Size = new System.Drawing.Size(74, 23);
-            this.btnLoadMexDefaultFilter.TabIndex = 99;
-            this.btnLoadMexDefaultFilter.Text = "Use Default";
-            this.btnLoadMexDefaultFilter.Click += new System.EventHandler(this.LoadMexDefaultFilter_Click);
-            //
+            // 
+            btnLoadMexDefaultFilter.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnLoadMexDefaultFilter.DialogResult = DialogResult.OK;
+            btnLoadMexDefaultFilter.Location = new Point(305, 472);
+            btnLoadMexDefaultFilter.Name = "btnLoadMexDefaultFilter";
+            btnLoadMexDefaultFilter.Size = new Size(89, 28);
+            btnLoadMexDefaultFilter.TabIndex = 99;
+            btnLoadMexDefaultFilter.Text = "Use Default";
+            btnLoadMexDefaultFilter.Click += LoadMexDefaultFilter_Click;
+            // 
             // tbcFilterDetails
-            //
-            this.tbcFilterDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbcFilterDetails.Controls.Add(this.tabOptionsEvents);
-            this.tbcFilterDetails.Controls.Add(this.tabPage2);
-            this.tbcFilterDetails.Controls.Add(this.tabLocationFiltering);
-            this.tbcFilterDetails.Controls.Add(this.tabPage3);
-            this.tbcFilterDetails.Controls.Add(this.tabPage4);
-            this.tbcFilterDetails.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbcFilterDetails.Location = new System.Drawing.Point(2, 3);
-            this.tbcFilterDetails.Name = "tbcFilterDetails";
-            this.tbcFilterDetails.SelectedIndex = 0;
-            this.tbcFilterDetails.Size = new System.Drawing.Size(505, 365);
-            this.tbcFilterDetails.TabIndex = 106;
-            //
+            // 
+            tbcFilterDetails.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tbcFilterDetails.Controls.Add(tabOptionsEvents);
+            tbcFilterDetails.Controls.Add(tabPage2);
+            tbcFilterDetails.Controls.Add(tabLocationFiltering);
+            tbcFilterDetails.Controls.Add(tabPage3);
+            tbcFilterDetails.Controls.Add(tabPage4);
+            tbcFilterDetails.Font = new Font("Verdana", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tbcFilterDetails.Location = new Point(2, 4);
+            tbcFilterDetails.Name = "tbcFilterDetails";
+            tbcFilterDetails.SelectedIndex = 0;
+            tbcFilterDetails.Size = new Size(600, 458);
+            tbcFilterDetails.TabIndex = 106;
+            // 
             // tabOptionsEvents
-            //
-            this.tabOptionsEvents.Controls.Add(this.pnlFilterButtons);
-            this.tabOptionsEvents.Controls.Add(this.chkCaseSensitive);
-            this.tabOptionsEvents.Controls.Add(this.label4);
-            this.tabOptionsEvents.Controls.Add(this.txtFilterExcludeStrings);
-            this.tabOptionsEvents.Controls.Add(this.label5);
-            this.tabOptionsEvents.Controls.Add(this.txtFilterIncludeStrings);
-            this.tabOptionsEvents.Location = new System.Drawing.Point(4, 22);
-            this.tabOptionsEvents.Name = "tabOptionsEvents";
-            this.tabOptionsEvents.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOptionsEvents.Size = new System.Drawing.Size(497, 339);
-            this.tabOptionsEvents.TabIndex = 0;
-            this.tabOptionsEvents.Text = "Text / Type";
-            this.tabOptionsEvents.UseVisualStyleBackColor = true;
-            //
+            // 
+            tabOptionsEvents.Controls.Add(pnlFilterButtons);
+            tabOptionsEvents.Controls.Add(chkCaseSensitive);
+            tabOptionsEvents.Controls.Add(label4);
+            tabOptionsEvents.Controls.Add(txtFilterExcludeStrings);
+            tabOptionsEvents.Controls.Add(label5);
+            tabOptionsEvents.Controls.Add(txtFilterIncludeStrings);
+            tabOptionsEvents.Location = new Point(4, 22);
+            tabOptionsEvents.Name = "tabOptionsEvents";
+            tabOptionsEvents.Padding = new Padding(3);
+            tabOptionsEvents.Size = new Size(592, 432);
+            tabOptionsEvents.TabIndex = 0;
+            tabOptionsEvents.Text = "Text / Type";
+            tabOptionsEvents.UseVisualStyleBackColor = true;
+            // 
             // pnlFilterButtons
-            //
-            this.pnlFilterButtons.BackColor = System.Drawing.SystemColors.Window;
-            this.pnlFilterButtons.Controls.Add(this.label8);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfWarningMsgs);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfExceptionHeaders);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfTraceExitMsgs);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfTraceEnterMsgs);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfErrorMsgs);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfAssertionMsgs);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfVerboseLogMessages);
-            this.pnlFilterButtons.Controls.Add(this.chkmtfIncludeLogs);
-            this.pnlFilterButtons.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilterButtons.Location = new System.Drawing.Point(3, 3);
-            this.pnlFilterButtons.Name = "pnlFilterButtons";
-            this.pnlFilterButtons.Size = new System.Drawing.Size(491, 132);
-            this.pnlFilterButtons.TabIndex = 124;
-            //
+            // 
+            pnlFilterButtons.BackColor = SystemColors.Window;
+            pnlFilterButtons.Controls.Add(label8);
+            pnlFilterButtons.Controls.Add(chkmtfWarningMsgs);
+            pnlFilterButtons.Controls.Add(chkmtfExceptionHeaders);
+            pnlFilterButtons.Controls.Add(chkmtfTraceExitMsgs);
+            pnlFilterButtons.Controls.Add(chkmtfTraceEnterMsgs);
+            pnlFilterButtons.Controls.Add(chkmtfErrorMsgs);
+            pnlFilterButtons.Controls.Add(chkmtfAssertionMsgs);
+            pnlFilterButtons.Controls.Add(chkmtfVerboseLogMessages);
+            pnlFilterButtons.Controls.Add(chkmtfIncludeLogs);
+            pnlFilterButtons.Dock = DockStyle.Top;
+            pnlFilterButtons.Location = new Point(3, 3);
+            pnlFilterButtons.Name = "pnlFilterButtons";
+            pnlFilterButtons.Size = new Size(586, 162);
+            pnlFilterButtons.TabIndex = 124;
+            // 
             // label8
-            //
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(7, 10);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(354, 13);
-            this.label8.TabIndex = 139;
-            this.label8.Text = "Include / Exclude messages based on message type:";
-            //
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Verdana", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label8.Location = new Point(8, 12);
+            label8.Name = "label8";
+            label8.Size = new Size(354, 13);
+            label8.TabIndex = 139;
+            label8.Text = "Include / Exclude messages based on message type:";
+            // 
             // chkmtfWarningMsgs
-            //
-            this.chkmtfWarningMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfWarningMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfWarningMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfWarningMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfWarningMsgs.ImageIndex = 31;
-            this.chkmtfWarningMsgs.Location = new System.Drawing.Point(324, 59);
-            this.chkmtfWarningMsgs.Name = "chkmtfWarningMsgs";
-            this.chkmtfWarningMsgs.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfWarningMsgs.TabIndex = 132;
-            this.chkmtfWarningMsgs.Text = "Warning Messages";
-            this.chkmtfWarningMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfWarningMsgs.Appearance = Appearance.Button;
+            chkmtfWarningMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfWarningMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfWarningMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfWarningMsgs.ImageIndex = 31;
+            chkmtfWarningMsgs.Location = new Point(389, 73);
+            chkmtfWarningMsgs.Name = "chkmtfWarningMsgs";
+            chkmtfWarningMsgs.Size = new Size(181, 29);
+            chkmtfWarningMsgs.TabIndex = 132;
+            chkmtfWarningMsgs.Text = "Warning Messages";
+            chkmtfWarningMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfExceptionHeaders
-            //
-            this.chkmtfExceptionHeaders.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfExceptionHeaders.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfExceptionHeaders.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfExceptionHeaders.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfExceptionHeaders.ImageIndex = 20;
-            this.chkmtfExceptionHeaders.Location = new System.Drawing.Point(325, 90);
-            this.chkmtfExceptionHeaders.Name = "chkmtfExceptionHeaders";
-            this.chkmtfExceptionHeaders.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfExceptionHeaders.TabIndex = 130;
-            this.chkmtfExceptionHeaders.Text = "Exception Headers";
-            this.chkmtfExceptionHeaders.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfExceptionHeaders.Appearance = Appearance.Button;
+            chkmtfExceptionHeaders.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfExceptionHeaders.FlatStyle = FlatStyle.Flat;
+            chkmtfExceptionHeaders.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfExceptionHeaders.ImageIndex = 20;
+            chkmtfExceptionHeaders.Location = new Point(390, 111);
+            chkmtfExceptionHeaders.Name = "chkmtfExceptionHeaders";
+            chkmtfExceptionHeaders.Size = new Size(181, 29);
+            chkmtfExceptionHeaders.TabIndex = 130;
+            chkmtfExceptionHeaders.Text = "Exception Headers";
+            chkmtfExceptionHeaders.UseVisualStyleBackColor = true;
+            // 
             // chkmtfTraceExitMsgs
-            //
-            this.chkmtfTraceExitMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfTraceExitMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfTraceExitMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfTraceExitMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfTraceExitMsgs.ImageIndex = 17;
-            this.chkmtfTraceExitMsgs.Location = new System.Drawing.Point(167, 90);
-            this.chkmtfTraceExitMsgs.Name = "chkmtfTraceExitMsgs";
-            this.chkmtfTraceExitMsgs.Size = new System.Drawing.Size(152, 24);
-            this.chkmtfTraceExitMsgs.TabIndex = 129;
-            this.chkmtfTraceExitMsgs.Text = "Trace Exit";
-            this.chkmtfTraceExitMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfTraceExitMsgs.Appearance = Appearance.Button;
+            chkmtfTraceExitMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfTraceExitMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfTraceExitMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfTraceExitMsgs.ImageIndex = 17;
+            chkmtfTraceExitMsgs.Location = new Point(200, 111);
+            chkmtfTraceExitMsgs.Name = "chkmtfTraceExitMsgs";
+            chkmtfTraceExitMsgs.Size = new Size(183, 29);
+            chkmtfTraceExitMsgs.TabIndex = 129;
+            chkmtfTraceExitMsgs.Text = "Trace Exit";
+            chkmtfTraceExitMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfTraceEnterMsgs
-            //
-            this.chkmtfTraceEnterMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfTraceEnterMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfTraceEnterMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfTraceEnterMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfTraceEnterMsgs.ImageIndex = 15;
-            this.chkmtfTraceEnterMsgs.Location = new System.Drawing.Point(167, 59);
-            this.chkmtfTraceEnterMsgs.Name = "chkmtfTraceEnterMsgs";
-            this.chkmtfTraceEnterMsgs.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfTraceEnterMsgs.TabIndex = 128;
-            this.chkmtfTraceEnterMsgs.Text = "Trace Enter";
-            this.chkmtfTraceEnterMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfTraceEnterMsgs.Appearance = Appearance.Button;
+            chkmtfTraceEnterMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfTraceEnterMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfTraceEnterMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfTraceEnterMsgs.ImageIndex = 15;
+            chkmtfTraceEnterMsgs.Location = new Point(200, 73);
+            chkmtfTraceEnterMsgs.Name = "chkmtfTraceEnterMsgs";
+            chkmtfTraceEnterMsgs.Size = new Size(182, 29);
+            chkmtfTraceEnterMsgs.TabIndex = 128;
+            chkmtfTraceEnterMsgs.Text = "Trace Enter";
+            chkmtfTraceEnterMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfErrorMsgs
-            //
-            this.chkmtfErrorMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfErrorMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfErrorMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfErrorMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfErrorMsgs.ImageIndex = 30;
-            this.chkmtfErrorMsgs.Location = new System.Drawing.Point(324, 29);
-            this.chkmtfErrorMsgs.Name = "chkmtfErrorMsgs";
-            this.chkmtfErrorMsgs.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfErrorMsgs.TabIndex = 127;
-            this.chkmtfErrorMsgs.Text = "Error Messages";
-            this.chkmtfErrorMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfErrorMsgs.Appearance = Appearance.Button;
+            chkmtfErrorMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfErrorMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfErrorMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfErrorMsgs.ImageIndex = 30;
+            chkmtfErrorMsgs.Location = new Point(389, 36);
+            chkmtfErrorMsgs.Name = "chkmtfErrorMsgs";
+            chkmtfErrorMsgs.Size = new Size(181, 29);
+            chkmtfErrorMsgs.TabIndex = 127;
+            chkmtfErrorMsgs.Text = "Error Messages";
+            chkmtfErrorMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfAssertionMsgs
-            //
-            this.chkmtfAssertionMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfAssertionMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfAssertionMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfAssertionMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfAssertionMsgs.ImageIndex = 11;
-            this.chkmtfAssertionMsgs.Location = new System.Drawing.Point(167, 29);
-            this.chkmtfAssertionMsgs.Name = "chkmtfAssertionMsgs";
-            this.chkmtfAssertionMsgs.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfAssertionMsgs.TabIndex = 126;
-            this.chkmtfAssertionMsgs.Text = "Assertion Failures";
-            this.chkmtfAssertionMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfAssertionMsgs.Appearance = Appearance.Button;
+            chkmtfAssertionMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfAssertionMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfAssertionMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfAssertionMsgs.ImageIndex = 11;
+            chkmtfAssertionMsgs.Location = new Point(200, 36);
+            chkmtfAssertionMsgs.Name = "chkmtfAssertionMsgs";
+            chkmtfAssertionMsgs.Size = new Size(182, 29);
+            chkmtfAssertionMsgs.TabIndex = 126;
+            chkmtfAssertionMsgs.Text = "Assertion Failures";
+            chkmtfAssertionMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfVerboseLogMessages
-            //
-            this.chkmtfVerboseLogMessages.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfVerboseLogMessages.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfVerboseLogMessages.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfVerboseLogMessages.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfVerboseLogMessages.ImageIndex = 27;
-            this.chkmtfVerboseLogMessages.Location = new System.Drawing.Point(10, 59);
-            this.chkmtfVerboseLogMessages.Name = "chkmtfVerboseLogMessages";
-            this.chkmtfVerboseLogMessages.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfVerboseLogMessages.TabIndex = 125;
-            this.chkmtfVerboseLogMessages.Text = "Verbose Messages";
-            this.chkmtfVerboseLogMessages.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfVerboseLogMessages.Appearance = Appearance.Button;
+            chkmtfVerboseLogMessages.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfVerboseLogMessages.FlatStyle = FlatStyle.Flat;
+            chkmtfVerboseLogMessages.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfVerboseLogMessages.ImageIndex = 27;
+            chkmtfVerboseLogMessages.Location = new Point(12, 73);
+            chkmtfVerboseLogMessages.Name = "chkmtfVerboseLogMessages";
+            chkmtfVerboseLogMessages.Size = new Size(181, 29);
+            chkmtfVerboseLogMessages.TabIndex = 125;
+            chkmtfVerboseLogMessages.Text = "Verbose Messages";
+            chkmtfVerboseLogMessages.UseVisualStyleBackColor = true;
+            // 
             // chkmtfIncludeLogs
-            //
-            this.chkmtfIncludeLogs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfIncludeLogs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfIncludeLogs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfIncludeLogs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfIncludeLogs.ImageIndex = 25;
-            this.chkmtfIncludeLogs.Location = new System.Drawing.Point(10, 29);
-            this.chkmtfIncludeLogs.Name = "chkmtfIncludeLogs";
-            this.chkmtfIncludeLogs.Size = new System.Drawing.Size(151, 24);
-            this.chkmtfIncludeLogs.TabIndex = 124;
-            this.chkmtfIncludeLogs.Text = "Log Messages";
-            this.chkmtfIncludeLogs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfIncludeLogs.Appearance = Appearance.Button;
+            chkmtfIncludeLogs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfIncludeLogs.FlatStyle = FlatStyle.Flat;
+            chkmtfIncludeLogs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfIncludeLogs.ImageIndex = 25;
+            chkmtfIncludeLogs.Location = new Point(12, 36);
+            chkmtfIncludeLogs.Name = "chkmtfIncludeLogs";
+            chkmtfIncludeLogs.Size = new Size(181, 29);
+            chkmtfIncludeLogs.TabIndex = 124;
+            chkmtfIncludeLogs.Text = "Log Messages";
+            chkmtfIncludeLogs.UseVisualStyleBackColor = true;
+            // 
             // chkCaseSensitive
-            //
-            this.chkCaseSensitive.Location = new System.Drawing.Point(3, 243);
-            this.chkCaseSensitive.Name = "chkCaseSensitive";
-            this.chkCaseSensitive.Size = new System.Drawing.Size(236, 24);
-            this.chkCaseSensitive.TabIndex = 101;
-            this.chkCaseSensitive.Text = "String matches are case sensitive";
-            //
+            // 
+            chkCaseSensitive.Location = new Point(4, 299);
+            chkCaseSensitive.Name = "chkCaseSensitive";
+            chkCaseSensitive.Size = new Size(283, 30);
+            chkCaseSensitive.TabIndex = 101;
+            chkCaseSensitive.Text = "String matches are case sensitive";
+            // 
             // label4
-            //
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(0, 200);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(471, 13);
-            this.label4.TabIndex = 99;
-            this.label4.Text = "Exclude any messages which contain one of these strings (; delimited):";
-            //
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Verdana", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.Location = new Point(0, 246);
+            label4.Name = "label4";
+            label4.Size = new Size(471, 13);
+            label4.TabIndex = 99;
+            label4.Text = "Exclude any messages which contain one of these strings (; delimited):";
+            // 
             // txtFilterExcludeStrings
-            //
-            this.txtFilterExcludeStrings.Location = new System.Drawing.Point(3, 216);
-            this.txtFilterExcludeStrings.Name = "txtFilterExcludeStrings";
-            this.txtFilterExcludeStrings.Size = new System.Drawing.Size(487, 21);
-            this.txtFilterExcludeStrings.TabIndex = 100;
-            //
+            // 
+            txtFilterExcludeStrings.Location = new Point(4, 266);
+            txtFilterExcludeStrings.Name = "txtFilterExcludeStrings";
+            txtFilterExcludeStrings.Size = new Size(584, 21);
+            txtFilterExcludeStrings.TabIndex = 100;
+            // 
             // label5
-            //
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(-3, 150);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(472, 13);
-            this.label5.TabIndex = 98;
-            this.label5.Text = "Only include messages which contain one of these strings (; delimited):";
-            //
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Verdana", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(-4, 185);
+            label5.Name = "label5";
+            label5.Size = new Size(472, 13);
+            label5.TabIndex = 98;
+            label5.Text = "Only include messages which contain one of these strings (; delimited):";
+            // 
             // txtFilterIncludeStrings
-            //
-            this.txtFilterIncludeStrings.Location = new System.Drawing.Point(3, 166);
-            this.txtFilterIncludeStrings.Name = "txtFilterIncludeStrings";
-            this.txtFilterIncludeStrings.Size = new System.Drawing.Size(487, 21);
-            this.txtFilterIncludeStrings.TabIndex = 97;
-            //
+            // 
+            txtFilterIncludeStrings.Location = new Point(4, 204);
+            txtFilterIncludeStrings.Name = "txtFilterIncludeStrings";
+            txtFilterIncludeStrings.Size = new Size(584, 21);
+            txtFilterIncludeStrings.TabIndex = 97;
+            // 
             // tabPage2
-            //
-            this.tabPage2.Controls.Add(this.pnlDockSplitContainer);
-            this.tabPage2.Controls.Add(this.btnClearUnmatchedModules);
-            this.tabPage2.Controls.Add(this.btnClearUnmatchedThreads);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(497, 339);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Threads / Modules";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            //
+            // 
+            tabPage2.Controls.Add(pnlDockSplitContainer);
+            tabPage2.Controls.Add(btnClearUnmatchedModules);
+            tabPage2.Controls.Add(btnClearUnmatchedThreads);
+            tabPage2.Location = new Point(4, 22);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(592, 432);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Threads / Modules";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
             // pnlDockSplitContainer
-            //
-            this.pnlDockSplitContainer.Controls.Add(this.splitContainer1);
-            this.pnlDockSplitContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlDockSplitContainer.Location = new System.Drawing.Point(3, 3);
-            this.pnlDockSplitContainer.Name = "pnlDockSplitContainer";
-            this.pnlDockSplitContainer.Size = new System.Drawing.Size(491, 298);
-            this.pnlDockSplitContainer.TabIndex = 7;
-            //
+            // 
+            pnlDockSplitContainer.Controls.Add(splitContainer1);
+            pnlDockSplitContainer.Dock = DockStyle.Top;
+            pnlDockSplitContainer.Location = new Point(3, 3);
+            pnlDockSplitContainer.Name = "pnlDockSplitContainer";
+            pnlDockSplitContainer.Size = new Size(586, 366);
+            pnlDockSplitContainer.TabIndex = 7;
+            // 
             // splitContainer1
-            //
-            this.splitContainer1.BackColor = System.Drawing.SystemColors.Control;
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            //
+            // 
+            splitContainer1.BackColor = SystemColors.Control;
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = Orientation.Horizontal;
+            // 
             // splitContainer1.Panel1
-            //
-            this.splitContainer1.Panel1.Controls.Add(this.clbModulesFilter);
-            this.splitContainer1.Panel1.Controls.Add(this.clbThreadsFilter);
-            //
+            // 
+            splitContainer1.Panel1.Controls.Add(clbModulesFilter);
+            splitContainer1.Panel1.Controls.Add(clbThreadsFilter);
+            // 
             // splitContainer1.Panel2
-            //
-            this.splitContainer1.Panel2.Controls.Add(this.lbxUnmatchedModules);
-            this.splitContainer1.Panel2.Controls.Add(this.lbxUnmatchedThreads);
-            this.splitContainer1.Size = new System.Drawing.Size(491, 298);
-            this.splitContainer1.SplitterDistance = 229;
-            this.splitContainer1.TabIndex = 0;
-            //
+            // 
+            splitContainer1.Panel2.Controls.Add(lbxUnmatchedModules);
+            splitContainer1.Panel2.Controls.Add(lbxUnmatchedThreads);
+            splitContainer1.Size = new Size(586, 366);
+            splitContainer1.SplitterDistance = 281;
+            splitContainer1.TabIndex = 0;
+            // 
             // clbModulesFilter
-            //
-            this.clbModulesFilter.CheckOnClick = true;
-            this.clbModulesFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clbModulesFilter.FormattingEnabled = true;
-            this.clbModulesFilter.Location = new System.Drawing.Point(244, 0);
-            this.clbModulesFilter.Name = "clbModulesFilter";
-            this.clbModulesFilter.ScrollAlwaysVisible = true;
-            this.clbModulesFilter.Size = new System.Drawing.Size(247, 228);
-            this.clbModulesFilter.TabIndex = 3;
-            //
+            // 
+            clbModulesFilter.CheckOnClick = true;
+            clbModulesFilter.Dock = DockStyle.Fill;
+            clbModulesFilter.FormattingEnabled = true;
+            clbModulesFilter.Location = new Point(293, 0);
+            clbModulesFilter.Name = "clbModulesFilter";
+            clbModulesFilter.ScrollAlwaysVisible = true;
+            clbModulesFilter.Size = new Size(293, 281);
+            clbModulesFilter.TabIndex = 3;
+            // 
             // clbThreadsFilter
-            //
-            this.clbThreadsFilter.CheckOnClick = true;
-            this.clbThreadsFilter.ColumnWidth = 110;
-            this.clbThreadsFilter.Dock = System.Windows.Forms.DockStyle.Left;
-            this.clbThreadsFilter.FormattingEnabled = true;
-            this.clbThreadsFilter.Location = new System.Drawing.Point(0, 0);
-            this.clbThreadsFilter.Name = "clbThreadsFilter";
-            this.clbThreadsFilter.ScrollAlwaysVisible = true;
-            this.clbThreadsFilter.Size = new System.Drawing.Size(244, 228);
-            this.clbThreadsFilter.TabIndex = 2;
-            //
+            // 
+            clbThreadsFilter.CheckOnClick = true;
+            clbThreadsFilter.ColumnWidth = 110;
+            clbThreadsFilter.Dock = DockStyle.Left;
+            clbThreadsFilter.FormattingEnabled = true;
+            clbThreadsFilter.Location = new Point(0, 0);
+            clbThreadsFilter.Name = "clbThreadsFilter";
+            clbThreadsFilter.ScrollAlwaysVisible = true;
+            clbThreadsFilter.Size = new Size(293, 281);
+            clbThreadsFilter.TabIndex = 2;
+            // 
             // lbxUnmatchedModules
-            //
-            this.lbxUnmatchedModules.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbxUnmatchedModules.FormattingEnabled = true;
-            this.lbxUnmatchedModules.Location = new System.Drawing.Point(244, 0);
-            this.lbxUnmatchedModules.Name = "lbxUnmatchedModules";
-            this.lbxUnmatchedModules.ScrollAlwaysVisible = true;
-            this.lbxUnmatchedModules.Size = new System.Drawing.Size(247, 56);
-            this.lbxUnmatchedModules.TabIndex = 7;
-            //
+            // 
+            lbxUnmatchedModules.Dock = DockStyle.Fill;
+            lbxUnmatchedModules.FormattingEnabled = true;
+            lbxUnmatchedModules.ItemHeight = 13;
+            lbxUnmatchedModules.Location = new Point(293, 0);
+            lbxUnmatchedModules.Name = "lbxUnmatchedModules";
+            lbxUnmatchedModules.ScrollAlwaysVisible = true;
+            lbxUnmatchedModules.Size = new Size(293, 81);
+            lbxUnmatchedModules.TabIndex = 7;
+            // 
             // lbxUnmatchedThreads
-            //
-            this.lbxUnmatchedThreads.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lbxUnmatchedThreads.FormattingEnabled = true;
-            this.lbxUnmatchedThreads.Location = new System.Drawing.Point(0, 0);
-            this.lbxUnmatchedThreads.Name = "lbxUnmatchedThreads";
-            this.lbxUnmatchedThreads.ScrollAlwaysVisible = true;
-            this.lbxUnmatchedThreads.Size = new System.Drawing.Size(244, 56);
-            this.lbxUnmatchedThreads.TabIndex = 6;
-            //
+            // 
+            lbxUnmatchedThreads.Dock = DockStyle.Left;
+            lbxUnmatchedThreads.FormattingEnabled = true;
+            lbxUnmatchedThreads.ItemHeight = 13;
+            lbxUnmatchedThreads.Location = new Point(0, 0);
+            lbxUnmatchedThreads.Name = "lbxUnmatchedThreads";
+            lbxUnmatchedThreads.ScrollAlwaysVisible = true;
+            lbxUnmatchedThreads.Size = new Size(293, 81);
+            lbxUnmatchedThreads.TabIndex = 6;
+            // 
             // btnClearUnmatchedModules
-            //
-            this.btnClearUnmatchedModules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearUnmatchedModules.Location = new System.Drawing.Point(311, 310);
-            this.btnClearUnmatchedModules.Name = "btnClearUnmatchedModules";
-            this.btnClearUnmatchedModules.Size = new System.Drawing.Size(178, 23);
-            this.btnClearUnmatchedModules.TabIndex = 4;
-            this.btnClearUnmatchedModules.Text = "Remove Unmatched Modules";
-            this.btnClearUnmatchedModules.UseVisualStyleBackColor = true;
-            //
+            // 
+            btnClearUnmatchedModules.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnClearUnmatchedModules.Location = new Point(367, 391);
+            btnClearUnmatchedModules.Name = "btnClearUnmatchedModules";
+            btnClearUnmatchedModules.Size = new Size(214, 28);
+            btnClearUnmatchedModules.TabIndex = 4;
+            btnClearUnmatchedModules.Text = "Remove Unmatched Modules";
+            btnClearUnmatchedModules.UseVisualStyleBackColor = true;
+            // 
             // btnClearUnmatchedThreads
-            //
-            this.btnClearUnmatchedThreads.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClearUnmatchedThreads.Location = new System.Drawing.Point(136, 307);
-            this.btnClearUnmatchedThreads.Name = "btnClearUnmatchedThreads";
-            this.btnClearUnmatchedThreads.Size = new System.Drawing.Size(168, 23);
-            this.btnClearUnmatchedThreads.TabIndex = 3;
-            this.btnClearUnmatchedThreads.Text = "Remove Unmatched Threads";
-            this.btnClearUnmatchedThreads.UseVisualStyleBackColor = true;
-            //
+            // 
+            btnClearUnmatchedThreads.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnClearUnmatchedThreads.Location = new Point(163, 387);
+            btnClearUnmatchedThreads.Name = "btnClearUnmatchedThreads";
+            btnClearUnmatchedThreads.Size = new Size(202, 28);
+            btnClearUnmatchedThreads.TabIndex = 3;
+            btnClearUnmatchedThreads.Text = "Remove Unmatched Threads";
+            btnClearUnmatchedThreads.UseVisualStyleBackColor = true;
+            // 
             // tabLocationFiltering
-            //
-            this.tabLocationFiltering.Controls.Add(this.splitContainer2);
-            this.tabLocationFiltering.Controls.Add(this.btnClearAdditionalLocFilter);
-            this.tabLocationFiltering.Controls.Add(this.btnClearLocClassOverflow);
-            this.tabLocationFiltering.Location = new System.Drawing.Point(4, 22);
-            this.tabLocationFiltering.Name = "tabLocationFiltering";
-            this.tabLocationFiltering.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLocationFiltering.Size = new System.Drawing.Size(497, 339);
-            this.tabLocationFiltering.TabIndex = 2;
-            this.tabLocationFiltering.Text = "Locations";
-            this.tabLocationFiltering.UseVisualStyleBackColor = true;
-            //
+            // 
+            tabLocationFiltering.Controls.Add(splitContainer2);
+            tabLocationFiltering.Controls.Add(btnClearAdditionalLocFilter);
+            tabLocationFiltering.Controls.Add(btnClearLocClassOverflow);
+            tabLocationFiltering.Location = new Point(4, 22);
+            tabLocationFiltering.Name = "tabLocationFiltering";
+            tabLocationFiltering.Padding = new Padding(3);
+            tabLocationFiltering.Size = new Size(598, 423);
+            tabLocationFiltering.TabIndex = 2;
+            tabLocationFiltering.Text = "Locations";
+            tabLocationFiltering.UseVisualStyleBackColor = true;
+            // 
             // splitContainer2
-            //
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            //
+            // 
+            splitContainer2.Dock = DockStyle.Top;
+            splitContainer2.Location = new Point(3, 3);
+            splitContainer2.Name = "splitContainer2";
+            splitContainer2.Orientation = Orientation.Horizontal;
+            // 
             // splitContainer2.Panel1
-            //
-            this.splitContainer2.Panel1.Controls.Add(this.clbAdditionalLocationsFilter);
-            this.splitContainer2.Panel1.Controls.Add(this.clbLocationClassFilter);
-            //
+            // 
+            splitContainer2.Panel1.Controls.Add(clbAdditionalLocationsFilter);
+            splitContainer2.Panel1.Controls.Add(clbLocationClassFilter);
+            // 
             // splitContainer2.Panel2
-            //
-            this.splitContainer2.Panel2.Controls.Add(this.lbxLocAdditionalOverflow);
-            this.splitContainer2.Panel2.Controls.Add(this.lbxLocClassOverflow);
-            this.splitContainer2.Size = new System.Drawing.Size(491, 301);
-            this.splitContainer2.SplitterDistance = 149;
-            this.splitContainer2.TabIndex = 15;
-            //
+            // 
+            splitContainer2.Panel2.Controls.Add(lbxLocAdditionalOverflow);
+            splitContainer2.Panel2.Controls.Add(lbxLocClassOverflow);
+            splitContainer2.Size = new Size(592, 370);
+            splitContainer2.SplitterDistance = 183;
+            splitContainer2.TabIndex = 15;
+            // 
             // clbAdditionalLocationsFilter
-            //
-            this.clbAdditionalLocationsFilter.CheckOnClick = true;
-            this.clbAdditionalLocationsFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clbAdditionalLocationsFilter.FormattingEnabled = true;
-            this.clbAdditionalLocationsFilter.Location = new System.Drawing.Point(215, 0);
-            this.clbAdditionalLocationsFilter.Name = "clbAdditionalLocationsFilter";
-            this.clbAdditionalLocationsFilter.ScrollAlwaysVisible = true;
-            this.clbAdditionalLocationsFilter.Size = new System.Drawing.Size(276, 148);
-            this.clbAdditionalLocationsFilter.TabIndex = 11;
-            //
+            // 
+            clbAdditionalLocationsFilter.CheckOnClick = true;
+            clbAdditionalLocationsFilter.Dock = DockStyle.Fill;
+            clbAdditionalLocationsFilter.FormattingEnabled = true;
+            clbAdditionalLocationsFilter.Location = new Point(258, 0);
+            clbAdditionalLocationsFilter.Name = "clbAdditionalLocationsFilter";
+            clbAdditionalLocationsFilter.ScrollAlwaysVisible = true;
+            clbAdditionalLocationsFilter.Size = new Size(334, 183);
+            clbAdditionalLocationsFilter.TabIndex = 11;
+            // 
             // clbLocationClassFilter
-            //
-            this.clbLocationClassFilter.CheckOnClick = true;
-            this.clbLocationClassFilter.Dock = System.Windows.Forms.DockStyle.Left;
-            this.clbLocationClassFilter.FormattingEnabled = true;
-            this.clbLocationClassFilter.Location = new System.Drawing.Point(0, 0);
-            this.clbLocationClassFilter.Name = "clbLocationClassFilter";
-            this.clbLocationClassFilter.ScrollAlwaysVisible = true;
-            this.clbLocationClassFilter.Size = new System.Drawing.Size(215, 148);
-            this.clbLocationClassFilter.TabIndex = 12;
-            //
+            // 
+            clbLocationClassFilter.CheckOnClick = true;
+            clbLocationClassFilter.Dock = DockStyle.Left;
+            clbLocationClassFilter.FormattingEnabled = true;
+            clbLocationClassFilter.Location = new Point(0, 0);
+            clbLocationClassFilter.Name = "clbLocationClassFilter";
+            clbLocationClassFilter.ScrollAlwaysVisible = true;
+            clbLocationClassFilter.Size = new Size(258, 183);
+            clbLocationClassFilter.TabIndex = 12;
+            // 
             // lbxLocAdditionalOverflow
-            //
-            this.lbxLocAdditionalOverflow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbxLocAdditionalOverflow.Enabled = false;
-            this.lbxLocAdditionalOverflow.FormattingEnabled = true;
-            this.lbxLocAdditionalOverflow.Location = new System.Drawing.Point(215, 0);
-            this.lbxLocAdditionalOverflow.Name = "lbxLocAdditionalOverflow";
-            this.lbxLocAdditionalOverflow.ScrollAlwaysVisible = true;
-            this.lbxLocAdditionalOverflow.Size = new System.Drawing.Size(276, 147);
-            this.lbxLocAdditionalOverflow.TabIndex = 15;
-            //
+            // 
+            lbxLocAdditionalOverflow.Dock = DockStyle.Fill;
+            lbxLocAdditionalOverflow.Enabled = false;
+            lbxLocAdditionalOverflow.FormattingEnabled = true;
+            lbxLocAdditionalOverflow.ItemHeight = 13;
+            lbxLocAdditionalOverflow.Location = new Point(258, 0);
+            lbxLocAdditionalOverflow.Name = "lbxLocAdditionalOverflow";
+            lbxLocAdditionalOverflow.ScrollAlwaysVisible = true;
+            lbxLocAdditionalOverflow.Size = new Size(334, 183);
+            lbxLocAdditionalOverflow.TabIndex = 15;
+            // 
             // lbxLocClassOverflow
-            //
-            this.lbxLocClassOverflow.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lbxLocClassOverflow.Enabled = false;
-            this.lbxLocClassOverflow.FormattingEnabled = true;
-            this.lbxLocClassOverflow.Location = new System.Drawing.Point(0, 0);
-            this.lbxLocClassOverflow.Name = "lbxLocClassOverflow";
-            this.lbxLocClassOverflow.ScrollAlwaysVisible = true;
-            this.lbxLocClassOverflow.Size = new System.Drawing.Size(215, 147);
-            this.lbxLocClassOverflow.TabIndex = 14;
-            //
+            // 
+            lbxLocClassOverflow.Dock = DockStyle.Left;
+            lbxLocClassOverflow.Enabled = false;
+            lbxLocClassOverflow.FormattingEnabled = true;
+            lbxLocClassOverflow.ItemHeight = 13;
+            lbxLocClassOverflow.Location = new Point(0, 0);
+            lbxLocClassOverflow.Name = "lbxLocClassOverflow";
+            lbxLocClassOverflow.ScrollAlwaysVisible = true;
+            lbxLocClassOverflow.Size = new Size(258, 183);
+            lbxLocClassOverflow.TabIndex = 14;
+            // 
             // btnClearAdditionalLocFilter
-            //
-            this.btnClearAdditionalLocFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearAdditionalLocFilter.Location = new System.Drawing.Point(319, 309);
-            this.btnClearAdditionalLocFilter.Name = "btnClearAdditionalLocFilter";
-            this.btnClearAdditionalLocFilter.Size = new System.Drawing.Size(171, 23);
-            this.btnClearAdditionalLocFilter.TabIndex = 12;
-            this.btnClearAdditionalLocFilter.Text = "Remove Overflow Locations";
-            this.btnClearAdditionalLocFilter.UseVisualStyleBackColor = true;
-            //
+            // 
+            btnClearAdditionalLocFilter.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnClearAdditionalLocFilter.Location = new Point(383, 380);
+            btnClearAdditionalLocFilter.Name = "btnClearAdditionalLocFilter";
+            btnClearAdditionalLocFilter.Size = new Size(205, 29);
+            btnClearAdditionalLocFilter.TabIndex = 12;
+            btnClearAdditionalLocFilter.Text = "Remove Overflow Locations";
+            btnClearAdditionalLocFilter.UseVisualStyleBackColor = true;
+            // 
             // btnClearLocClassOverflow
-            //
-            this.btnClearLocClassOverflow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClearLocClassOverflow.Location = new System.Drawing.Point(63, 310);
-            this.btnClearLocClassOverflow.Name = "btnClearLocClassOverflow";
-            this.btnClearLocClassOverflow.Size = new System.Drawing.Size(155, 23);
-            this.btnClearLocClassOverflow.TabIndex = 11;
-            this.btnClearLocClassOverflow.Text = "Remove Overflow Classes";
-            this.btnClearLocClassOverflow.UseVisualStyleBackColor = true;
-            //
+            // 
+            btnClearLocClassOverflow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnClearLocClassOverflow.Location = new Point(76, 382);
+            btnClearLocClassOverflow.Name = "btnClearLocClassOverflow";
+            btnClearLocClassOverflow.Size = new Size(186, 28);
+            btnClearLocClassOverflow.TabIndex = 11;
+            btnClearLocClassOverflow.Text = "Remove Overflow Classes";
+            btnClearLocClassOverflow.UseVisualStyleBackColor = true;
+            // 
             // tabPage3
-            //
-            this.tabPage3.Controls.Add(this.panel2);
-            this.tabPage3.Controls.Add(this.label2);
-            this.tabPage3.Controls.Add(this.txtExcludeAllAboveThisIndex);
-            this.tabPage3.Controls.Add(this.txtExcludeAllBelowThisIndex);
-            this.tabPage3.Controls.Add(this.chkEnableIndexFilter);
-            this.tabPage3.Controls.Add(this.label1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(497, 339);
-            this.tabPage3.TabIndex = 3;
-            this.tabPage3.Text = "Advanced Filters";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            //
+            // 
+            tabPage3.Controls.Add(panel2);
+            tabPage3.Controls.Add(label2);
+            tabPage3.Controls.Add(txtExcludeAllAboveThisIndex);
+            tabPage3.Controls.Add(txtExcludeAllBelowThisIndex);
+            tabPage3.Controls.Add(chkEnableIndexFilter);
+            tabPage3.Controls.Add(label1);
+            tabPage3.Location = new Point(4, 22);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(598, 423);
+            tabPage3.TabIndex = 3;
+            tabPage3.Text = "Advanced Filters";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
             // panel2
-            //
-            this.panel2.BackColor = System.Drawing.SystemColors.Window;
-            this.panel2.Controls.Add(this.label7);
-            this.panel2.Controls.Add(this.chkmtfSessionMsgs);
-            this.panel2.Controls.Add(this.chkmtfChainMsgs);
-            this.panel2.Controls.Add(this.chkmtfCommandMsgs);
-            this.panel2.Controls.Add(this.chkmtfInternalMessages);
-            this.panel2.Controls.Add(this.chkmtfResourceMessages);
-            this.panel2.Controls.Add(this.chkmtfExceptionContent);
-            this.panel2.Location = new System.Drawing.Point(6, 176);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(402, 157);
-            this.panel2.TabIndex = 109;
-            //
+            // 
+            panel2.BackColor = SystemColors.Window;
+            panel2.Controls.Add(label7);
+            panel2.Controls.Add(chkmtfSessionMsgs);
+            panel2.Controls.Add(chkmtfChainMsgs);
+            panel2.Controls.Add(chkmtfCommandMsgs);
+            panel2.Controls.Add(chkmtfInternalMessages);
+            panel2.Controls.Add(chkmtfResourceMessages);
+            panel2.Controls.Add(chkmtfExceptionContent);
+            panel2.Location = new Point(7, 217);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(483, 193);
+            panel2.TabIndex = 109;
+            // 
             // label7
-            //
-            this.label7.Location = new System.Drawing.Point(13, 10);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(387, 37);
-            this.label7.TabIndex = 144;
-            this.label7.Text = "N.B. Ensure you have ticked the option \"Allow Internal Messages To Be Displayed\" " +
-                "in Mex Options before using these filters.";
-            //
+            // 
+            label7.Location = new Point(16, 12);
+            label7.Name = "label7";
+            label7.Size = new Size(464, 46);
+            label7.TabIndex = 144;
+            label7.Text = "N.B. Ensure you have ticked the option \"Allow Internal Messages To Be Displayed\" in Mex Options before using these filters.";
+            // 
             // chkmtfSessionMsgs
-            //
-            this.chkmtfSessionMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfSessionMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfSessionMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfSessionMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfSessionMsgs.ImageIndex = 5;
-            this.chkmtfSessionMsgs.Location = new System.Drawing.Point(183, 89);
-            this.chkmtfSessionMsgs.Name = "chkmtfSessionMsgs";
-            this.chkmtfSessionMsgs.Size = new System.Drawing.Size(161, 24);
-            this.chkmtfSessionMsgs.TabIndex = 143;
-            this.chkmtfSessionMsgs.Text = "Section Messages";
-            this.chkmtfSessionMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfSessionMsgs.Appearance = Appearance.Button;
+            chkmtfSessionMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfSessionMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfSessionMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfSessionMsgs.ImageIndex = 5;
+            chkmtfSessionMsgs.Location = new Point(220, 110);
+            chkmtfSessionMsgs.Name = "chkmtfSessionMsgs";
+            chkmtfSessionMsgs.Size = new Size(193, 29);
+            chkmtfSessionMsgs.TabIndex = 143;
+            chkmtfSessionMsgs.Text = "Section Messages";
+            chkmtfSessionMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfChainMsgs
-            //
-            this.chkmtfChainMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfChainMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfChainMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfChainMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfChainMsgs.ImageIndex = 8;
-            this.chkmtfChainMsgs.Location = new System.Drawing.Point(183, 59);
-            this.chkmtfChainMsgs.Name = "chkmtfChainMsgs";
-            this.chkmtfChainMsgs.Size = new System.Drawing.Size(161, 24);
-            this.chkmtfChainMsgs.TabIndex = 142;
-            this.chkmtfChainMsgs.Text = "Chain Messages";
-            this.chkmtfChainMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfChainMsgs.Appearance = Appearance.Button;
+            chkmtfChainMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfChainMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfChainMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfChainMsgs.ImageIndex = 8;
+            chkmtfChainMsgs.Location = new Point(220, 73);
+            chkmtfChainMsgs.Name = "chkmtfChainMsgs";
+            chkmtfChainMsgs.Size = new Size(193, 29);
+            chkmtfChainMsgs.TabIndex = 142;
+            chkmtfChainMsgs.Text = "Chain Messages";
+            chkmtfChainMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfCommandMsgs
-            //
-            this.chkmtfCommandMsgs.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfCommandMsgs.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfCommandMsgs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfCommandMsgs.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfCommandMsgs.ImageIndex = 0;
-            this.chkmtfCommandMsgs.Location = new System.Drawing.Point(183, 119);
-            this.chkmtfCommandMsgs.Name = "chkmtfCommandMsgs";
-            this.chkmtfCommandMsgs.Size = new System.Drawing.Size(161, 24);
-            this.chkmtfCommandMsgs.TabIndex = 141;
-            this.chkmtfCommandMsgs.Text = "Command Messages";
-            this.chkmtfCommandMsgs.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfCommandMsgs.Appearance = Appearance.Button;
+            chkmtfCommandMsgs.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfCommandMsgs.FlatStyle = FlatStyle.Flat;
+            chkmtfCommandMsgs.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfCommandMsgs.ImageIndex = 0;
+            chkmtfCommandMsgs.Location = new Point(220, 146);
+            chkmtfCommandMsgs.Name = "chkmtfCommandMsgs";
+            chkmtfCommandMsgs.Size = new Size(193, 30);
+            chkmtfCommandMsgs.TabIndex = 141;
+            chkmtfCommandMsgs.Text = "Command Messages";
+            chkmtfCommandMsgs.UseVisualStyleBackColor = true;
+            // 
             // chkmtfInternalMessages
-            //
-            this.chkmtfInternalMessages.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfInternalMessages.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfInternalMessages.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfInternalMessages.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfInternalMessages.ImageIndex = 2;
-            this.chkmtfInternalMessages.Location = new System.Drawing.Point(16, 119);
-            this.chkmtfInternalMessages.Name = "chkmtfInternalMessages";
-            this.chkmtfInternalMessages.Size = new System.Drawing.Size(161, 24);
-            this.chkmtfInternalMessages.TabIndex = 140;
-            this.chkmtfInternalMessages.Text = "Internal Messages";
-            this.chkmtfInternalMessages.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfInternalMessages.Appearance = Appearance.Button;
+            chkmtfInternalMessages.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfInternalMessages.FlatStyle = FlatStyle.Flat;
+            chkmtfInternalMessages.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfInternalMessages.ImageIndex = 2;
+            chkmtfInternalMessages.Location = new Point(19, 146);
+            chkmtfInternalMessages.Name = "chkmtfInternalMessages";
+            chkmtfInternalMessages.Size = new Size(193, 30);
+            chkmtfInternalMessages.TabIndex = 140;
+            chkmtfInternalMessages.Text = "Internal Messages";
+            chkmtfInternalMessages.UseVisualStyleBackColor = true;
+            // 
             // chkmtfResourceMessages
-            //
-            this.chkmtfResourceMessages.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfResourceMessages.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfResourceMessages.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfResourceMessages.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfResourceMessages.ImageIndex = 29;
-            this.chkmtfResourceMessages.Location = new System.Drawing.Point(16, 59);
-            this.chkmtfResourceMessages.Name = "chkmtfResourceMessages";
-            this.chkmtfResourceMessages.Size = new System.Drawing.Size(161, 24);
-            this.chkmtfResourceMessages.TabIndex = 139;
-            this.chkmtfResourceMessages.Text = "Resource Messages";
-            this.chkmtfResourceMessages.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfResourceMessages.Appearance = Appearance.Button;
+            chkmtfResourceMessages.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfResourceMessages.FlatStyle = FlatStyle.Flat;
+            chkmtfResourceMessages.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfResourceMessages.ImageIndex = 29;
+            chkmtfResourceMessages.Location = new Point(19, 73);
+            chkmtfResourceMessages.Name = "chkmtfResourceMessages";
+            chkmtfResourceMessages.Size = new Size(193, 29);
+            chkmtfResourceMessages.TabIndex = 139;
+            chkmtfResourceMessages.Text = "Resource Messages";
+            chkmtfResourceMessages.UseVisualStyleBackColor = true;
+            // 
             // chkmtfExceptionContent
-            //
-            this.chkmtfExceptionContent.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkmtfExceptionContent.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.chkmtfExceptionContent.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkmtfExceptionContent.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkmtfExceptionContent.ImageIndex = 22;
-            this.chkmtfExceptionContent.Location = new System.Drawing.Point(16, 89);
-            this.chkmtfExceptionContent.Name = "chkmtfExceptionContent";
-            this.chkmtfExceptionContent.Size = new System.Drawing.Size(161, 24);
-            this.chkmtfExceptionContent.TabIndex = 138;
-            this.chkmtfExceptionContent.Text = "Exception Content";
-            this.chkmtfExceptionContent.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkmtfExceptionContent.Appearance = Appearance.Button;
+            chkmtfExceptionContent.FlatAppearance.CheckedBackColor = Color.FromArgb(192, 255, 192);
+            chkmtfExceptionContent.FlatStyle = FlatStyle.Flat;
+            chkmtfExceptionContent.ImageAlign = ContentAlignment.MiddleRight;
+            chkmtfExceptionContent.ImageIndex = 22;
+            chkmtfExceptionContent.Location = new Point(19, 110);
+            chkmtfExceptionContent.Name = "chkmtfExceptionContent";
+            chkmtfExceptionContent.Size = new Size(193, 29);
+            chkmtfExceptionContent.TabIndex = 138;
+            chkmtfExceptionContent.Text = "Exception Content";
+            chkmtfExceptionContent.UseVisualStyleBackColor = true;
+            // 
             // label2
-            //
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(41, 87);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(173, 13);
-            this.label2.TabIndex = 107;
-            this.label2.Text = "Exclude higher indexes than:";
-            //
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(49, 107);
+            label2.Name = "label2";
+            label2.Size = new Size(173, 13);
+            label2.TabIndex = 107;
+            label2.Text = "Exclude higher indexes than:";
+            // 
             // txtExcludeAllAboveThisIndex
-            //
-            this.txtExcludeAllAboveThisIndex.Enabled = false;
-            this.txtExcludeAllAboveThisIndex.Location = new System.Drawing.Point(215, 84);
-            this.txtExcludeAllAboveThisIndex.Name = "txtExcludeAllAboveThisIndex";
-            this.txtExcludeAllAboveThisIndex.Size = new System.Drawing.Size(89, 21);
-            this.txtExcludeAllAboveThisIndex.TabIndex = 106;
-            this.txtExcludeAllAboveThisIndex.TextChanged += new System.EventHandler(this.ExcludeAllAboveThisIndex_TextChanged);
-            //
+            // 
+            txtExcludeAllAboveThisIndex.Enabled = false;
+            txtExcludeAllAboveThisIndex.Location = new Point(258, 103);
+            txtExcludeAllAboveThisIndex.Name = "txtExcludeAllAboveThisIndex";
+            txtExcludeAllAboveThisIndex.Size = new Size(107, 21);
+            txtExcludeAllAboveThisIndex.TabIndex = 106;
+            txtExcludeAllAboveThisIndex.TextChanged += ExcludeAllAboveThisIndex_TextChanged;
+            // 
             // txtExcludeAllBelowThisIndex
-            //
-            this.txtExcludeAllBelowThisIndex.Enabled = false;
-            this.txtExcludeAllBelowThisIndex.Location = new System.Drawing.Point(215, 52);
-            this.txtExcludeAllBelowThisIndex.Name = "txtExcludeAllBelowThisIndex";
-            this.txtExcludeAllBelowThisIndex.Size = new System.Drawing.Size(89, 21);
-            this.txtExcludeAllBelowThisIndex.TabIndex = 104;
-            this.txtExcludeAllBelowThisIndex.TextChanged += new System.EventHandler(this.ExcludeAllBelowThisIndex_TextChanged);
-            //
+            // 
+            txtExcludeAllBelowThisIndex.Enabled = false;
+            txtExcludeAllBelowThisIndex.Location = new Point(258, 64);
+            txtExcludeAllBelowThisIndex.Name = "txtExcludeAllBelowThisIndex";
+            txtExcludeAllBelowThisIndex.Size = new Size(107, 21);
+            txtExcludeAllBelowThisIndex.TabIndex = 104;
+            txtExcludeAllBelowThisIndex.TextChanged += ExcludeAllBelowThisIndex_TextChanged;
+            // 
             // chkEnableIndexFilter
-            //
-            this.chkEnableIndexFilter.AutoSize = true;
-            this.chkEnableIndexFilter.Location = new System.Drawing.Point(7, 31);
-            this.chkEnableIndexFilter.Name = "chkEnableIndexFilter";
-            this.chkEnableIndexFilter.Size = new System.Drawing.Size(116, 17);
-            this.chkEnableIndexFilter.TabIndex = 108;
-            this.chkEnableIndexFilter.Text = "Use Index Filter";
-            this.chkEnableIndexFilter.UseVisualStyleBackColor = true;
-            this.chkEnableIndexFilter.CheckedChanged += new System.EventHandler(this.EnableIndexFilter_CheckedChanged);
-            //
+            // 
+            chkEnableIndexFilter.AutoSize = true;
+            chkEnableIndexFilter.Location = new Point(8, 38);
+            chkEnableIndexFilter.Name = "chkEnableIndexFilter";
+            chkEnableIndexFilter.Size = new Size(116, 17);
+            chkEnableIndexFilter.TabIndex = 108;
+            chkEnableIndexFilter.Text = "Use Index Filter";
+            chkEnableIndexFilter.UseVisualStyleBackColor = true;
+            chkEnableIndexFilter.CheckedChanged += EnableIndexFilter_CheckedChanged;
+            // 
             // label1
-            //
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(41, 55);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(168, 13);
-            this.label1.TabIndex = 105;
-            this.label1.Text = "Exclude lower indexes than:";
-            //
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(49, 68);
+            label1.Name = "label1";
+            label1.Size = new Size(168, 13);
+            label1.TabIndex = 105;
+            label1.Text = "Exclude lower indexes than:";
+            // 
             // tabPage4
-            //
-            this.tabPage4.Controls.Add(this.txtFilterExtension);
-            this.tabPage4.Controls.Add(this.chkUseFilterOnLoad);
-            this.tabPage4.Controls.Add(this.lblSaveData);
-            this.tabPage4.Controls.Add(this.btnRefreshFilterDir);
-            this.tabPage4.Controls.Add(this.txtFilterFilename);
-            this.tabPage4.Controls.Add(this.txtFilterDirectory);
-            this.tabPage4.Controls.Add(this.groupBox1);
-            this.tabPage4.Controls.Add(this.lbxAllMatchedFilters);
-            this.tabPage4.Controls.Add(this.chkAllowOverwrite);
-            this.tabPage4.Controls.Add(this.btnLoadFilterConfiguration);
-            this.tabPage4.Controls.Add(this.btnSaveFilterConfiguration);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(497, 339);
-            this.tabPage4.TabIndex = 4;
-            this.tabPage4.Text = "Load / Save";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            //
+            // 
+            tabPage4.Controls.Add(txtFilterExtension);
+            tabPage4.Controls.Add(chkUseFilterOnLoad);
+            tabPage4.Controls.Add(lblSaveData);
+            tabPage4.Controls.Add(btnRefreshFilterDir);
+            tabPage4.Controls.Add(txtFilterFilename);
+            tabPage4.Controls.Add(txtFilterDirectory);
+            tabPage4.Controls.Add(groupBox1);
+            tabPage4.Controls.Add(lbxAllMatchedFilters);
+            tabPage4.Controls.Add(chkAllowOverwrite);
+            tabPage4.Controls.Add(btnLoadFilterConfiguration);
+            tabPage4.Controls.Add(btnSaveFilterConfiguration);
+            tabPage4.Location = new Point(4, 22);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Padding = new Padding(3);
+            tabPage4.Size = new Size(598, 423);
+            tabPage4.TabIndex = 4;
+            tabPage4.Text = "Load / Save";
+            tabPage4.UseVisualStyleBackColor = true;
+            // 
             // txtFilterExtension
-            //
-            this.txtFilterExtension.Location = new System.Drawing.Point(411, 65);
-            this.txtFilterExtension.Name = "txtFilterExtension";
-            this.txtFilterExtension.ReadOnly = true;
-            this.txtFilterExtension.Size = new System.Drawing.Size(66, 21);
-            this.txtFilterExtension.TabIndex = 118;
-            //
+            // 
+            txtFilterExtension.Location = new Point(493, 80);
+            txtFilterExtension.Name = "txtFilterExtension";
+            txtFilterExtension.ReadOnly = true;
+            txtFilterExtension.Size = new Size(79, 21);
+            txtFilterExtension.TabIndex = 118;
+            // 
             // chkUseFilterOnLoad
-            //
-            this.chkUseFilterOnLoad.AutoSize = true;
-            this.chkUseFilterOnLoad.Location = new System.Drawing.Point(7, 212);
-            this.chkUseFilterOnLoad.Name = "chkUseFilterOnLoad";
-            this.chkUseFilterOnLoad.Size = new System.Drawing.Size(238, 17);
-            this.chkUseFilterOnLoad.TabIndex = 117;
-            this.chkUseFilterOnLoad.Text = "Attempt to load this filter on start up.";
-            this.chkUseFilterOnLoad.UseVisualStyleBackColor = true;
-            this.chkUseFilterOnLoad.CheckedChanged += new System.EventHandler(this.UseFilterOnLoad_CheckedChanged);
-            //
+            // 
+            chkUseFilterOnLoad.AutoSize = true;
+            chkUseFilterOnLoad.Location = new Point(8, 261);
+            chkUseFilterOnLoad.Name = "chkUseFilterOnLoad";
+            chkUseFilterOnLoad.Size = new Size(238, 17);
+            chkUseFilterOnLoad.TabIndex = 117;
+            chkUseFilterOnLoad.Text = "Attempt to load this filter on start up.";
+            chkUseFilterOnLoad.UseVisualStyleBackColor = true;
+            chkUseFilterOnLoad.CheckedChanged += UseFilterOnLoad_CheckedChanged;
+            // 
             // lblSaveData
-            //
-            this.lblSaveData.AutoSize = true;
-            this.lblSaveData.Location = new System.Drawing.Point(6, 45);
-            this.lblSaveData.Name = "lblSaveData";
-            this.lblSaveData.Size = new System.Drawing.Size(41, 13);
-            this.lblSaveData.TabIndex = 116;
-            this.lblSaveData.Text = "label6";
-            //
+            // 
+            lblSaveData.AutoSize = true;
+            lblSaveData.Location = new Point(7, 55);
+            lblSaveData.Name = "lblSaveData";
+            lblSaveData.Size = new Size(41, 13);
+            lblSaveData.TabIndex = 116;
+            lblSaveData.Text = "label6";
+            // 
             // btnRefreshFilterDir
-            //
-            this.btnRefreshFilterDir.Location = new System.Drawing.Point(307, 96);
-            this.btnRefreshFilterDir.Name = "btnRefreshFilterDir";
-            this.btnRefreshFilterDir.Size = new System.Drawing.Size(170, 23);
-            this.btnRefreshFilterDir.TabIndex = 115;
-            this.btnRefreshFilterDir.Text = "Refresh";
-            this.btnRefreshFilterDir.UseVisualStyleBackColor = true;
-            this.btnRefreshFilterDir.Click += new System.EventHandler(this.Refresh_Click);
-            //
+            // 
+            btnRefreshFilterDir.Location = new Point(368, 118);
+            btnRefreshFilterDir.Name = "btnRefreshFilterDir";
+            btnRefreshFilterDir.Size = new Size(204, 28);
+            btnRefreshFilterDir.TabIndex = 115;
+            btnRefreshFilterDir.Text = "Refresh";
+            btnRefreshFilterDir.UseVisualStyleBackColor = true;
+            btnRefreshFilterDir.Click += Refresh_Click;
+            // 
             // txtFilterFilename
-            //
-            this.txtFilterFilename.Location = new System.Drawing.Point(307, 65);
-            this.txtFilterFilename.Name = "txtFilterFilename";
-            this.txtFilterFilename.Size = new System.Drawing.Size(98, 21);
-            this.txtFilterFilename.TabIndex = 114;
-            this.txtFilterFilename.TextChanged += new System.EventHandler(this.FilterFilename_TextChanged);
-            //
+            // 
+            txtFilterFilename.Location = new Point(368, 80);
+            txtFilterFilename.Name = "txtFilterFilename";
+            txtFilterFilename.Size = new Size(118, 21);
+            txtFilterFilename.TabIndex = 114;
+            txtFilterFilename.TextChanged += FilterFilename_TextChanged;
+            // 
             // txtFilterDirectory
-            //
-            this.txtFilterDirectory.Location = new System.Drawing.Point(6, 21);
-            this.txtFilterDirectory.Name = "txtFilterDirectory";
-            this.txtFilterDirectory.ReadOnly = true;
-            this.txtFilterDirectory.Size = new System.Drawing.Size(471, 21);
-            this.txtFilterDirectory.TabIndex = 113;
-            //
+            // 
+            txtFilterDirectory.Location = new Point(7, 26);
+            txtFilterDirectory.Name = "txtFilterDirectory";
+            txtFilterDirectory.ReadOnly = true;
+            txtFilterDirectory.Size = new Size(565, 21);
+            txtFilterDirectory.TabIndex = 113;
+            // 
             // groupBox1
-            //
-            this.groupBox1.Controls.Add(this.chkSaveModules);
-            this.groupBox1.Controls.Add(this.chkSaveClassLocationInfo);
-            this.groupBox1.Controls.Add(this.chkSaveLocationInformation);
-            this.groupBox1.Controls.Add(this.chkSaveIncludeThreads);
-            this.groupBox1.Location = new System.Drawing.Point(7, 246);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(470, 74);
-            this.groupBox1.TabIndex = 111;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Include this filter information:";
-            //
+            // 
+            groupBox1.Controls.Add(chkSaveModules);
+            groupBox1.Controls.Add(chkSaveClassLocationInfo);
+            groupBox1.Controls.Add(chkSaveLocationInformation);
+            groupBox1.Controls.Add(chkSaveIncludeThreads);
+            groupBox1.Location = new Point(8, 303);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(564, 91);
+            groupBox1.TabIndex = 111;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Include this filter information:";
+            // 
             // chkSaveModules
-            //
-            this.chkSaveModules.AutoSize = true;
-            this.chkSaveModules.Location = new System.Drawing.Point(6, 43);
-            this.chkSaveModules.Name = "chkSaveModules";
-            this.chkSaveModules.Size = new System.Drawing.Size(170, 17);
-            this.chkSaveModules.TabIndex = 3;
-            this.chkSaveModules.Text = "Save Module Information";
-            this.chkSaveModules.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkSaveModules.AutoSize = true;
+            chkSaveModules.Location = new Point(7, 53);
+            chkSaveModules.Name = "chkSaveModules";
+            chkSaveModules.Size = new Size(170, 17);
+            chkSaveModules.TabIndex = 3;
+            chkSaveModules.Text = "Save Module Information";
+            chkSaveModules.UseVisualStyleBackColor = true;
+            // 
             // chkSaveClassLocationInfo
-            //
-            this.chkSaveClassLocationInfo.AutoSize = true;
-            this.chkSaveClassLocationInfo.Location = new System.Drawing.Point(226, 43);
-            this.chkSaveClassLocationInfo.Name = "chkSaveClassLocationInfo";
-            this.chkSaveClassLocationInfo.Size = new System.Drawing.Size(212, 17);
-            this.chkSaveClassLocationInfo.TabIndex = 2;
-            this.chkSaveClassLocationInfo.Text = "Save Class Location Information";
-            this.chkSaveClassLocationInfo.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkSaveClassLocationInfo.AutoSize = true;
+            chkSaveClassLocationInfo.Location = new Point(271, 53);
+            chkSaveClassLocationInfo.Name = "chkSaveClassLocationInfo";
+            chkSaveClassLocationInfo.Size = new Size(212, 17);
+            chkSaveClassLocationInfo.TabIndex = 2;
+            chkSaveClassLocationInfo.Text = "Save Class Location Information";
+            chkSaveClassLocationInfo.UseVisualStyleBackColor = true;
+            // 
             // chkSaveLocationInformation
-            //
-            this.chkSaveLocationInformation.AutoSize = true;
-            this.chkSaveLocationInformation.Location = new System.Drawing.Point(226, 20);
-            this.chkSaveLocationInformation.Name = "chkSaveLocationInformation";
-            this.chkSaveLocationInformation.Size = new System.Drawing.Size(195, 17);
-            this.chkSaveLocationInformation.TabIndex = 1;
-            this.chkSaveLocationInformation.Text = "Save All Location Information";
-            this.chkSaveLocationInformation.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkSaveLocationInformation.AutoSize = true;
+            chkSaveLocationInformation.Location = new Point(271, 25);
+            chkSaveLocationInformation.Name = "chkSaveLocationInformation";
+            chkSaveLocationInformation.Size = new Size(195, 17);
+            chkSaveLocationInformation.TabIndex = 1;
+            chkSaveLocationInformation.Text = "Save All Location Information";
+            chkSaveLocationInformation.UseVisualStyleBackColor = true;
+            // 
             // chkSaveIncludeThreads
-            //
-            this.chkSaveIncludeThreads.AutoSize = true;
-            this.chkSaveIncludeThreads.Location = new System.Drawing.Point(6, 20);
-            this.chkSaveIncludeThreads.Name = "chkSaveIncludeThreads";
-            this.chkSaveIncludeThreads.Size = new System.Drawing.Size(170, 17);
-            this.chkSaveIncludeThreads.TabIndex = 0;
-            this.chkSaveIncludeThreads.Text = "Save Thread Information";
-            this.chkSaveIncludeThreads.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkSaveIncludeThreads.AutoSize = true;
+            chkSaveIncludeThreads.Location = new Point(7, 25);
+            chkSaveIncludeThreads.Name = "chkSaveIncludeThreads";
+            chkSaveIncludeThreads.Size = new Size(170, 17);
+            chkSaveIncludeThreads.TabIndex = 0;
+            chkSaveIncludeThreads.Text = "Save Thread Information";
+            chkSaveIncludeThreads.UseVisualStyleBackColor = true;
+            // 
             // lbxAllMatchedFilters
-            //
-            this.lbxAllMatchedFilters.FormattingEnabled = true;
-            this.lbxAllMatchedFilters.Location = new System.Drawing.Point(6, 64);
-            this.lbxAllMatchedFilters.Name = "lbxAllMatchedFilters";
-            this.lbxAllMatchedFilters.Size = new System.Drawing.Size(295, 134);
-            this.lbxAllMatchedFilters.TabIndex = 110;
-            this.lbxAllMatchedFilters.SelectedIndexChanged += new System.EventHandler(this.AllMatchedFilters_SelectedIndexChanged);
-            //
+            // 
+            lbxAllMatchedFilters.FormattingEnabled = true;
+            lbxAllMatchedFilters.ItemHeight = 13;
+            lbxAllMatchedFilters.Location = new Point(7, 79);
+            lbxAllMatchedFilters.Name = "lbxAllMatchedFilters";
+            lbxAllMatchedFilters.Size = new Size(354, 160);
+            lbxAllMatchedFilters.TabIndex = 110;
+            lbxAllMatchedFilters.SelectedIndexChanged += AllMatchedFilters_SelectedIndexChanged;
+            // 
             // chkAllowOverwrite
-            //
-            this.chkAllowOverwrite.AutoSize = true;
-            this.chkAllowOverwrite.Location = new System.Drawing.Point(307, 183);
-            this.chkAllowOverwrite.Name = "chkAllowOverwrite";
-            this.chkAllowOverwrite.Size = new System.Drawing.Size(116, 17);
-            this.chkAllowOverwrite.TabIndex = 109;
-            this.chkAllowOverwrite.Text = "Allow Overwrite";
-            this.chkAllowOverwrite.UseVisualStyleBackColor = true;
-            //
+            // 
+            chkAllowOverwrite.AutoSize = true;
+            chkAllowOverwrite.Location = new Point(368, 225);
+            chkAllowOverwrite.Name = "chkAllowOverwrite";
+            chkAllowOverwrite.Size = new Size(116, 17);
+            chkAllowOverwrite.TabIndex = 109;
+            chkAllowOverwrite.Text = "Allow Overwrite";
+            chkAllowOverwrite.UseVisualStyleBackColor = true;
+            // 
             // btnLoadFilterConfiguration
-            //
-            this.btnLoadFilterConfiguration.Location = new System.Drawing.Point(307, 154);
-            this.btnLoadFilterConfiguration.Name = "btnLoadFilterConfiguration";
-            this.btnLoadFilterConfiguration.Size = new System.Drawing.Size(170, 23);
-            this.btnLoadFilterConfiguration.TabIndex = 108;
-            this.btnLoadFilterConfiguration.Text = "Load";
-            this.btnLoadFilterConfiguration.UseVisualStyleBackColor = true;
-            this.btnLoadFilterConfiguration.Click += new System.EventHandler(this.LoadFilterConfiguration_Click_1);
-            //
+            // 
+            btnLoadFilterConfiguration.Location = new Point(368, 190);
+            btnLoadFilterConfiguration.Name = "btnLoadFilterConfiguration";
+            btnLoadFilterConfiguration.Size = new Size(204, 28);
+            btnLoadFilterConfiguration.TabIndex = 108;
+            btnLoadFilterConfiguration.Text = "Load";
+            btnLoadFilterConfiguration.UseVisualStyleBackColor = true;
+            btnLoadFilterConfiguration.Click += LoadFilterConfiguration_Click_1;
+            // 
             // btnSaveFilterConfiguration
-            //
-            this.btnSaveFilterConfiguration.Location = new System.Drawing.Point(307, 125);
-            this.btnSaveFilterConfiguration.Name = "btnSaveFilterConfiguration";
-            this.btnSaveFilterConfiguration.Size = new System.Drawing.Size(170, 23);
-            this.btnSaveFilterConfiguration.TabIndex = 107;
-            this.btnSaveFilterConfiguration.Text = "Save";
-            this.btnSaveFilterConfiguration.UseVisualStyleBackColor = true;
-            this.btnSaveFilterConfiguration.Click += new System.EventHandler(this.SaveFilterConfiguration_Click);
-            //
+            // 
+            btnSaveFilterConfiguration.Location = new Point(368, 154);
+            btnSaveFilterConfiguration.Name = "btnSaveFilterConfiguration";
+            btnSaveFilterConfiguration.Size = new Size(204, 28);
+            btnSaveFilterConfiguration.TabIndex = 107;
+            btnSaveFilterConfiguration.Text = "Save";
+            btnSaveFilterConfiguration.UseVisualStyleBackColor = true;
+            btnSaveFilterConfiguration.Click += SaveFilterConfiguration_Click;
+            // 
             // btnSetDefaultFilter
-            //
-            this.btnSetDefaultFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSetDefaultFilter.Location = new System.Drawing.Point(181, 376);
-            this.btnSetDefaultFilter.Name = "btnSetDefaultFilter";
-            this.btnSetDefaultFilter.Size = new System.Drawing.Size(72, 23);
-            this.btnSetDefaultFilter.TabIndex = 107;
-            this.btnSetDefaultFilter.Text = "Default";
-            this.btnSetDefaultFilter.UseVisualStyleBackColor = true;
-            this.btnSetDefaultFilter.Click += new System.EventHandler(this.SetDefaultFilter_Click);
-            //
+            // 
+            btnSetDefaultFilter.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSetDefaultFilter.Location = new Point(211, 472);
+            btnSetDefaultFilter.Name = "btnSetDefaultFilter";
+            btnSetDefaultFilter.Size = new Size(87, 28);
+            btnSetDefaultFilter.TabIndex = 107;
+            btnSetDefaultFilter.Text = "Default";
+            btnSetDefaultFilter.UseVisualStyleBackColor = true;
+            btnSetDefaultFilter.Click += SetDefaultFilter_Click;
+            // 
             // cboQuickLoad
-            //
-            this.cboQuickLoad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboQuickLoad.FormattingEnabled = true;
-            this.cboQuickLoad.Location = new System.Drawing.Point(6, 376);
-            this.cboQuickLoad.Name = "cboQuickLoad";
-            this.cboQuickLoad.Size = new System.Drawing.Size(161, 21);
-            this.cboQuickLoad.TabIndex = 108;
-            this.cboQuickLoad.SelectedIndexChanged += new System.EventHandler(this.QuickLoad_SelectedIndexChanged);
-            //
+            // 
+            cboQuickLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            cboQuickLoad.FormattingEnabled = true;
+            cboQuickLoad.Location = new Point(7, 472);
+            cboQuickLoad.Name = "cboQuickLoad";
+            cboQuickLoad.Size = new Size(187, 23);
+            cboQuickLoad.TabIndex = 108;
+            cboQuickLoad.SelectedIndexChanged += QuickLoad_SelectedIndexChanged;
+            // 
             // frmProcViewFilter
-            //
-            this.AcceptButton = this.btnOK;
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(512, 425);
-            this.Controls.Add(this.cboQuickLoad);
-            this.Controls.Add(this.btnSetDefaultFilter);
-            this.Controls.Add(this.tbcFilterDetails);
-            this.Controls.Add(this.btnLoadMexDefaultFilter);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnOK);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(868, 452);
-            this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(520, 452);
-            this.Name = "frmProcViewFilter";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Filter Options.";
-            this.tbcFilterDetails.ResumeLayout(false);
-            this.tabOptionsEvents.ResumeLayout(false);
-            this.tabOptionsEvents.PerformLayout();
-            this.pnlFilterButtons.ResumeLayout(false);
-            this.pnlFilterButtons.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.pnlDockSplitContainer.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.ResumeLayout(false);
-            this.tabLocationFiltering.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            this.splitContainer2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ResumeLayout(false);
+            // 
+            AcceptButton = btnOK;
+            AutoScaleBaseSize = new Size(6, 16);
+            CancelButton = btnCancel;
+            ClientSize = new Size(608, 517);
+            Controls.Add(cboQuickLoad);
+            Controls.Add(btnSetDefaultFilter);
+            Controls.Add(tbcFilterDetails);
+            Controls.Add(btnLoadMexDefaultFilter);
+            Controls.Add(btnCancel);
+            Controls.Add(btnOK);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            MaximumSize = new Size(1042, 556);
+            MinimizeBox = false;
+            MinimumSize = new Size(624, 556);
+            Name = "frmProcViewFilter";
+            SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Filter Options.";
+            tbcFilterDetails.ResumeLayout(false);
+            tabOptionsEvents.ResumeLayout(false);
+            tabOptionsEvents.PerformLayout();
+            pnlFilterButtons.ResumeLayout(false);
+            pnlFilterButtons.PerformLayout();
+            tabPage2.ResumeLayout(false);
+            pnlDockSplitContainer.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            tabLocationFiltering.ResumeLayout(false);
+            splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+            splitContainer2.ResumeLayout(false);
+            tabPage3.ResumeLayout(false);
+            tabPage3.PerformLayout();
+            panel2.ResumeLayout(false);
+            tabPage4.ResumeLayout(false);
+            tabPage4.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion Windows Form Designer generated code
@@ -1344,15 +1348,15 @@ namespace Plisky.FlimFlam {
 
             //Bilge.Assert(File.Exists(filename), "The filename selected from the list of filteres did not exist.  This should not be possible");
 
-            this.InitialiseFromExistingFilter(ViewFilter.LoadFilterFromFile(filename));
+            InitialiseFromExistingFilter(ViewFilter.LoadFilterFromFile(filename));
             tbcFilterDetails.SelectedTab = tabOptionsEvents;
         }
 
         private void LoadMexDefaultFilter_Click(object sender, EventArgs e) {
-            ViewFilter vf = new ViewFilter();
-            this.InitialiseFromExistingFilter(vf);
-            this.DialogResult = DialogResult.OK;
-            this.FullRefreshRequired = true;
+            var vf = new ViewFilter();
+            InitialiseFromExistingFilter(vf);
+            DialogResult = DialogResult.OK;
+            FullRefreshRequired = true;
             Close();
         }
 
@@ -1366,15 +1370,15 @@ namespace Plisky.FlimFlam {
 
         private void SaveFilterConfiguration_Click(object sender, EventArgs e) {
             string fileName = Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, txtFilterFilename.Text + MexCore.TheCore.Options.FilterExtension);
-            ViewFilter af = GetFilterFromDialog();
+            var af = GetFilterFromDialog();
             ViewFilter.SaveFilterToFile(fileName, af, chkSaveIncludeThreads.Checked, chkSaveModules.Checked, chkSaveLocationInformation.Checked, chkSaveClassLocationInfo.Checked);
             btnSaveFilterConfiguration.Enabled = false;
             RefreshFiltersList();
         }
 
         private void SetDefaultFilter_Click(object sender, EventArgs e) {
-            ViewFilter vf = new ViewFilter();
-            this.InitialiseFromExistingFilter(vf);
+            var vf = new ViewFilter();
+            InitialiseFromExistingFilter(vf);
             tbcFilterDetails.SelectedTab = tabOptionsEvents;
         }
 
@@ -1385,9 +1389,9 @@ namespace Plisky.FlimFlam {
 
             if (File.Exists(filterName)) {
                 var vf = ViewFilter.LoadFilterFromFile(filterName);
-                this.InitialiseFromExistingFilter(vf);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                InitialiseFromExistingFilter(vf);
+                DialogResult = DialogResult.OK;
+                Close();
             } else {
                 MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.FilterFileNotFound, UserMessageType.WarningMessage, filterName);
             }
@@ -1400,11 +1404,9 @@ namespace Plisky.FlimFlam {
         private void UseFilterOnLoad_CheckedChanged(object sender, EventArgs e) {
             if (!autochanging) {
                 // when this is changed if a filter is selected then it should be loaded when Mex starts.
-                if (chkUseFilterOnLoad.Checked) {
-                    MexCore.TheCore.Options.FilterFilenameToLoadOnStartup = Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, txtFilterFilename.Text + MexCore.TheCore.Options.FilterExtension);
-                } else {
-                    MexCore.TheCore.Options.FilterFilenameToLoadOnStartup = "";
-                }
+                MexCore.TheCore.Options.FilterFilenameToLoadOnStartup = chkUseFilterOnLoad.Checked
+                    ? Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, txtFilterFilename.Text + MexCore.TheCore.Options.FilterExtension)
+                    : "";
             }
         }
 
@@ -1433,7 +1435,7 @@ namespace Plisky.FlimFlam {
             if (lbxAllMatchedFilters.SelectedItem != null) {
                 txtFilterFilename.Text = lbxAllMatchedFilters.SelectedItem.ToString();
                 chkUseFilterOnLoad.Enabled = true;
-                chkUseFilterOnLoad.Checked = (MexCore.TheCore.Options.FilterFilenameToLoadOnStartup == Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, txtFilterFilename.Text + MexCore.TheCore.Options.FilterExtension));
+                chkUseFilterOnLoad.Checked = MexCore.TheCore.Options.FilterFilenameToLoadOnStartup == Path.Combine(MexCore.TheCore.Options.FilterAndHighlightStoreDirectory, txtFilterFilename.Text + MexCore.TheCore.Options.FilterExtension);
             } else {
                 chkUseFilterOnLoad.Enabled = false;
             }
@@ -1448,8 +1450,8 @@ namespace Plisky.FlimFlam {
 
             foreach (string s in matchedFilters) {
                 string nextOne = Path.GetFileNameWithoutExtension(s);
-                lbxAllMatchedFilters.Items.Add(nextOne);
-                cboQuickLoad.Items.Add(nextOne);
+                _ = lbxAllMatchedFilters.Items.Add(nextOne);
+                _ = cboQuickLoad.Items.Add(nextOne);
             }
 
             cboQuickLoad.Text = " > Select A Filter To Quick Load <";
@@ -1459,8 +1461,7 @@ namespace Plisky.FlimFlam {
         }
 
         private void ExcludeAllAboveThisIndex_TextChanged(object sender, EventArgs e) {
-            int idxVal;
-            if (!int.TryParse(txtExcludeAllAboveThisIndex.Text, out idxVal) || (idxVal < 0)) {
+            if (!int.TryParse(txtExcludeAllAboveThisIndex.Text, out int idxVal) || (idxVal < 0)) {
                 // error.
                 txtExcludeAllAboveThisIndex.BackColor = Color.IndianRed;
                 higherIndexValue = int.MaxValue;
@@ -1471,8 +1472,7 @@ namespace Plisky.FlimFlam {
         }
 
         private void ExcludeAllBelowThisIndex_TextChanged(object sender, EventArgs e) {
-            int idxVal;
-            if (!int.TryParse(txtExcludeAllBelowThisIndex.Text, out idxVal) || (idxVal < 0)) {
+            if (!int.TryParse(txtExcludeAllBelowThisIndex.Text, out int idxVal) || (idxVal < 0)) {
                 // error.
                 txtExcludeAllBelowThisIndex.BackColor = Color.IndianRed;
                 lowerIndexValue = int.MinValue;

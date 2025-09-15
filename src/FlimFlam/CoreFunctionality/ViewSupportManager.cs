@@ -19,7 +19,8 @@ using TimerPartialInstancedataStructure = System.Collections.Generic.Dictionary<
 /// </summary>
 internal class ViewSupportManager {
 
-    //public Bilge b;
+    public Bilge b = new Bilge("Plisky.FlimFlam.ViewSupportManager");
+
     internal enum ExtendedDetailsMode {
         Exception, LogMessage, Error, AssertionFailure,
         ImageData
@@ -47,7 +48,7 @@ internal class ViewSupportManager {
 
     internal string SelectedTracedAppName {
         get {
-            // todo : cache for eprf
+            // todo : cache for perf
             return MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx).MachineName + "\\" +
                    MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx).ProcessName;
         }
@@ -69,8 +70,6 @@ internal class ViewSupportManager {
         // Todo : Cache for perf ??
 
         get {
-            ////Bilge.Assert(m_selectedTracedApp >= 0, "Invalid selected traced application");
-
             return new ProcessSummary(MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx));
         }
     }
@@ -83,12 +82,11 @@ internal class ViewSupportManager {
             if (SelectedTracedAppIdx == -1) { return false; } // Short circuit when its never been set up.
             return MexCore.TheCore.DataManager.IsValidTracedApplicationIndex(SelectedTracedAppIdx);  // Check to see its still valid
         }
-    } // end IsCurrentSelectedAppValid
+    } 
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    internal void ShutDown() {
-        // close resources and die nicely
-        //Bilge.Log("MexViewer::ViewSupportManager::Shutdown requested, ViewSupport is closing");
+    internal void ShutDown() {        
+        b.Info.Log("MexViewer::ViewSupportManager::Shutdown requested, ViewSupport is closing");
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
@@ -129,9 +127,12 @@ internal class ViewSupportManager {
     private UserMessages lastMessageWritten;
 
     internal void AddUserNotificationMessageByIndex(UserMessages msg, UserMessageType mstype, string parameter) {
+        if (parameter == null) {
+            parameter = string.Empty;
+        }
         string theMsg;
         switch (msg) {
-            case UserMessages.UnhandledExceptionOccured: theMsg = "There was an unhandled exception in the application."; break;
+            case UserMessages.UnhandledExceptionOccured: theMsg = "There was an unhandled exception in the application. >"+parameter; break;
             case UserMessages.NoThreadsSelectedForView: theMsg = "No threads were selected, therefore the thread view could not be updated."; break;
             case UserMessages.ErrorDuringfileImport: theMsg = "There was an error during the file import.  The import did not succeed"; break;
             case UserMessages.CorruptStringFound: theMsg = "An entry scheduled for import was corrupt. Mex has thrown away this entry and continued."; break;
@@ -258,15 +259,16 @@ internal class ViewSupportManager {
         return result;
     }
 
-    internal List<string> GetAllModules() {
+    internal List<string> GetAllModules(int limit=-1) {
         #region entry code
         //Bilge.Assert(m_selectedTracedApp != -1, "MexViewer::ViewSupportManager::GetAllThreads >> Called while there was no selected application.  Cant return thread list when no application selected");
         //Bilge.Assert(MexCore.TheCore.DataManager.IsValidTracedApplicationIndex(m_selectedTracedApp), "MexViewer::ViewSupportManager::RefreshProcessView >> The index specified byt the currently selected application is out of range.  RefreshProcessView is trying to refresh an invalid process.");
         #endregion entry code
         //Bilge.Log("Mex::ViewSupportMAnager::GetAllModules >> Call made to retrieve module list for selected app " + m_selectedTracedApp);
 
+        int count = 0;
         var moduleList = new List<string>();
-
+        
         var ta = MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx);
 
         if (ta != null) {
@@ -274,8 +276,12 @@ internal class ViewSupportManager {
             ta.EventEntries.EventEntriesRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
             try {
                 foreach (EventEntry ee in ta.EventEntries) {
-                    if (!moduleList.Contains(ee.module)) {
+                    if (!string.IsNullOrEmpty(ee.module) && !moduleList.Contains(ee.module)) {
+                        count++;
                         moduleList.Add(ee.module);
+                        if ((limit > 0) && (count >= limit)) {
+                            break;
+                        }
                     }
                 }
             } finally {
@@ -285,7 +291,7 @@ internal class ViewSupportManager {
         return moduleList;
     }
 
-    internal List<string> GetAllAdditionalLocations() {
+    internal List<string> GetAllAdditionalLocations(int limit = -1) {
         #region entry code
         //Bilge.Assert(m_selectedTracedApp != -1, "GetAllAdditionalLocations >> Called while there was no selected application.  Cant return additional location list when no application selected");
         //Bilge.Assert(MexCore.TheCore.DataManager.IsValidTracedApplicationIndex(m_selectedTracedApp), "GetAllAdditionalLocations >> The index specified byt the currently selected application is out of range.  RefreshProcessView is trying to refresh an invalid process.");
@@ -293,14 +299,18 @@ internal class ViewSupportManager {
         //Bilge.Log("Mex::ViewSupportMAnager::GetAllAdditionalLocations >> Call made to retrieve module list for selected app " + m_selectedTracedApp);
 
         var additionalLocationsList = new List<string>();
-
+        int count = 0;
         var ta = MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx);
         if (ta != null) {
             ta.EventEntries.EventEntriesRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
             try {
                 foreach (EventEntry ee in ta.EventEntries) {
-                    if (!additionalLocationsList.Contains(ee.moreLocationData)) {
+                    if (!string.IsNullOrEmpty(ee.moreLocationData) && !additionalLocationsList.Contains(ee.moreLocationData)) {
                         additionalLocationsList.Add(ee.moreLocationData);
+                        count++;
+                        if ((limit > 0) && (count >= limit)) {
+                            break;
+                        }
                     }
                 }
             } finally {
@@ -347,7 +357,7 @@ internal class ViewSupportManager {
         }
 
         return result;
-    } //  End GetAdditionalLocationClassesFromAdditionalLocations
+    } 
 
     /// <summary>
     /// This method is called when the user wants to duplicate an entry to create a pseudo view.
@@ -450,7 +460,7 @@ internal class ViewSupportManager {
             ta.EventEntries.EventEntriesRWL.ReleaseReaderLock();
         }
         return result;
-    } // End GetMoreInfoForEventIndex method
+    } 
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     private string BeautifyDebugMessage(string msg) {
@@ -520,17 +530,7 @@ internal class ViewSupportManager {
             //Bilge.Log("MexViewer::ViewSupportManager::GetMoreInfoForEventIndex >> Looking backwards for trace info");
             tempOffset = offsetOfIndex;
 
-#if false // Disabled this - it didnt work as it couldnt cater for situations where in / in /out log / out occured.
-    // Move backwareds looking for a trace enter, if we find one we can say where we found this event.
-    while ((ta.EventEntries[tempOffset].cmdType != TraceCommandTypes.TraceMessageIn) && (tempOffset > 0)) {
-      tempOffset--;
-    }
-    if (tempOffset > 0) {
-      result += "\r\n\r\n Location : " + ta.EventEntries[tempOffset].DebugMessage;
-    } else {
-      result += "\r\n No trace information found.";
-    }
-#endif
+
         } finally {
             ta.EventEntries.EventEntriesRWL.ReleaseReaderLock();
         }

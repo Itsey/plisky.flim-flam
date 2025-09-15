@@ -1706,7 +1706,7 @@ namespace Plisky.FlimFlam {
             SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "MexOptionsScreen";
-            Load += new System.EventHandler(MexOptionsScreen_Load);
+            Load += new System.EventHandler(FrmMexOptionsScreen_Load);
             tabOptionsContainer.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
@@ -1906,7 +1906,7 @@ namespace Plisky.FlimFlam {
             //Bilge.CurrentTraceLevel = TraceLevel.Verbose;
         }
 
-        private void MexOptionsScreen_Load(object sender, EventArgs e) {
+        private void FrmMexOptionsScreen_Load(object sender, EventArgs e) {
             var b = new Button {
                 Text = "DBG:  Stream Output To Mex 8989",
                 Left = btnCancel.Left - 350,
@@ -1918,7 +1918,7 @@ namespace Plisky.FlimFlam {
         }
 
 #else
-    private void frmMexOptionsScreen_Load(object sender, EventArgs e) {
+    private void FrmMexOptionsScreen_Load(object sender, EventArgs e) {
     }
 
 #endif

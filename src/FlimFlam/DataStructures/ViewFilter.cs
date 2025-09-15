@@ -262,12 +262,12 @@ namespace Plisky.FlimFlam {
         /// <param name="incExS">if set to <c>true</c> [inc ex S].</param>
         /// <param name="incSecS">if set to <c>true</c> [inc sec S].</param>
         /// <param name="incSecE">if set to <c>true</c> [inc sec E].</param>
-        /// <param name="ResE">if set to <c>true</c> [res E].</param>
-        /// <param name="ResP">if set to <c>true</c> [res P].</param>
+        /// <param name="resE">if set to <c>true</c> [res E].</param>
+        /// <param name="resP">if set to <c>true</c> [res P].</param>
         /// <returns></returns>
         internal static uint GetFlagTypeByBools(bool incLogs, bool incVerbose, bool incInternal, bool incTin,
           bool incTout, bool incAss, bool incMor, bool incCmd, bool incErr,
-          bool incWarn, bool incExB, bool incExD, bool incExE, bool incExS, bool incSecS, bool incSecE, bool ResE, bool ResP) {
+          bool incWarn, bool incExB, bool incExD, bool incExE, bool incExS, bool incSecS, bool incSecE, bool resE, bool resP) {
             uint result = 0;
 
             if (incLogs) { result |= (uint)TraceCommandTypes.LogMessage; }
@@ -287,8 +287,8 @@ namespace Plisky.FlimFlam {
             if (incExS) { result |= (uint)TraceCommandTypes.ExcStart; }
             if (incSecS) { result |= (uint)TraceCommandTypes.SectionStart; }
             if (incSecE) { result |= (uint)TraceCommandTypes.SectionEnd; }
-            if (ResE) { result |= (uint)TraceCommandTypes.ResourceEat; }
-            if (ResP) { result |= (uint)TraceCommandTypes.ResourcePuke; }
+            if (resE) { result |= (uint)TraceCommandTypes.ResourceEat; }
+            if (resP) { result |= (uint)TraceCommandTypes.ResourcePuke; }
 
             return result;
         }
@@ -324,7 +324,7 @@ namespace Plisky.FlimFlam {
 
             #endregion entry code
 
-            if (m_readonly) {
+            if (readonlyView) {
                 //Bilge.Warning("Attempted update of filter when BeginFilterUpdate not been called");
                 return;
             }
@@ -366,8 +366,8 @@ namespace Plisky.FlimFlam {
             // Creates a default filter
 
             currentFilterIndex = GetNewFilterIndex();
-            m_readonly = true;
-            flagsForInclude = 0x0000FFFF; //0x00001C85;
+            readonlyView = true;
+            flagsForInclude = 0x00001C87;//0x0000FFFF; //
         }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace Plisky.FlimFlam {
 
         internal ViewFilter(uint flags, string[] include, string[] exclude) {
             currentFilterIndex = GetNewFilterIndex();
-            m_readonly = true;
+            readonlyView = true;
             flagsForInclude = flags;
 
             filterMoreComplexThanType = false;
@@ -525,7 +525,7 @@ namespace Plisky.FlimFlam {
 
             #endregion entry code
 
-            if (m_readonly) {
+            if (readonlyView) {
                 //Bilge.Warning("Attempted update of filter when BeginFilterUpdate not been called");
                 return;
             }
@@ -564,7 +564,7 @@ namespace Plisky.FlimFlam {
         /// </summary>
         internal void SetMessageTypeInclude(bool incLogs, bool incVerbose, bool incInternal, bool incTin,
           bool incTout, bool incAss, bool incMor, bool incCmd, bool incErr,
-          bool incWarn, bool incExB, bool incExD, bool incExE, bool incExS, bool incSecS, bool incSecE, bool ResE, bool ResP) {
+          bool incWarn, bool incExB, bool incExD, bool incExE, bool incExS, bool incSecS, bool incSecE, bool resE, bool resP) {
 
             #region entry code
 
@@ -572,12 +572,12 @@ namespace Plisky.FlimFlam {
 
             #endregion entry code
 
-            if (m_readonly) {
+            if (readonlyView) {
                 //Bilge.Warning("Attempted update of filter when BeginFilterUpdate not been called");
                 return;
             }
 
-            flagsForInclude = GetFlagTypeByBools(incLogs, incVerbose, incInternal, incTin, incTout, incAss, incMor, incCmd, incErr, incWarn, incExB, incExD, incExE, incExS, incSecS, incSecE, ResE, ResP);
+            flagsForInclude = GetFlagTypeByBools(incLogs, incVerbose, incInternal, incTin, incTout, incAss, incMor, incCmd, incErr, incWarn, incExB, incExD, incExE, incExS, incSecS, incSecE, resE, resP);
         } // End SetMessageTypeInclude
 
         internal void SetMessageTypeIncludeByType(TraceCommandTypes tct, bool newValue) {
@@ -875,16 +875,16 @@ namespace Plisky.FlimFlam {
 
         #region Filter index support - used for caching filters
 
-        private static uint ViewFilterIndexCount;
+        private static uint viewFilterIndexCount;
 
-        private bool m_readonly = true;
+        private bool readonlyView = true;
 
         internal void BeginFilterUpdate() {
-            m_readonly = false;
+            readonlyView = false;
         }
 
         internal void EndFilterUpdate() {
-            m_readonly = true;
+            readonlyView = true;
 
             // This is an optimisation that skips a tonne of checking in the default case for most pople most of the time.
             filterMoreComplexThanType = (excludedLocationsFull != null) || (excludedModules != null)
@@ -896,11 +896,11 @@ namespace Plisky.FlimFlam {
         private static uint GetNewFilterIndex() {
             // This will allocate a new filter  - not particularaly sophisticated but not used so
             try {
-                ViewFilterIndexCount++;
+                viewFilterIndexCount++;
             } catch (OverflowException) {
-                ViewFilterIndexCount = 1;
+                viewFilterIndexCount = 1;
             }
-            return ViewFilterIndexCount;
+            return viewFilterIndexCount;
         }
 
         #endregion Filter index support - used for caching filters

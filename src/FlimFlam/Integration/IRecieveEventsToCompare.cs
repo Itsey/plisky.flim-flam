@@ -15,6 +15,10 @@
             throw new NotImplementedException();
         }
 
+        public SingleOriginEvent GetEvent() {
+            return lastEvent;
+        }
+
         internal bool Compare(EventEntry toThis) {
             if (lastEvent==null) { return true; }
 

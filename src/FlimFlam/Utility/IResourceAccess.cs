@@ -1,13 +1,12 @@
-﻿namespace Plisky.FlimFlam { 
+﻿namespace Plisky.FlimFlam;  
 
-    internal interface IAppHelpAbstraction {
+internal interface IAppHelpAbstraction {
 
-        bool ConsumeURL(string url);
+    bool ConsumeURL(string url);
 
-        string GetAppBaseUrl();
+    string GetAppBaseUrl();
 
-        string GetAppUrl(string parameter);
+    string GetAppUrl(string parameter);
 
-        string GetRawResourceString(string identifier);
-    }
+    string GetRawResourceString(string identifier);
 }

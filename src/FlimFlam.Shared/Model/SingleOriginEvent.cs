@@ -49,7 +49,9 @@
                 Text = debugMessage.Substring(0, markerPoint);
             } else {
                 Text = debugMessage;
-                Details = string.Empty;
+                if (Details == null) {
+                    Details = string.Empty;
+                }
             }
         }
 

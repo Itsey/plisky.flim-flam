@@ -139,7 +139,9 @@ namespace Plisky.FlimFlam {
             get {
                 if ((PreferredName != null) && (PreferredName.Length > 0)) {
                     return PreferredName;
-                } else {
+                } else if (!string.IsNullOrEmpty(ProcessName)) {
+                    return ProcessName;
+                } else { 
                     return ProcessIdAsString;
                 }
             }

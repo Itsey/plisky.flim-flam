@@ -1515,16 +1515,16 @@ internal class ViewSupportManager {
                 var nta = MexCore.TheCore.DataManager.NonTracedApplicationEntries[(int)loop];
 
                 if (MexCore.TheCore.Options.RespectFilter && (!CurrentFilter.IncludeThisNonEventEntry(nta))) { continue; }
-                lvi = new ListViewItem(new string[] { nta.AssignedIndex.ToString(), nta.Pid.ToString(), nta.DebugEntry }) {
-                    Tag = nta.AssignedIndex
+                lvi = new ListViewItem(new string[] { nta.assignedIndex.ToString(), nta.Pid.ToString(), nta.DebugEntry }) {
+                    Tag = nta.assignedIndex
                 };
 
-                if (nta.ViewData.isValid && nta.ViewData.isHighlighted) {
-                    if (nta.ViewData.isBackgroundHighlighted) {
-                        lvi.BackColor = nta.ViewData.backgroundHighlightColor;
+                if (nta.viewData.isValid && nta.viewData.isHighlighted) {
+                    if (nta.viewData.isBackgroundHighlighted) {
+                        lvi.BackColor = nta.viewData.backgroundHighlightColor;
                     }
-                    if (nta.ViewData.isForegroundHighlighted) {
-                        lvi.ForeColor = nta.ViewData.foregroundHighlightColor;
+                    if (nta.viewData.isForegroundHighlighted) {
+                        lvi.ForeColor = nta.viewData.foregroundHighlightColor;
                     }
                 }
                 _ = entriesToAdd.Add(lvi);
@@ -2346,11 +2346,15 @@ internal class ViewSupportManager {
                         // This is the Data element that has the help link and the Target in it
                         llae.HelpURL = ee.debugMessage[2..];
                         //Bilge.Assert(ee.SecondaryMessage.StartsWith("T:"), "The Exception Data format seems to be corrupt.  Was expecting a Target to follow a Help URL");
-                        llae.TargetSite = ee.secondaryMessage[2..];
+                        if (ee.secondaryMessage.StartsWith("T:")) {
+                            llae.TargetSite = ee.secondaryMessage[2..];
+                        }
                     } else if (ee.debugMessage.StartsWith("R:")) {
                         llae.Source = ee.debugMessage[2..];
                         //Bilge.Assert(ee.SecondaryMessage.StartsWith("S:"), "The exception data format seems to be corrupt. Was expecting a StackTrace to follow a source");
-                        llae.StackTrace = ee.secondaryMessage[2..];
+                        if (ee.secondaryMessage.StartsWith("S:")) {
+                            llae.StackTrace = ee.secondaryMessage[2..];
+                        }
                     } else {
                         llae.MoreStuffAboutIt += Environment.NewLine + ee.debugMessage + Environment.NewLine + ee.secondaryMessage;
                     }
@@ -2463,16 +2467,16 @@ internal class ViewSupportManager {
             // to the if body. If i do respect the filter it will result to false and the includeThisEventEntry will get executed
             if ((!MexCore.TheCore.Options.RespectFilter) || CurrentFilter.IncludeThisNonEventEntry(nta)) {
                 if (CurrentHighlightOptions.ModifyNonTracedEventEntryForHighlight(nta)) {
-                    lvi.Text = nta.AssignedIndex.ToString();
+                    lvi.Text = nta.assignedIndex.ToString();
                     _ = lvi.SubItems.Add(nta.Pid.ToString());
                     _ = lvi.SubItems.Add(nta.DebugEntry);
 
-                    if (nta.ViewData.isValid && nta.ViewData.isHighlighted) {
-                        if (nta.ViewData.isBackgroundHighlighted) {
-                            lvi.BackColor = nta.ViewData.backgroundHighlightColor;
+                    if (nta.viewData.isValid && nta.viewData.isHighlighted) {
+                        if (nta.viewData.isBackgroundHighlighted) {
+                            lvi.BackColor = nta.viewData.backgroundHighlightColor;
                         }
-                        if (nta.ViewData.isForegroundHighlighted) {
-                            lvi.ForeColor = nta.ViewData.foregroundHighlightColor;
+                        if (nta.viewData.isForegroundHighlighted) {
+                            lvi.ForeColor = nta.viewData.foregroundHighlightColor;
                         }
                     }
                     _ = listViewToFillForTimedView.Items.Add(lvi);

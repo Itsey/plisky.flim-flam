@@ -111,30 +111,16 @@ public class IncomingMessageManager {
                     break;
                 }
 
-                // we have a piece of work
+                
+                
 
                 var nextEvent = (IncomingEventStore)incommingMsgQueue.Dequeue();
                 if (string.IsNullOrEmpty(nextEvent.MessageString)) {
                     continue;
                 }
-
                 MexCore.TheCore.LogEveryting("IncommingMessageManager", nextEvent.MessageString);
 
-                if (MexCore.TheCore.Options.RemoveDuplicatesOnImport) {
-                    bool dupeFound = true;
-                    while (dupeFound && (incommingMsgQueue.Count > 0)) {
-                        var potentialNext = (IncomingEventStore)incommingMsgQueue.Peek();
-                        if (potentialNext != null) {
-                            dupeFound = potentialNext.Equals(nextEvent);
-                            if (dupeFound) {
-                                // Throw the dupe away.
-                                if (incommingMsgQueue.Count > 0) {
-                                    incommingMsgQueue.Dequeue();
-                                }
-                            }
-                        }
-                    }
-                }
+                RemoveDuplicatesOnImport(nextEvent);
 
                 var rae = new RawApplicationEvent() {
                     ArrivalTime = nextEvent.TimeRecieved,
@@ -145,58 +131,19 @@ public class IncomingMessageManager {
                 };
 
                 if (dualMode) {
-                    // DUAL MODE
-
+                    // Dual mode is to support the new parser.
                     dp.AddRawEvent(rae);
-
-                    // END DUAL MODE
                 }
 
                 EventEntry ee = null;
                 string tempMachineName = null;
                 bool legacyMode = false;
                 bool isCommand = false;
-                // firstly is this a truncation ?
+                
                 if (nextEvent.MessageString.StartsWith(FlimFlamConstants.MESSAGETRUNCATE)) {
-
-                    #region This message was a truncation of the previous one, deal with it like that
-
-                    // This is a truncation, it should be added to the last message that was added to the process with the same pid.
-
-                    //Bilge.Warning("WARNING INNEFFICIENT --> Looking for non existant GI Sux in timed view could cache this -> Global Index " + nextEvent.GlobalIndex.ToString() + " skipped as its a truncate message");
-
-                    int endMachineNameIdx = nextEvent.MessageString.IndexOf(']');
-                    int startMachineNameIdx = FlimFlamConstants.MESSAGETRUNCATE.Length + 1;  // 1 is for length of "["
-                    int endUniqueIdIdx = nextEvent.MessageString.IndexOf(FlimFlamConstants.TRUNCATE_DATAENDMARKER);
-
-                    if ((endMachineNameIdx < 0) || (startMachineNameIdx < 0) || (endUniqueIdIdx < 0)) {
-                        //Bilge.Warning("WARNING --> INVAID truncate join string found, probably old version of//Bilge.  Ignoring this command.");
-                        MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.InvalidTruncateStringFound, UserMessageType.WarningMessage, null);
-                        return;
-                    }
-
-                    string machineName = nextEvent.MessageString[startMachineNameIdx..endMachineNameIdx];
-                    string truncateUniqueJoinId = nextEvent.MessageString[(endMachineNameIdx + 2)..endUniqueIdIdx];
-
-                    bool anotherExpected = nextEvent.MessageString.EndsWith(FlimFlamConstants.MESSAGETRUNCATE);
-
-                    ee = MexCore.TheCore.CacheManager.CacheGet_EventEntryExpectingTruncate(nextEvent.Pid, machineName, truncateUniqueJoinId, !anotherExpected);
-
-                    if (ee == null) {
-                        // This can only happen following a purge i guess
-                        //Bilge.Warning("ProcessNextStoredMessage --> WARNING --> Invalid truncation message found. Couldnt find the EE in the structure to append this trunc to. Skipping it");
-                        return;
-                    }
-
-                    // Patch it together, removing the truncate markers from the middle.
-                    if ((ee.secondaryMessage != null) && (ee.secondaryMessage.Length > 0)) {
-                        ee.secondaryMessage = ee.secondaryMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.MessageString[FlimFlamConstants.MESSAGETRUNCATE.Length..];
-                    } else {
-                        ee.SetDebugMessage(ee.debugMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.MessageString[FlimFlamConstants.MESSAGETRUNCATE.Length..]);
-                    }
-
-                    #endregion This message was a truncation of the previous one, deal with it like that
-
+                    // OutputDebugString handler is limited in the size of its messages so it sends truncated messages. Other handlers typically dont but we
+                    // support truncated message reassembly here.
+                    HandleTrunkatedMessages(nextEvent);
                     continue;
                 }
 
@@ -217,14 +164,21 @@ public class IncomingMessageManager {
                     var parsed = dp.Parse(rae);
 
                     if (parsed != null) {
+
+                        
+
+
                         // Managed to retrieve it using the new importer, in which case map it back to the legacy structure.
                         if (nextEvent.Pid == -1) {
                             var oi = ois.GetIdentity(parsed.OriginIdentity);
                             tempMachineName = oi.Identifier1;
                             nextEvent.Pid = int.Parse(oi.Identifier2);
                         }
+
+                        ApplyIncomingMessageApplicationEffects(parsed,tempMachineName,nextEvent.Pid);
                         ee = new EventEntry(parsed);
 
+                        
                         if (ee.GlobalIndex == 0) {
                             throw new InvalidOperationException();
                         }
@@ -328,24 +282,8 @@ public class IncomingMessageManager {
                                     actualAppName = actualAppName[..^Consts.PROCNAMEIDENT_POSTFIX.Length];
                                     ee.debugMessage = actualAppName;
 
-                                    if (MexCore.TheCore.Options.XRefAppInitialiseToMain) {
-                                        // If this option is selected we place a message into the unknown events to indicate that theres an Xref occured
-                                        MexCore.TheCore.DataManager.PlaceUnknownEventIntoDataStructure(new NonTracedApplicationEntry(tPid, "Process " + actualAppName + " Started with pid : (" + tPid.ToString() + ")", nextEvent.GlobalIndex));
-                                    }
-
-                                    if (MexCore.TheCore.Options.AutoPurgeApplicationOnMatchingName) {
-                                        // BUG!!! Omg too dumb.  Realised only after coding this that if oyu add autopurge as a job option it kicks
-                                        // in after the import and then purges all of the new messages.  Aysnchthink ftw.
-                                        //Bilge.Log("Synchronous Purge By Matching Name starting.  Trying to purge name " + actualAppName, "However skipping new pid which is " + tPid);
-                                        MexCore.TheCore.DataManager.PurgeByName(actualAppName, tempMachineName, tPid);
-                                        //MexCore.TheCore.WorkManager.ProcessJob(new Job_PartialPurgeApp(tempMachineName,tPid));
-
-                                        //Bilge.Log("Synchronous Purge By Matching Name Completes.");
-                                    }
-
-                                    additionalDataTracedApp.ProcessName = actualAppName;
-                                    MexCore.TheCore.WorkManager.AddJob(new Job_NotifyKnownProcessUpdate(MexCore.TheCore.ViewManager.SelectedTracedAppIdx));
-
+                                    SetTracedApplicationName(additionalDataTracedApp, actualAppName,ee.GlobalIndex);
+                                    
                                     break;
 
                                 case 'M': //MainModule
@@ -509,6 +447,108 @@ public class IncomingMessageManager {
         } catch (Exception ex) {
             Utility.LogExceptionToTempFile("MexCore - Main Loop - Crash.", ex);
             throw;
+        }
+    }
+
+    private void ApplyIncomingMessageApplicationEffects(SingleOriginEvent parsed, string tempMachineName, int pid) {
+        
+        var additionalDataTracedApp = GetTracedApplicationWithCreate(tempMachineName, pid);
+
+        if (parsed.Type == TraceCommandTypes.Alert) {
+            if (parsed.Tags.ContainsKey("alert-name")) {
+                if (parsed.Tags["alert-name"] == "online") {
+                    // This is an applicaiton online Alert.   Implement reset behaviour.
+
+                    
+                    if (parsed.Tags.TryGetValue("app-name", out string newAppName)) {
+                        SetTracedApplicationName(additionalDataTracedApp, newAppName,parsed.Id);
+                    }
+                } 
+            }
+            
+        }
+    }
+
+    private void SetTracedApplicationName(TracedApplication additionalDataTracedApp, string actualAppName, long triggeringEventId) {
+        if (MexCore.TheCore.Options.XRefAppInitialiseToMain) {
+            // If this option is selected we place a message into the unknown events to indicate that theres an Xref occured
+            MexCore.TheCore.DataManager.PlaceUnknownEventIntoDataStructure(new NonTracedApplicationEntry(additionalDataTracedApp.ProcessIdNo, "Process " + actualAppName + " Started with pid : (" + additionalDataTracedApp.ProcessIdNo.ToString() + ")", triggeringEventId));
+        }
+
+        if (MexCore.TheCore.Options.AutoPurgeApplicationOnMatchingName) {
+            // BUG!!! Omg too dumb.  Realised only after coding this that if oyu add autopurge as a job option it kicks
+            // in after the import and then purges all of the new messages.  Aysnchthink ftw.
+            //Bilge.Log("Synchronous Purge By Matching Name starting.  Trying to purge name " + actualAppName, "However skipping new pid which is " + tPid);
+            MexCore.TheCore.DataManager.PurgeByName(actualAppName, additionalDataTracedApp.MachineName,additionalDataTracedApp.ProcessIdNo);
+            //MexCore.TheCore.WorkManager.ProcessJob(new Job_PartialPurgeApp(tempMachineName,tPid));
+            
+            //Bilge.Log("Synchronous Purge By Matching Name Completes.");
+        }
+
+        additionalDataTracedApp.ProcessName = actualAppName;
+        MexCore.TheCore.WorkManager.AddJob(new Job_NotifyKnownProcessUpdate(MexCore.TheCore.ViewManager.SelectedTracedAppIdx));
+    }
+
+    private void HandleTrunkatedMessages(IncomingEventStore nextEvent) {
+        #region This message was a truncation of the previous one, deal with it like that
+
+        // This is a truncation, it should be added to the last message that was added to the process with the same pid.
+
+        //Bilge.Warning("WARNING INNEFFICIENT --> Looking for non existant GI Sux in timed view could cache this -> Global Index " + nextEvent.GlobalIndex.ToString() + " skipped as its a truncate message");
+
+        int endMachineNameIdx = nextEvent.MessageString.IndexOf(']');
+        int startMachineNameIdx = FlimFlamConstants.MESSAGETRUNCATE.Length + 1;  // 1 is for length of "["
+        int endUniqueIdIdx = nextEvent.MessageString.IndexOf(FlimFlamConstants.TRUNCATE_DATAENDMARKER);
+
+        if ((endMachineNameIdx < 0) || (startMachineNameIdx < 0) || (endUniqueIdIdx < 0)) {
+            //Bilge.Warning("WARNING --> INVAID truncate join string found, probably old version of//Bilge.  Ignoring this command.");
+            MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.InvalidTruncateStringFound, UserMessageType.WarningMessage, null);
+            return;
+        }
+
+        string machineName = nextEvent.MessageString[startMachineNameIdx..endMachineNameIdx];
+        string truncateUniqueJoinId = nextEvent.MessageString[(endMachineNameIdx + 2)..endUniqueIdIdx];
+
+        bool anotherExpected = nextEvent.MessageString.EndsWith(FlimFlamConstants.MESSAGETRUNCATE);
+
+        var ee = MexCore.TheCore.CacheManager.CacheGet_EventEntryExpectingTruncate(nextEvent.Pid, machineName, truncateUniqueJoinId, !anotherExpected);
+
+        if (ee == null) {
+            // This can only happen following a purge i guess
+            //Bilge.Warning("ProcessNextStoredMessage --> WARNING --> Invalid truncation message found. Couldnt find the EE in the structure to append this trunc to. Skipping it");
+            return;
+        }
+
+        // Patch it together, removing the truncate markers from the middle.
+        if ((ee.secondaryMessage != null) && (ee.secondaryMessage.Length > 0)) {
+            ee.secondaryMessage = ee.secondaryMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.MessageString[FlimFlamConstants.MESSAGETRUNCATE.Length..];
+        } else {
+            ee.SetDebugMessage(ee.debugMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.MessageString[FlimFlamConstants.MESSAGETRUNCATE.Length..]);
+        }
+
+        #endregion This message was a truncation of the previous one, deal with it like that
+
+    }
+
+    /// <summary>
+    /// Using options to determine whether this behaviour is desired remove duplicate entries by throwing them away before
+    /// importing the current entry. Note this can be used when two import methods are generating the same messages.
+    /// </summary>
+    /// <param name="nextEvent">Entry to use to look for duplicates.</param>
+    private void RemoveDuplicatesOnImport(IncomingEventStore nextEvent) {
+        if (MexCore.TheCore.Options.RemoveDuplicatesOnImport) {
+            bool dupeFound = true;
+            while (dupeFound && (incommingMsgQueue.Count > 0)) {
+                var potentialNext = (IncomingEventStore)incommingMsgQueue.Peek();
+                if (potentialNext != null) {
+                    dupeFound = potentialNext.Equals(nextEvent);
+                    if (dupeFound) {                        
+                        if (incommingMsgQueue.Count > 0) {
+                            incommingMsgQueue.Dequeue();
+                        }
+                    }
+                }
+            }
         }
     }
 

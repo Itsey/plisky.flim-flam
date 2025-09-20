@@ -1,7 +1,5 @@
 //using Plisky.Plumbing.Legacy;
 using System;
-using System.Collections;
-using System.Threading;
 
 namespace Plisky.FlimFlam { 
 
@@ -9,17 +7,17 @@ namespace Plisky.FlimFlam {
     /// Summary description for NonTracedApplicationStructure.
     /// </summary>
     internal class NonTracedApplicationEntry {
-        internal long AssignedIndex;
+        internal long assignedIndex;
 
-        internal string DebugEntry;
+        internal string DebugEntry { get; set; }
 
-        internal int Pid;
+        internal int Pid { get; set; }
 
-        internal ViewSpecificData ViewData;
+        internal ViewSpecificData viewData;
 
         internal NonTracedApplicationEntry() {
             Pid = -1;
-            AssignedIndex = -1;
+            assignedIndex = -1;
         }
 
         internal NonTracedApplicationEntry(int incommingPid, string incommingDebugEntry, long gIndex) {
@@ -45,14 +43,14 @@ namespace Plisky.FlimFlam {
                 Pid = incommingPid;
             }
             // Now do the other two parts
-            DebugEntry = incommingDebugEntry; AssignedIndex = gIndex;
+            DebugEntry = incommingDebugEntry; assignedIndex = gIndex;
         }
 
         internal string GetDiagnosticStringData() {
             string result = "NTA event for PID: " + Pid.ToString() + "\r\n";
             result += "Entry: " + DebugEntry + "\r\n";
-            result += "Index: " + AssignedIndex.ToString() + "\r\n";
-            result += ViewData.GetDiagnosticStringData();
+            result += "Index: " + assignedIndex.ToString() + "\r\n";
+            result += viewData.GetDiagnosticStringData();
             return result;
         }
 
@@ -60,53 +58,4 @@ namespace Plisky.FlimFlam {
 
         // End NonTracedApplicationEntry overloaded constructor
     } // End NonTracedApplicationEntry class definition
-
-    /// <summary>
-    /// Non traced applications array list is a type specific array list type for holding all
-    /// of the entries for the nontraced applications.  It will expand as the usage grows, although
-    /// in future may be replaced by something more efficient.
-    /// </summary>
-    internal class NonTracedApplicationsArrayList : IEnumerable {
-        internal ReaderWriterLock NonTracedApplicationsDataRWL = new ReaderWriterLock();
-
-        private ArrayList m_store = null;
-
-        internal NonTracedApplicationsArrayList()
-            : base() {
-            this.m_store = new ArrayList();
-        }
-
-        internal int Count {
-            get { return this.m_store.Count; }
-        }
-
-        internal NonTracedApplicationEntry this[int index] {
-            get {
-                return (NonTracedApplicationEntry)this.m_store[index];
-            } // End Get Indexer for logical index
-
-            set { this.m_store[index] = value; }
-        }
-
-        internal int Add(NonTracedApplicationEntry nta) {
-            return this.m_store.Add(nta);
-        }
-
-        internal int AddNewEntry(int pid, string theentry) {
-            return this.m_store.Add(new NonTracedApplicationEntry(pid, theentry, MexCore.TheCore.DataManager.GetNextGlobalIndex()));
-        }
-
-        // end index based indexer
-        internal void Clear() {
-            this.m_store.Clear();
-        }
-
-        #region IEnumerable Members
-
-        public IEnumerator GetEnumerator() {
-            return this.m_store.GetEnumerator();
-        }
-
-        #endregion IEnumerable Members
-    } // End TracedApplicationsArrayList Definition
 }

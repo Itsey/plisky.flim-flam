@@ -17,6 +17,7 @@ public class FFV4FormatLink : EventParserLinkBase {
                 var result = GetEvent(mname, proc);
                 result.Filename = objdata.FileName;
                 result.LineNumber = objdata.LineNumber;
+                result.MethodName = objdata.MethodName;
                 result.MoreLocInfo = objdata.ClassName + "::" + objdata.MethodName;
                 result.Details = objdata.FurtherDetails;
                 result.NetThreadId = objdata.NetThreadId;

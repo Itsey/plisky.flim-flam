@@ -129,12 +129,12 @@ internal class PrimaryWorkManager {
             return;
         }
         foreach (BaseJob bj in jobQueue) {
-            if (bj.JobDeleted) { continue; }
+            if (bj.jobDeleted) { continue; }
 
             var jrv = theJob.VerifyOtherJobsOnStack(bj);
             switch (jrv) {
                 case JobVerificationResults.CurrentJobRendersFutureJobRedundant:
-                    bj.JobDeleted = true;
+                    bj.jobDeleted = true;
                     //Bilge.VerboseLog("Destroying an exsiting refresh job and placing this one on the queue");
                     Internal_AddJob(theJob, forceWakeup, true);
                     return;
@@ -184,26 +184,26 @@ internal class PrimaryWorkManager {
         bool notificaitonSuspensionRequired = false;
 
         foreach (BaseJob bj in jobQueue) {
-            if (!bj.JobDeleted) {
+            if (!bj.jobDeleted) {
                 var result = theJob.VerifyOtherJobsOnStack(bj);
 
                 switch (result) {
                     case JobVerificationResults.CurrentJobRendersFutureJobRedundant:
-                        bj.JobDeleted = true;
+                        bj.jobDeleted = true;
                         break;
 
                     case JobVerificationResults.FutureJobRendersCurrentJobRedundant:
-                        theJob.JobDeleted = true;
+                        theJob.jobDeleted = true;
                         break;
 
                     case JobVerificationResults.FutureJobModifiedSuchThatCurrentIsRedundant:
-                        theJob.JobDeleted = true;
+                        theJob.jobDeleted = true;
                         break;
                 }
             }
         }
 
-        if (theJob.JobDeleted) {
+        if (theJob.jobDeleted) {
             //Bilge.VerboseLog("Job " + theJob.GetIdentifier() + " has been deleted, efficiency!");
             return;
         }

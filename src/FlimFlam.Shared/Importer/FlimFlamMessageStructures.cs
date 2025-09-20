@@ -42,7 +42,7 @@
         #region message format constants and regexes
 
         public const int V2COMMANDSTRINGLENGTH = 5;
-        public const string V2MESSAGEPARSERREGEX = @"[0-9A-Za-z\.\:_<>\-`]{0,}\]";  //@"\[[0-9A-Za-z\.:<>`_\-]{0,}\]";
+        public const string V2MESSAGEPARSERREGEX = @"[0-9A-Za-z\.\:_<>\-` \$]{0,}\]";  //@"\[[0-9A-Za-z\.:<>`_\-]{0,}\]";
         public const string V2COMMANDIDENTIFIERREGEX = @"#[A-Z]{3,3}#";
         public const string IS_VALID_V2FORMATTEDSTRING_REGEX = @"\{\[[0-9A-Za-z\._-]{0,}\]\[[0-9]{1,}\]\[[0-9]{1,}\]\[[0-9A-Za-z\._\:\\]{0,}\]\[[0-9A-Za-z\._\-\\:]{0,}\]\[[0-9]{0,8}\]\[[0-9A-Za-z\.\:_<> \$\-`\*]{0,}\]\}\#[A-Z]{3,3}\#";
 

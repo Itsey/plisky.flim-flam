@@ -30,7 +30,7 @@ namespace Plisky.FlimFlam {
         internal void PopulateFromIndex(long theIdx) {
             NonTracedApplicationEntry ee = MexCore.TheCore.DataManager.FindNTAEntryByIndex(theIdx);
             txtFullDetails.Text = ee.DebugEntry;
-            txtIndex.Text = ee.AssignedIndex.ToString();
+            txtIndex.Text = ee.assignedIndex.ToString();
             txtPid.Text = ee.Pid.ToString();
         }
 

@@ -1,12 +1,11 @@
 //using Plisky.Plumbing.Legacy;
 using System.Diagnostics;
 using System.IO;
-using Plisky.Diagnostics.FlimFlam;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     internal class Job_ActivateODSGatherer : BaseJob {
-        private bool activateTheGatherer;
+        private readonly bool activateTheGatherer;
 
         internal Job_ActivateODSGatherer(bool activate) {
             activateTheGatherer = activate;
@@ -42,16 +41,13 @@ namespace Plisky.FlimFlam {
         }
 
         internal override JobVerificationResults VerifyOtherJobsOnStack(BaseJob alternative) {
-            Job_ActivateODSGatherer alt = alternative as Job_ActivateODSGatherer;
-            if (alt == null) { return JobVerificationResults.None; }   // No impact.
+            if (alternative is not Job_ActivateODSGatherer alt) { return JobVerificationResults.None; }   // No impact.
 
             // Essentially if there is another one which is the same then remove the other one, if its different then remove this one, as there
             // is no point turning it on then immediately off etc.
-            if (alt.activateTheGatherer == activateTheGatherer) {
-                return JobVerificationResults.CurrentJobRendersFutureJobRedundant;
-            } else {
-                return JobVerificationResults.FutureJobRendersCurrentJobRedundant;
-            }
+            return alt.activateTheGatherer == activateTheGatherer
+                ? JobVerificationResults.CurrentJobRendersFutureJobRedundant
+                : JobVerificationResults.FutureJobRendersCurrentJobRedundant;
         }
     } // End job_ACtivateODSGatherer.
 
@@ -90,7 +86,7 @@ namespace Plisky.FlimFlam {
     }
 
     internal class Job_ChangeTCPGathererState : BaseJob {
-        private bool changeStateToActivate;
+        private readonly bool changeStateToActivate;
 
         internal Job_ChangeTCPGathererState(bool activate) {
             changeStateToActivate = activate;
@@ -124,22 +120,19 @@ namespace Plisky.FlimFlam {
         }
 
         internal override JobVerificationResults VerifyOtherJobsOnStack(BaseJob alternative) {
-            Job_ChangeTCPGathererState alt = alternative as Job_ChangeTCPGathererState;
-            if (alt == null) { return JobVerificationResults.None; }
+            if (alternative is not Job_ChangeTCPGathererState alt) { return JobVerificationResults.None; }
 
-            if (alt.changeStateToActivate == changeStateToActivate) {
-                return JobVerificationResults.CurrentJobRendersFutureJobRedundant;
-            } else {
-                return JobVerificationResults.FutureJobRendersCurrentJobRedundant;
-            }
+            return alt.changeStateToActivate == changeStateToActivate
+                ? JobVerificationResults.CurrentJobRendersFutureJobRedundant
+                : JobVerificationResults.FutureJobRendersCurrentJobRedundant;
         }
     } // End Job_ActivateTCPGatherer
 
     internal class Job_LoadTraceFile : BaseJob {
         internal string assignIdentToProcess;
-        private string fileName;
+        private readonly string fileName;
         private bool initialised;
-        private FileImportMethod useThisImportMethod;
+        private readonly FileImportMethod useThisImportMethod;
 
         internal Job_LoadTraceFile(string filename, FileImportMethod fmo) {
             fileName = filename;

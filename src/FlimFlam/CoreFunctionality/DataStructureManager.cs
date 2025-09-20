@@ -227,7 +227,7 @@ internal class DataStructureManager {
             while (currentLowestIdx < lastIndexIssued) {
                 foreach (NonTracedApplicationEntry nta in NonTracedApplicationEntries) {
                     // TODO : if nta.assignedinex > currentindex break
-                    if (nta.AssignedIndex == currentLowestIdx) {
+                    if (nta.assignedIndex == currentLowestIdx) {
                         beenHereOnce = false;
                         currentLowestIdx++;
                         if (!everyCallback(null, nta, -1)) {
@@ -480,7 +480,7 @@ internal class DataStructureManager {
 
         try {
             foreach (NonTracedApplicationEntry ntaee in NonTracedApplicationEntries) {
-                if (ntaee.AssignedIndex == index) {
+                if (ntaee.assignedIndex == index) {
                     return ntaee;
                 }
             }

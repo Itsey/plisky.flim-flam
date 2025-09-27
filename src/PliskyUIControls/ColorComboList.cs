@@ -51,12 +51,12 @@
         /// <summary>
         /// Holds the currently selected color set.
         /// </summary>
-        private ColorListSet m_colorSetSelected = ColorListSet.KnownColors;
+        private ColorListSet colorSetSelected = ColorListSet.KnownColors;
 
         /// <summary>
         /// Holds the currently selected color, starts with Color.Empty
         /// </summary>
-        private ColorRepresentation m_currentlySelectedColor = new ColorRepresentation(Color.Empty, Color.Empty, "");
+        private ColorRepresentation currentlySelectedColor = new ColorRepresentation(Color.Empty, Color.Empty, "");
 
         /// <summary>
         /// Creates a new ColorComboList control
@@ -76,12 +76,12 @@
         /// </summary>
         public ColorListSet ColorSet {
             get {
-                return this.m_colorSetSelected;
+                return this.colorSetSelected;
             }
             set {
-                if (value != m_colorSetSelected) {
+                if (value != colorSetSelected) {
                     //Bilge.VerboseLog("Color Set Change Requested, changing to " + value.ToString());
-                    this.m_colorSetSelected = value;
+                    this.colorSetSelected = value;
                     PopulateWithColors();
                 }
             }
@@ -92,7 +92,7 @@
         /// </summary>
         public Color SelectedBackgroundColor {
             get {
-                return this.m_currentlySelectedColor.Background;
+                return this.currentlySelectedColor.Background;
             }
         }
 
@@ -101,7 +101,7 @@
         /// </summary>
         public string SelectedColorName {
             get {
-                return this.m_currentlySelectedColor.Text;
+                return this.currentlySelectedColor.Text;
             }
         }
 
@@ -109,7 +109,7 @@
         /// Gets the currently selected foreground color
         /// </summary>
         public Color SelectedForegroundColor {
-            get { return this.m_currentlySelectedColor.ForeGround; }
+            get { return this.currentlySelectedColor.ForeGround; }
         }
 
         /// <summary>
@@ -136,18 +136,18 @@
             }
         }
 
-        private static void DrawHighlight(bool ctrlHasFocus, Graphics ItemGraphics, Rectangle ItemRectangle) {
+        private static void DrawHighlight(bool ctrlHasFocus, Graphics itemGfx, Rectangle itemRect) {
             if (!ctrlHasFocus) {
-                ItemGraphics.FillRectangle(new SolidBrush(SystemColors.Window), ItemRectangle.Left, ItemRectangle.Top, ItemRectangle.Width, ItemRectangle.Height);
+                itemGfx.FillRectangle(new SolidBrush(SystemColors.Window), itemRect.Left, itemRect.Top, itemRect.Width, itemRect.Height);
             } else {
                 // use a highlight rectangle
-                Pen BorderPen = new Pen(Color.FromKnownColor(KnownColor.Highlight));
-                SolidBrush BackgroundBrush = new SolidBrush(System.Drawing.Color.FromKnownColor(KnownColor.Highlight));
+                Pen bpen = new Pen(Color.FromKnownColor(KnownColor.Highlight));
+                SolidBrush bbrush = new SolidBrush(System.Drawing.Color.FromKnownColor(KnownColor.Highlight));
 
-                ItemGraphics.FillRectangle(BackgroundBrush, ItemRectangle.Left, ItemRectangle.Top, ItemRectangle.Width, ItemRectangle.Height);
+                itemGfx.FillRectangle(bbrush, itemRect.Left, itemRect.Top, itemRect.Width, itemRect.Height);
 
-                BorderPen.Dispose();
-                BackgroundBrush.Dispose();
+                bpen.Dispose();
+                bbrush.Dispose();
             }
         }
 
@@ -198,7 +198,7 @@
             return result.ToArray();
         }
 
-        private void cboColorList_DrawItem(object sender, DrawItemEventArgs e) {
+        private void CboColorList_DrawItem(object sender, DrawItemEventArgs e) {
             // Draw the item?
             if (e.Index >= 0) {
                 ColorRepresentation cr = (ColorRepresentation)cboColorList.Items[e.Index];
@@ -213,9 +213,9 @@
             }
         }
 
-        private void cboColorList_SelectedIndexChanged(object sender, EventArgs e) {
+        private void CboColorList_SelectedIndexChanged(object sender, EventArgs e) {
             ColorRepresentation cr = (ColorRepresentation)cboColorList.SelectedItem;
-            this.m_currentlySelectedColor = cr;
+            this.currentlySelectedColor = cr;
 
             ColorChangeEventArgs ccArgs = new ColorChangeEventArgs(cr.ForeGround, cr.Background);
             if (!cr.UsesBackground) {
@@ -284,7 +284,7 @@
         private void PopulateWithColors() {
             //Bilge.VerboseLog("Populating Colors in Combo");
             cboColorList.Items.Clear();
-            ColorRepresentation[] cols = GetColorRepresentationArray(m_colorSetSelected);
+            ColorRepresentation[] cols = GetColorRepresentationArray(colorSetSelected);
 
             cboColorList.Items.AddRange(cols);
 

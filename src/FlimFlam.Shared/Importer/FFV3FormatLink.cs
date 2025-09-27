@@ -34,7 +34,7 @@ namespace Plisky.Diagnostics.FlimFlam {
                         }
                         result.SetRawText(objeda.m ?? "");
 #if DEBUG
-                        result.CreatedBy = nameof(FFV3FormatLink);
+                        result.createdBy = nameof(FFV3FormatLink);
 #endif
 
                         return result;

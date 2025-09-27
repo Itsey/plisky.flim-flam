@@ -32,7 +32,7 @@
             var result = GetEvent(source.Machine, source.Process);
             result.SetRawText(source.Text);
 #if DEBUG
-            result.CreatedBy = nameof(UnknownFormatLink);
+            result.createdBy = nameof(UnknownFormatLink);
 #endif
             return result;
         }

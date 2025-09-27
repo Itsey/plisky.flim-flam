@@ -9,17 +9,17 @@ namespace Plisky.Plumbing {
     /// Contains all of the data that is required to intialise and display the error dialog that is used by the Default listener.
     /// </summary>
     internal class ErrorDialogData {
-        private string m_errorMessage;
+        private string errorMessage;
 
         /// <summary>
         /// The main error message that is to be displayed in the eror dialog.
         /// </summary>
         internal string ErrorMessage {
-            get { return m_errorMessage; }
-            set { m_errorMessage = value; }
+            get { return errorMessage; }
+            set { errorMessage = value; }
         }
 
-        internal List<AnEvidence> Evidences = new List<AnEvidence>();
+        internal List<AnEvidence> evidences = new List<AnEvidence>();
 
         /// <summary>
         /// Adds an evidence piece of information which is displayed in the error dialog.
@@ -27,7 +27,7 @@ namespace Plisky.Plumbing {
         /// <param name="name">The name of the piece of evidence</param>
         /// <param name="value">The value of the piece of evidence</param>
         internal void AddEvidence(string name, string value) {
-            Evidences.Add(new AnEvidence(name, value));
+            evidences.Add(new AnEvidence(name, value));
         }
     }
 }

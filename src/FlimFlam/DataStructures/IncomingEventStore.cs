@@ -8,12 +8,12 @@ namespace Plisky.FlimFlam {
     /// Temporarily stores incoming events, ready for processing by mex.
     /// </summary>
     internal class IncomingEventStore {
-        internal long GlobalIndex;
-        internal string MachineName;
-        internal string MessageString;
-        internal int Pid;
-        internal InternalSource Source;
-        internal DateTime TimeRecieved;
+        internal long globalIndex;
+        internal string machineName;
+        internal string messageString;
+        internal int pid;
+        internal InternalSource source;
+        internal DateTime timeRecieved;
 
         /// <summary>
         /// This creates an instance of an incoming event store which is used to temporarily hold events while they are loaded into the mex viewer.  In
@@ -24,9 +24,9 @@ namespace Plisky.FlimFlam {
         /// <param name="pidIfKnown">If the pid is known it should be passed otherwise pass -1</param>
         /// <param name="gIndex">The global index </param>
         internal IncomingEventStore(InternalSource source, string machineName, string msgString, int pidIfKnown, long gIndex) {
-            Source = source;
-            TimeRecieved = DateTime.Now;
-            MachineName = machineName; MessageString = msgString; Pid = pidIfKnown; GlobalIndex = gIndex;
+            this.source = source;
+            timeRecieved = DateTime.Now;
+            this.machineName = machineName; messageString = msgString; pid = pidIfKnown; globalIndex = gIndex;
         }
 
         public override bool Equals(object obj) {
@@ -37,13 +37,13 @@ namespace Plisky.FlimFlam {
             var ies = (IncomingEventStore)obj;
             bool result = true;
 
-            if (MachineName != ies.MachineName) {
+            if (machineName != ies.machineName) {
                 result = false;
             }
-            if (MessageString != ies.MessageString) {
+            if (messageString != ies.messageString) {
                 result = false;
             }
-            if (Pid != ies.Pid) {
+            if (pid != ies.pid) {
                 result = false;
             }
 

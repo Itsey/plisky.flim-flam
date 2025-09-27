@@ -21,24 +21,24 @@ using Plisky.Plumbing;
 /// GetIncommingMessageManager method.
 /// </summary>
 public class IncomingMessageManager {
-    internal bool shutdownRequested;
+    protected bool shutdownRequested;
     protected static Timer timer;
-    private readonly List<Task> activeImporters = new();
-    private readonly List<Task> activeTaskBasedImporters = new();
-    private readonly EventRecieverForComparisons comparer = new();
-    private readonly ImportManager im;
-    private readonly OriginIdentityStore ois = new();
+    protected readonly List<Task> activeImporters = new();
+    protected readonly List<Task> activeTaskBasedImporters = new();
+    protected readonly EventRecieverForComparisons comparer = new();
+    protected readonly ImportManager im;
+    protected readonly OriginIdentityStore ois = new();
 
     // DUAL MODE
-    private readonly OriginIdentityStore store = new();
+    protected readonly OriginIdentityStore store = new();
 
-    private readonly List<Action> timerEvents = new();
-    private DataParser dp = null;
-    private bool dualMode = false;
-    private Queue incommingMsgQueue; // Default null
-    private ImportParser newImporter;
+    protected readonly List<Action> timerEvents = new();
+    protected DataParser dp = null;
+    protected bool dualMode = false;
+    protected Queue incommingMsgQueue; // Default null
+    protected ImportParser newImporter;
 
-    private IncomingMessageManager() {
+    protected IncomingMessageManager() {
         incommingMsgQueue = Queue.Synchronized(new Queue());
     }
 
@@ -115,19 +115,19 @@ public class IncomingMessageManager {
                 
 
                 var nextEvent = (IncomingEventStore)incommingMsgQueue.Dequeue();
-                if (string.IsNullOrEmpty(nextEvent.MessageString)) {
+                if (string.IsNullOrEmpty(nextEvent.messageString)) {
                     continue;
                 }
-                MexCore.TheCore.LogEveryting("IncommingMessageManager", nextEvent.MessageString);
+                MexCore.TheCore.LogEveryting("IncommingMessageManager", nextEvent.messageString);
 
                 RemoveDuplicatesOnImport(nextEvent);
 
                 var rae = new RawApplicationEvent() {
-                    ArrivalTime = nextEvent.TimeRecieved,
-                    OriginId = store.GetOriginIdentity(nextEvent.MachineName, nextEvent.Pid.ToString()),
-                    Machine = nextEvent.MachineName,
-                    Process = nextEvent.Pid.ToString(),
-                    Text = nextEvent.MessageString
+                    ArrivalTime = nextEvent.timeRecieved,
+                    OriginId = store.GetOriginIdentity(nextEvent.machineName, nextEvent.pid.ToString()),
+                    Machine = nextEvent.machineName,
+                    Process = nextEvent.pid.ToString(),
+                    Text = nextEvent.messageString
                 };
 
                 if (dualMode) {
@@ -140,7 +140,7 @@ public class IncomingMessageManager {
                 bool legacyMode = false;
                 bool isCommand = false;
                 
-                if (nextEvent.MessageString.StartsWith(FlimFlamConstants.MESSAGETRUNCATE)) {
+                if (nextEvent.messageString.StartsWith(FlimFlamConstants.MESSAGETRUNCATE)) {
                     // OutputDebugString handler is limited in the size of its messages so it sends truncated messages. Other handlers typically dont but we
                     // support truncated message reassembly here.
                     HandleTrunkatedMessages(nextEvent);
@@ -156,10 +156,10 @@ public class IncomingMessageManager {
                     // TODO: BUG EE not updatedo
                     var dp = new ImportParser(ois);
                     var raex = new RawApplicationEvent {
-                        ArrivalTime = nextEvent.TimeRecieved,
-                        Machine = nextEvent.MachineName,
-                        Process = nextEvent.Pid.ToString(),
-                        Text = nextEvent.MessageString
+                        ArrivalTime = nextEvent.timeRecieved,
+                        Machine = nextEvent.machineName,
+                        Process = nextEvent.pid.ToString(),
+                        Text = nextEvent.messageString
                     };
                     var parsed = dp.Parse(rae);
 
@@ -169,13 +169,13 @@ public class IncomingMessageManager {
 
 
                         // Managed to retrieve it using the new importer, in which case map it back to the legacy structure.
-                        if (nextEvent.Pid == -1) {
+                        if (nextEvent.pid == -1) {
                             var oi = ois.GetIdentity(parsed.OriginIdentity);
                             tempMachineName = oi.Identifier1;
-                            nextEvent.Pid = int.Parse(oi.Identifier2);
+                            nextEvent.pid = int.Parse(oi.Identifier2);
                         }
 
-                        ApplyIncomingMessageApplicationEffects(parsed,tempMachineName,nextEvent.Pid);
+                        ApplyIncomingMessageApplicationEffects(parsed,tempMachineName,nextEvent.pid);
                         ee = new EventEntry(parsed);
 
                         
@@ -189,21 +189,21 @@ public class IncomingMessageManager {
                 }
 
                 // If it was not a truncation its either a message from another app or a tex message
-                if (!TraceMessageFormat.IsTexString(nextEvent.MessageString)) {
+                if (!TraceMessageFormat.IsTexString(nextEvent.messageString)) {
                     // Horrid workaround but whatever, patched this in after the code will refactor in phase 2
-                    if (TraceMessageFormat.IsLegacyTexString(nextEvent.MessageString)) {
+                    if (TraceMessageFormat.IsLegacyTexString(nextEvent.messageString)) {
                         legacyMode = true;
                         goto LEGACYSUPPORT;
                     }
 
                     // if its not tex the assumption is that it has always come from this machine, although if mex gets v clever this could change
-                    var newNte = new NonTracedApplicationEntry(nextEvent.Pid, nextEvent.MessageString, nextEvent.GlobalIndex);
+                    var newNte = new NonTracedApplicationEntry(nextEvent.pid, nextEvent.messageString, nextEvent.globalIndex);
 
-                    if (MexCore.TheCore.Options.XRefMatchingProcessIdsIntoEventEntries && MexCore.TheCore.DataManager.IsPidAKnownApplication(nextEvent.Pid, nextEvent.MachineName)) {
+                    if (MexCore.TheCore.Options.XRefMatchingProcessIdsIntoEventEntries && MexCore.TheCore.DataManager.IsPidAKnownApplication(nextEvent.pid, nextEvent.machineName)) {
                         // We need to check whether or not this came form the same PID if it did we need to cross reference it.
 
-                        ee = EventEntry.CreatePseudoEE(nextEvent.GlobalIndex, nextEvent.MessageString);
-                        tempMachineName = nextEvent.MachineName;
+                        ee = EventEntry.CreatePseudoEE(nextEvent.globalIndex, nextEvent.messageString);
+                        tempMachineName = nextEvent.machineName;
 
                         if (MexCore.TheCore.Options.XRefReverseCopyEnabled) {
                             // If were doing cross references by PID then we need to determine whether to dupe into the NTA list too.
@@ -228,17 +228,17 @@ public class IncomingMessageManager {
                     int tPid;
                     string tempDebugMessage;
 
-                    ee = new EventEntry(nextEvent.GlobalIndex) {
-                        TimeMessageRecieved = nextEvent.TimeRecieved
+                    ee = new EventEntry(nextEvent.globalIndex) {
+                        TimeMessageRecieved = nextEvent.timeRecieved
                     };  // Create new entry giving it next index
 
                     if (legacyMode) {
-                        TraceMessageFormat.ReturnPartsOfStringLegacy(nextEvent.MessageString, out tempCommandType, out tempPid, out tempMachineName, out ee.threadID, out ee.module, out ee.lineNumber, out tempDebugMessage);
+                        TraceMessageFormat.ReturnPartsOfStringLegacy(nextEvent.messageString, out tempCommandType, out tempPid, out tempMachineName, out ee.threadID, out ee.module, out ee.lineNumber, out tempDebugMessage);
                         ee.threadNetId = "??";
                         ee.moreLocationData = "LegacyTexSupport";
                         legacyMode = false;
                     } else {
-                        TraceMessageFormat.ReturnPartsOfString(nextEvent.MessageString, out tempCommandType, out tempPid, out ee.threadNetId, out tempMachineName, out ee.threadID, out ee.module, out ee.lineNumber, out ee.moreLocationData, out tempDebugMessage);
+                        TraceMessageFormat.ReturnPartsOfString(nextEvent.messageString, out tempCommandType, out tempPid, out ee.threadNetId, out tempMachineName, out ee.threadID, out ee.module, out ee.lineNumber, out ee.moreLocationData, out tempDebugMessage);
                     }
                     tPid = int.Parse(tempPid);
                     ee.SetDebugMessage(tempDebugMessage);  // Checks for secondary data and splits accordingly
@@ -334,7 +334,7 @@ public class IncomingMessageManager {
                         }
                         // If we get here its a Tex message that is not a data indicator
                         // This is looking like a normal message.  IE Not a moreinfo / data string
-                        if (nextEvent.Pid == -1) { nextEvent.Pid = int.Parse(tempPid); }
+                        if (nextEvent.pid == -1) { nextEvent.pid = int.Parse(tempPid); }
 
                         ee.cmdType = tct;
 
@@ -381,7 +381,7 @@ public class IncomingMessageManager {
                             // joinIds are only unique per process/machien therefore all of this info is used as a key.
                             int idxStart = tempDebugMessage.IndexOf(FlimFlamConstants.MESSAGETRUNCATE) + FlimFlamConstants.MESSAGETRUNCATE.Length;
                             string joinIdentifier = tempDebugMessage.Substring(idxStart, tempDebugMessage.Length - (idxStart + FlimFlamConstants.MESSAGETRUNCATE.Length));
-                            MexCore.TheCore.CacheManager.CacheAdd_EventEntryExpectingTruncate(ee, nextEvent.Pid, tempMachineName, joinIdentifier);
+                            MexCore.TheCore.CacheManager.CacheAdd_EventEntryExpectingTruncate(ee, nextEvent.pid, tempMachineName, joinIdentifier);
                         }
                     }
                 } // End if it was a normal tex message (ee==null)
@@ -397,7 +397,7 @@ public class IncomingMessageManager {
                     if (ee.cmdType == TraceCommandTypes.Alert) {
                         // Alerts are special case.  They dont arrive along with the rest of the data, but sometimes they return a normal event
                         // back to this code to put it into the right place.
-                        ee = ManageAlertEvent(ee, nextEvent.Pid, tempMachineName);
+                        ee = ManageAlertEvent(ee, nextEvent.pid, tempMachineName);
 
                         MexCore.TheCore.WorkManager.AddJob(new Job_NotifyAlertRecieved());
                     } else {
@@ -407,7 +407,7 @@ public class IncomingMessageManager {
                     MexCore.TheCore.ViewManager.CurrentHighlightOptions.ModifyEventEntryForHighlight(ee);
 
                     // *************** Actually add it into the structure here ***************
-                    nextLogicalIndexAffected = MexCore.TheCore.DataManager.PlaceNewEventIntoDataStructure(ee, nextEvent.Pid, tempMachineName);
+                    nextLogicalIndexAffected = MexCore.TheCore.DataManager.PlaceNewEventIntoDataStructure(ee, nextEvent.pid, tempMachineName);
                 }
 
                 if (!appIndexesAffectedByImport.Contains(nextLogicalIndexAffected)) {
@@ -496,9 +496,9 @@ public class IncomingMessageManager {
 
         //Bilge.Warning("WARNING INNEFFICIENT --> Looking for non existant GI Sux in timed view could cache this -> Global Index " + nextEvent.GlobalIndex.ToString() + " skipped as its a truncate message");
 
-        int endMachineNameIdx = nextEvent.MessageString.IndexOf(']');
+        int endMachineNameIdx = nextEvent.messageString.IndexOf(']');
         int startMachineNameIdx = FlimFlamConstants.MESSAGETRUNCATE.Length + 1;  // 1 is for length of "["
-        int endUniqueIdIdx = nextEvent.MessageString.IndexOf(FlimFlamConstants.TRUNCATE_DATAENDMARKER);
+        int endUniqueIdIdx = nextEvent.messageString.IndexOf(FlimFlamConstants.TRUNCATE_DATAENDMARKER);
 
         if ((endMachineNameIdx < 0) || (startMachineNameIdx < 0) || (endUniqueIdIdx < 0)) {
             //Bilge.Warning("WARNING --> INVAID truncate join string found, probably old version of//Bilge.  Ignoring this command.");
@@ -506,12 +506,12 @@ public class IncomingMessageManager {
             return;
         }
 
-        string machineName = nextEvent.MessageString[startMachineNameIdx..endMachineNameIdx];
-        string truncateUniqueJoinId = nextEvent.MessageString[(endMachineNameIdx + 2)..endUniqueIdIdx];
+        string machineName = nextEvent.messageString[startMachineNameIdx..endMachineNameIdx];
+        string truncateUniqueJoinId = nextEvent.messageString[(endMachineNameIdx + 2)..endUniqueIdIdx];
 
-        bool anotherExpected = nextEvent.MessageString.EndsWith(FlimFlamConstants.MESSAGETRUNCATE);
+        bool anotherExpected = nextEvent.messageString.EndsWith(FlimFlamConstants.MESSAGETRUNCATE);
 
-        var ee = MexCore.TheCore.CacheManager.CacheGet_EventEntryExpectingTruncate(nextEvent.Pid, machineName, truncateUniqueJoinId, !anotherExpected);
+        var ee = MexCore.TheCore.CacheManager.CacheGet_EventEntryExpectingTruncate(nextEvent.pid, machineName, truncateUniqueJoinId, !anotherExpected);
 
         if (ee == null) {
             // This can only happen following a purge i guess
@@ -521,9 +521,9 @@ public class IncomingMessageManager {
 
         // Patch it together, removing the truncate markers from the middle.
         if ((ee.secondaryMessage != null) && (ee.secondaryMessage.Length > 0)) {
-            ee.secondaryMessage = ee.secondaryMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.MessageString[FlimFlamConstants.MESSAGETRUNCATE.Length..];
+            ee.secondaryMessage = ee.secondaryMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.messageString[FlimFlamConstants.MESSAGETRUNCATE.Length..];
         } else {
-            ee.SetDebugMessage(ee.debugMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.MessageString[FlimFlamConstants.MESSAGETRUNCATE.Length..]);
+            ee.SetDebugMessage(ee.debugMessage[..^FlimFlamConstants.MESSAGETRUNCATE.Length] + nextEvent.messageString[FlimFlamConstants.MESSAGETRUNCATE.Length..]);
         }
 
         #endregion This message was a truncation of the previous one, deal with it like that
@@ -558,11 +558,13 @@ public class IncomingMessageManager {
 
     #region Gatherer support - ODS / TCP Gatherers
 
-    private readonly object threadlock = new();
-    private Thread odsThread; // Default null
-    private Thread tcpThread;
+    protected readonly object threadlock = new();
+    protected Thread odsThread; // Default null
+    protected Thread tcpThread;
 
-    internal void ActivateODSGatherer() {
+    public virtual void ActivateODSGatherer() {
+
+
         // The ODS Gatherer is long running and is created now.
         if (odsThread == null) {
 
@@ -579,7 +581,7 @@ public class IncomingMessageManager {
         }
     }
 
-    internal void ActivateTCPGatherer() {
+    public virtual void ActivateTCPGatherer() {
         lock (threadlock) {
             // While multiple requests can come in only one request can be processed at a time therefore I dont need to synch this
             // as the worker thread is the one that does this sort of thing and its on its lonesome.

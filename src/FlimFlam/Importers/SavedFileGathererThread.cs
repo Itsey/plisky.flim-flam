@@ -4,12 +4,12 @@ using System.IO;
 using Plisky.Diagnostics.FlimFlam;
 using Plisky.Flimflam;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// Summary description for SavedFileGathererThread.
     /// </summary>
-    internal class SavedFileGatherer {
+    internal class SavedFileGatherer: BaseImporter {
 
         private SavedFileGatherer() {
             // static only class
@@ -132,11 +132,11 @@ namespace Plisky.FlimFlam {
 
                                 theLine = nextLine;
                             }
-                            break; // end case where were studiying ADPlus
-                    } // end switch
+                            break;
+                    }
 
                     MexCore.TheCore.MessageManager.AddIncomingMessage(InternalSource.FileImport, theLine, -1);
-                } // End while there are more lines in the file
+                }
                 MexCore.TheCore.MessageManager.AddIncomingMessage(InternalSource.FileImport, nextLine, -1);
                 MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.BackgroundfileImportEnds, UserMessageType.InformationMessage, null);
             } finally {

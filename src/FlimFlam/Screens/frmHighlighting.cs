@@ -140,7 +140,7 @@ namespace Plisky.FlimFlam {
 
         internal HighlightRequestsStore GetNewHighlightStore() {
             HighlightRequestsStore result = new HighlightRequestsStore();
-            result.HighlightRequests = m_highLightRequests;
+            result.highlightRequests = m_highLightRequests;
             return result;
         }
 
@@ -148,8 +148,8 @@ namespace Plisky.FlimFlam {
             lvwTextFilterHighlights.Items.Clear();
             m_highLightRequests.Clear();
 
-            if ((useThis.HighlightRequests != null) && (useThis.HighlightRequests.Count > 0)) {
-                foreach (AHighlightRequest ahr in useThis.HighlightRequests) {
+            if ((useThis.highlightRequests != null) && (useThis.highlightRequests.Count > 0)) {
+                foreach (AHighlightRequest ahr in useThis.highlightRequests) {
                     m_highLightRequests.Add(ahr);
                 }
                 RefreshListviewFromHighlightStore();

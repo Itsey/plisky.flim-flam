@@ -35,8 +35,8 @@
             this.cboColorList.Name = "cboColorList";
             this.cboColorList.Size = new System.Drawing.Size(156, 21);
             this.cboColorList.TabIndex = 0;
-            this.cboColorList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.cboColorList_DrawItem);
-            this.cboColorList.SelectedIndexChanged += new System.EventHandler(this.cboColorList_SelectedIndexChanged);
+            this.cboColorList.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.CboColorList_DrawItem);
+            this.cboColorList.SelectedIndexChanged += new System.EventHandler(this.CboColorList_SelectedIndexChanged);
             // 
             // ColorComboList
             // 

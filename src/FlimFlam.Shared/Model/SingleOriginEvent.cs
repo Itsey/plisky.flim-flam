@@ -6,7 +6,7 @@
     [DebuggerDisplay("SOE: GIdx[ {Id} ]  OIdx[ {OriginIdentity} ]")]
     public class SingleOriginEvent {
 #if DEBUG
-        internal string CreatedBy = "none";
+        internal string createdBy = "none";
 #endif
 
         private static long globallyUniqueIdentity = 0;

@@ -92,7 +92,7 @@ namespace Plisky.Diagnostics.FlimFlam {
             output.SetRawText(debugString.Substring(cmdMatch.Index + FlimFlamMessageStructures.V2COMMANDSTRINGLENGTH));
 
 #if DEBUG
-            output.CreatedBy = nameof(FFV2FormatLink);
+            output.createdBy = nameof(FFV2FormatLink);
 #endif
 
             return output;

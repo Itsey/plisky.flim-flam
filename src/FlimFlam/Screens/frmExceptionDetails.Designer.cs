@@ -67,7 +67,7 @@ namespace Plisky.FlimFlam {
         this.btnShowBackTraceForThread.TabIndex = 3;
         this.btnShowBackTraceForThread.Text = "Show BackTrace (SameThread):";
         this.btnShowBackTraceForThread.UseVisualStyleBackColor = false;
-        this.btnShowBackTraceForThread.Click += new System.EventHandler(this.btnShowBackTrace_Click);
+        this.btnShowBackTraceForThread.Click += new System.EventHandler(this.BtnShowBackTrace_Click);
         // 
         // txtExceptionLocationFilename
         // 
@@ -155,7 +155,7 @@ namespace Plisky.FlimFlam {
         this.btnShowAllTraceUpToException.TabIndex = 14;
         this.btnShowAllTraceUpToException.Text = "Show BackTrace (All Threads):";
         this.btnShowAllTraceUpToException.UseVisualStyleBackColor = false;
-        this.btnShowAllTraceUpToException.Click += new System.EventHandler(this.btnShowAllTraceUpToException_Click);
+        this.btnShowAllTraceUpToException.Click += new System.EventHandler(this.BtnShowAllTraceUpToException_Click);
         // 
         // btnCloseForm
         // 
@@ -223,7 +223,7 @@ namespace Plisky.FlimFlam {
         this.lbxExceptionHeirachy.Name = "lbxExceptionHeirachy";
         this.lbxExceptionHeirachy.Size = new System.Drawing.Size(610, 86);
         this.lbxExceptionHeirachy.TabIndex = 5;
-        this.lbxExceptionHeirachy.SelectedIndexChanged += new System.EventHandler(this.lbxExceptionHeirachy_SelectedIndexChanged);
+        this.lbxExceptionHeirachy.SelectedIndexChanged += new System.EventHandler(this.LbxExceptionHeirachy_SelectedIndexChanged);
         // 
         // txtSelectedExceptionDetails
         // 

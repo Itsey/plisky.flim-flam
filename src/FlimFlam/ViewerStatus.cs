@@ -18,36 +18,36 @@ namespace Plisky.FlimFlam {
         /// Left hand position on screen
         /// </summary>
 
-        private string[] m_fileMRUList = new string[0];
-        private int m_height;
-        private string m_lastLoadedFile;
-        private int m_width;
-        private int m_xLoc;
+        private string[] fileMRUList = new string[0];
+        private int height;
+        private string lastLoadedFile;
+        private int width;
+        private int xLoc;
 
-        private int m_yLoc;
+        private int yLoc;
 
         /// <summary>
         /// recent imported log files
         /// </summary>
         public string[] FileMostRecentlyUsedList {
-            get { return m_fileMRUList; }
-            set { m_fileMRUList = value; }
+            get { return fileMRUList; }
+            set { fileMRUList = value; }
         }
 
         /// <summary>
         /// height of mex
         /// </summary>
         public int Height {
-            get { return m_height; }
-            set { m_height = value; }
+            get { return height; }
+            set { height = value; }
         }
 
         /// <summary>
         /// last one of these to be used
         /// </summary>
         public string LastLoadedFile {
-            get { return m_lastLoadedFile; }
-            set { m_lastLoadedFile = value; }
+            get { return lastLoadedFile; }
+            set { lastLoadedFile = value; }
         }
 
         /// <summary>
@@ -127,21 +127,21 @@ namespace Plisky.FlimFlam {
         /// width of mex
         /// </summary>
         public int Width {
-            get { return m_width; }
-            set { m_width = value; }
+            get { return width; }
+            set { width = value; }
         }
 
         public int XLoc {
-            get { return m_xLoc; }
-            set { m_xLoc = value; }
+            get { return xLoc; }
+            set { xLoc = value; }
         }
 
         /// <summary>
         /// Top position on screen
         /// </summary>
         public int YLoc {
-            get { return m_yLoc; }
-            set { m_yLoc = value; }
+            get { return yLoc; }
+            set { yLoc = value; }
         }
 
         /// <summary>

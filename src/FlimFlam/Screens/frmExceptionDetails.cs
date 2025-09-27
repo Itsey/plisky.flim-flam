@@ -19,15 +19,15 @@ namespace Plisky.FlimFlam {
             baseIdx = idxUsed;
         }
 
-        private void btnShowAllTraceUpToException_Click(object sender, EventArgs e) {
+        private void BtnShowAllTraceUpToException_Click(object sender, EventArgs e) {
             ShowFormsBackTraceView(false);
         }
 
-        private void btnShowBackTrace_Click(object sender, EventArgs e) {
+        private void BtnShowBackTrace_Click(object sender, EventArgs e) {
             ShowFormsBackTraceView(true);
         }
 
-        private void lbxExceptionHeirachy_SelectedIndexChanged(object sender, EventArgs e) {
+        private void LbxExceptionHeirachy_SelectedIndexChanged(object sender, EventArgs e) {
             // When the selection is changed the details view displays the details about the selected exception.
             LooksLikeAnException llae = (LooksLikeAnException)lbxExceptionHeirachy.SelectedItem;
             txtSelectedExceptionDetails.Text = llae.GetDescriptionFully();

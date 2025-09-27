@@ -6,13 +6,13 @@ namespace Plisky.Diagnostics.FlimFlam {
     /// Summary description for MexOptions.  Class must be public for serialization into the iso store.
     /// </summary>
     public class AppSettings {
-        private string m_adPlus_Import_SplitTagIdent = "Debug session time: ";
+        private string adPlus_Import_SplitTagIdent = "Debug session time: ";
 
         /// <summary>
         /// The identifier that is used to work out which lines within an ADPLus style log are identifiers
         /// </summary>
         public string ADPlusImportIdentifierToSplitTags {
-            get { return m_adPlus_Import_SplitTagIdent; }
+            get { return adPlus_Import_SplitTagIdent; }
         }
 
         /// <summary>

@@ -46,7 +46,7 @@ public class FFV4FormatLink : EventParserLinkBase {
                 }
 
 #if DEBUG
-                result.CreatedBy = nameof(FFV4FormatLink);
+                result.createdBy = nameof(FFV4FormatLink);
 #endif
 
                 return result;

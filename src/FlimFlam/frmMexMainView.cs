@@ -2036,9 +2036,9 @@
 
             long nextIdx = (long)lvwProcessView.SelectedItems[0].Tag;
 
-            MexCore.TheCore.ViewManager.CurrentHighlightOptions.DefaultHighlightColoring[tagval].matchCase = MexCore.TheCore.ViewManager.GetEventEntryFromSelectedAppByIndex(nextIdx).threadID;
+            MexCore.TheCore.ViewManager.CurrentHighlightOptions.defaultHighlightColoring[tagval].matchCase = MexCore.TheCore.ViewManager.GetEventEntryFromSelectedAppByIndex(nextIdx).threadID;
             tagval++;
-            tagval %= MexCore.TheCore.ViewManager.CurrentHighlightOptions.DefaultHighlightColoring.Length;
+            tagval %= MexCore.TheCore.ViewManager.CurrentHighlightOptions.defaultHighlightColoring.Length;
             (sender as ToolStripMenuItem).Tag = tagval;
 
             if (MexCore.TheCore.ViewManager.ApplyCurrentHighlightOptionsToView()) {

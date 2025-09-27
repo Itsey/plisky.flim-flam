@@ -14,9 +14,9 @@ namespace Plisky.Diagnostics.FlimFlam {
         private const string V1_LEGACY_REGEX = @"\{\[[0-9A-Za-z\._]{0,}\]\[[0-9]{1,5}\]\[[0-9]{1,5}\]\[[0-9A-Za-z\. ]{0,}\]\[[0-9]{0,8}\]\}\#[A-Z]{3,3}\#";
         private static Regex v1RegexCache;
 
-        internal static void ReturnStringBreakdown(string debugString, out string cmdType, out string ProcessID, out string MachineName, out string ThreadID,
-        out string ModuleName, out string LineNumber, out string debugOutput) {
-            ProcessID = null; MachineName = null; ThreadID = null; debugOutput = null;
+        internal static void ReturnStringBreakdown(string debugString, out string cmdType, out string procId, out string machineNamme, out string threadID,
+        out string moduleName, out string lineNumber, out string debugOutput) {
+            procId = null; machineNamme = null; threadID = null; debugOutput = null;
 
             if (v1RegexCache == null) {
                 v1RegexCache = new Regex(@"\[[0-9A-Za-z\.:_]{0,}\]", RegexOptions.Compiled);
@@ -29,15 +29,15 @@ namespace Plisky.Diagnostics.FlimFlam {
 
             // Get each of the location identifiers from the string. - removing the surrouding
             // [] delimiters from each of the values.
-            MachineName = m.Captures[0].Value.Trim(new char[] { '[', ']' });
+            machineNamme = m.Captures[0].Value.Trim(new char[] { '[', ']' });
             m = m.NextMatch();
-            ProcessID = m.Captures[0].Value.Trim(new char[] { '[', ']' });
+            procId = m.Captures[0].Value.Trim(new char[] { '[', ']' });
             m = m.NextMatch();
-            ThreadID = m.Captures[0].Value.Trim(new char[] { '[', ']' });
+            threadID = m.Captures[0].Value.Trim(new char[] { '[', ']' });
             m = m.NextMatch();
-            ModuleName = m.Captures[0].Value.Trim(new char[] { '[', ']' });
+            moduleName = m.Captures[0].Value.Trim(new char[] { '[', ']' });
             m = m.NextMatch();
-            LineNumber = m.Captures[0].Value.Trim(new char[] { '[', ']' });
+            lineNumber = m.Captures[0].Value.Trim(new char[] { '[', ']' });
 
             // Now get the command type and turn it into an enum
             Match cmdMatch = Regex.Match(debugString, "#[A-Z]{3,3}#");

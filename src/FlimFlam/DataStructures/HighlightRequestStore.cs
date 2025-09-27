@@ -5,23 +5,23 @@ using System.Drawing;
 namespace Plisky.FlimFlam { 
 
     internal class HighlightRequestsStore {
-        internal Coloring[] DefaultHighlightColoring;
-        internal List<AHighlightRequest> HighlightRequests;
+        internal Coloring[] defaultHighlightColoring;
+        internal List<AHighlightRequest> highlightRequests;
 
         internal HighlightRequestsStore() {
-            HighlightRequests = new List<AHighlightRequest>();
+            highlightRequests = new List<AHighlightRequest>();
 
-            DefaultHighlightColoring = new Coloring[6];
-            DefaultHighlightColoring[0] = new Coloring(Color.Black, Color.BlueViolet, string.Empty);
-            DefaultHighlightColoring[1] = new Coloring(Color.Black, Color.BlanchedAlmond, string.Empty);
-            DefaultHighlightColoring[2] = new Coloring(Color.Black, Color.DeepPink, string.Empty);
-            DefaultHighlightColoring[3] = new Coloring(Color.Black, Color.Goldenrod, string.Empty);
-            DefaultHighlightColoring[4] = new Coloring(Color.Black, Color.Honeydew, string.Empty);
-            DefaultHighlightColoring[5] = new Coloring(Color.Black, Color.PaleGreen, string.Empty);
+            defaultHighlightColoring = new Coloring[6];
+            defaultHighlightColoring[0] = new Coloring(Color.Black, Color.BlueViolet, string.Empty);
+            defaultHighlightColoring[1] = new Coloring(Color.Black, Color.BlanchedAlmond, string.Empty);
+            defaultHighlightColoring[2] = new Coloring(Color.Black, Color.DeepPink, string.Empty);
+            defaultHighlightColoring[3] = new Coloring(Color.Black, Color.Goldenrod, string.Empty);
+            defaultHighlightColoring[4] = new Coloring(Color.Black, Color.Honeydew, string.Empty);
+            defaultHighlightColoring[5] = new Coloring(Color.Black, Color.PaleGreen, string.Empty);
         }
 
         internal bool ApplyDefaultHighlighting(EventEntry ee) {
-            foreach (Coloring cr in DefaultHighlightColoring) {
+            foreach (Coloring cr in defaultHighlightColoring) {
                 if (cr.matchCase.Length > 0) {
                     if (ee.threadID == cr.matchCase) {
                         bool highlightIsTheSame = ee.viewData.isValid;
@@ -54,7 +54,7 @@ namespace Plisky.FlimFlam {
 
         internal bool ModifyEventEntryForHighlight(EventEntry ee) {
             // first check to see if there is any highlight data.
-            if ((HighlightRequests == null) || (HighlightRequests.Count == 0)) {
+            if ((highlightRequests == null) || (highlightRequests.Count == 0)) {
                 if ((ee.viewData.isValid) && (ee.viewData.isHighlighted)) {
                     ee.viewData.isHighlighted = false;
                     return true;
@@ -63,7 +63,7 @@ namespace Plisky.FlimFlam {
             } // end if the highlight data is null or empty
 
             // ok now onto checking for the highlight data itself.
-            foreach (AHighlightRequest ahr in HighlightRequests) {
+            foreach (AHighlightRequest ahr in highlightRequests) {
                 bool matchMade = false;
 
                 if (ahr.MakeMatchUsingType) {
@@ -128,7 +128,7 @@ namespace Plisky.FlimFlam {
 
         internal bool ModifyNonTracedEventEntryForHighlight(NonTracedApplicationEntry nta) {
             // first check to see if there is any highlight data.
-            if ((HighlightRequests == null) || (HighlightRequests.Count == 0)) {
+            if ((highlightRequests == null) || (highlightRequests.Count == 0)) {
                 if ((nta.viewData.isValid) && (nta.viewData.isHighlighted)) {
                     nta.viewData.isHighlighted = false;
                     return true;
@@ -137,7 +137,7 @@ namespace Plisky.FlimFlam {
             } // end if the highlight data is null or empty
 
             // ok now onto checking for the highlight data itself.
-            foreach (AHighlightRequest ahr in HighlightRequests) {
+            foreach (AHighlightRequest ahr in highlightRequests) {
                 if (!ahr.MakeMatchUsingString) { continue; }  // NonTraced types only support string based highlights
 
                 bool matchMade;

@@ -13,11 +13,7 @@ internal class Job_NotifyAlertRecieved : Job_Notification {
         return false;
     }
 
-    internal override void ExecuteJob() {
-        //Bilge.Log("Mex::WorkManager >> Found Notify_NewEventAdded request, asking view manager to do it");
-        //Bilge.Warning("Mex::WorkManager >> WARNING >> Should check for duplicate jobs here.  TODO");
-        //MexCore.TheCore.ViewManager.ProcessNewEventNotification(affectedIndex);
-        //MexCore.TheCore.ViewManager.ProcessNewAlertNotification();
+    internal override void ExecuteJob() {        
         MexCore.TheCore.ViewManager.ProcessAlertNotification();
     }
 

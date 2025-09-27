@@ -63,12 +63,12 @@ namespace Plisky.UIWinforms.Controls {
     [ExcludeFromCodeCoverage]
     public partial class SplitButton : Button {
         internal static TraceSwitch traceSbtControls = new TraceSwitch("traceSbtControl", "Trace enabled for split buttons", "Off");
-        private const int PushButtonWidth = 14;
+        private const int PUSHBUTTONWIDTH = 14;
 
-        private static int BorderSize = SystemInformation.Border3DSize.Width * 2;
+        private static int borderSize = SystemInformation.Border3DSize.Width * 2;
 
         //protected Bilge b;
-        private PushButtonState _state;
+        private PushButtonState state;
 
         private Rectangle dropDownRectangle = new Rectangle();
         private bool skipNextOpen;
@@ -106,11 +106,11 @@ namespace Plisky.UIWinforms.Controls {
 
         private PushButtonState State {
             get {
-                return _state;
+                return state;
             }
             set {
-                if (!_state.Equals(value)) {
-                    _state = value;
+                if (!state.Equals(value)) {
+                    state = value;
                     Invalidate();
                 }
             }
@@ -132,16 +132,16 @@ namespace Plisky.UIWinforms.Controls {
             ToolStripMenuItem tsmi = new ToolStripMenuItem(text);
             tsmi.ImageIndex = imageIndex;
             tsmi.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-            tsmi.MouseDown += new MouseEventHandler(tsmi_MouseDown);
-            tsmi.Click += new EventHandler(tsmi_Click);
+            tsmi.MouseDown += new MouseEventHandler(Tsmi_MouseDown);
+            tsmi.Click += new EventHandler(Tsmi_Click);
 
             this.ContextMenuStrip.Items.Add(tsmi);
         }
 
         public override Size GetPreferredSize(Size proposedSize) {
             Size preferredSize = base.GetPreferredSize(proposedSize);
-            if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + PushButtonWidth > preferredSize.Width) {
-                return preferredSize + new Size(PushButtonWidth + BorderSize * 2, 0);
+            if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + PUSHBUTTONWIDTH > preferredSize.Width) {
+                return preferredSize + new Size(PUSHBUTTONWIDTH + borderSize * 2, 0);
             }
             return preferredSize;
         }
@@ -276,9 +276,9 @@ namespace Plisky.UIWinforms.Controls {
             }
 
             // calculate the current dropdown rectangle.
-            dropDownRectangle = new Rectangle(bounds.Right - PushButtonWidth - 1, BorderSize, PushButtonWidth, bounds.Height - BorderSize * 2);
+            dropDownRectangle = new Rectangle(bounds.Right - PUSHBUTTONWIDTH - 1, borderSize, PUSHBUTTONWIDTH, bounds.Height - borderSize * 2);
 
-            int internalBorder = BorderSize;
+            int internalBorder = borderSize;
             Rectangle focusRect = new Rectangle(internalBorder, internalBorder, bounds.Width - dropDownRectangle.Width - internalBorder, bounds.Height - (internalBorder * 2));
 
             bool drawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed || !Application.RenderWithVisualStyles);
@@ -289,15 +289,15 @@ namespace Plisky.UIWinforms.Controls {
             if (RightToLeft == RightToLeft.Yes) {
                 dropDownRectangle.X = bounds.Left + 1;
                 focusRect.X = dropDownRectangle.Right;
-                topLeftLinePosition.X = bounds.Left + PushButtonWidth;
-                topLeftLinePosition.Y = BorderSize;
-                bottomRightLinePosition.X = bounds.Left + PushButtonWidth;
-                bottomRightLinePosition.Y = bounds.Bottom - BorderSize;
+                topLeftLinePosition.X = bounds.Left + PUSHBUTTONWIDTH;
+                topLeftLinePosition.Y = borderSize;
+                bottomRightLinePosition.X = bounds.Left + PUSHBUTTONWIDTH;
+                bottomRightLinePosition.Y = bounds.Bottom - borderSize;
             } else {
-                topLeftLinePosition.X = bounds.Right - PushButtonWidth;
-                topLeftLinePosition.Y = BorderSize;
-                bottomRightLinePosition.X = bounds.Right - PushButtonWidth;
-                bottomRightLinePosition.Y = bounds.Bottom - BorderSize;
+                topLeftLinePosition.X = bounds.Right - PUSHBUTTONWIDTH;
+                topLeftLinePosition.Y = borderSize;
+                bottomRightLinePosition.X = bounds.Right - PUSHBUTTONWIDTH;
+                bottomRightLinePosition.Y = bounds.Bottom - borderSize;
             }
 
             if (drawSplitLine) {
@@ -382,7 +382,7 @@ namespace Plisky.UIWinforms.Controls {
             }
         }
 
-        private void tsmi_Click(object sender, EventArgs e) {
+        private void Tsmi_Click(object sender, EventArgs e) {
             //b.Info.Log(traceSbtControls, "Managed ToolsetMenuItem clicked, calling OnSplitDropdownItemClicked event handler");
 
             SbtEventArgs sbte = new SbtEventArgs() {
@@ -400,7 +400,7 @@ namespace Plisky.UIWinforms.Controls {
             }
         }
 
-        private void tsmi_MouseDown(object sender, MouseEventArgs e) {
+        private void Tsmi_MouseDown(object sender, MouseEventArgs e) {
             //b.Info.Log(traceSbtControls, "MouseDown occurs for managed toolstrip item.");
             ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
 

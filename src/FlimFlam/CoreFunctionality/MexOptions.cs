@@ -502,7 +502,7 @@ public class MexOptions {
                         using var fs = new FileStream(path, FileMode.Open);
                         var loaded = (AHighlightRequest)xmls.Deserialize(fs);
                         fs.Close();
-                        MexCore.TheCore.ViewManager.CurrentHighlightOptions.HighlightRequests.Add(loaded);
+                        MexCore.TheCore.ViewManager.CurrentHighlightOptions.highlightRequests.Add(loaded);
                         MexCore.TheCore.ViewManager.ReapplyHighlight();
                     }
                 }

@@ -31,6 +31,7 @@ internal static class Program {
 
         var hcfp = new FeatureHardCodedProvider();
         hcfp.AddFeature(new Feature("Bilge-ImportChain", true));
+        hcfp.AddFeature(new Feature("Bilge-OdsOOP", true));  // Output Debug string Out Of Process
 
         Feature.AddProvider(hcfp);
 

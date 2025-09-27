@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// Win32 Imports section for API calls that are used by the intercept ODS routine.  These

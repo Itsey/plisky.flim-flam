@@ -598,7 +598,7 @@ public class IncomingMessageManager {
         }
     }
 
-    internal void DeactivateODSGatherer() {
+    public virtual void DeactivateODSGatherer() {
         //Bilge.Log("IncommingMessageManager::DeactivateODSGatherer called");
         ODSDataGathererThread.continueRunning = false;
 
@@ -767,7 +767,7 @@ public class IncomingMessageManager {
     /// Factory for the incomming message manager class to ensure that there is only one incomming message manager
     /// </summary>
     /// <returns></returns>
-    public static IncomingMessageManager Current { get; } = new IncomingMessageManager();
+    public static IncomingMessageManager2 Current { get; set; }
 
     #endregion static factory support for incoming message manager
 }

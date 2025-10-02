@@ -7,7 +7,4 @@ Bilge b = new Bilge("FF-ODS");
 Bilge.AddHandler(new TCPHandler(new TCPHandlerOptions("127.0.0.1",9060)));
 
 new ODSDataGathererThread().InterceptODS();
-//odsThread = new Thread(new ThreadStart()) {
-//    Name = "MEX::ODSGathererThread"
-//};
-//odsThread.Start();
+

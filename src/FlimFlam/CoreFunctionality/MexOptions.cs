@@ -1,21 +1,17 @@
 //using Plisky.Plumbing.Legacy;
-namespace Plisky.FlimFlam;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using Plisky.Diagnostics.FlimFlam;
 using Plisky.Plumbing;
 
+namespace Plisky.FlimFlam;
 /// <summary>
 /// Summary description for MexOptions.  Class must be public for serialization into the iso store.
 /// </summary>
 public class MexOptions {
-    internal List<string> workstationNameMappings = new();
-    private bool filterDefault_SaveThreads;
-    private int pushbackCountDelayLimitForInteractiveJobs = 10;
-    private bool xRefWarningsToMain;
+    internal List<string> workstationNameMappings = [];
 
     // when doing this copy the entries dont move them.
     internal MexOptions() {
@@ -126,10 +122,7 @@ public class MexOptions {
     /// <summary>
     /// Decides whether thread information is saved with filters by default.
     /// </summary>
-    public bool FilterDefaultSaveThreads {
-        get { return filterDefault_SaveThreads; }
-        set { filterDefault_SaveThreads = value; }
-    }
+    public bool FilterDefaultSaveThreads { get; set; }
 
     /// <summary>
     /// Extension for filters
@@ -219,10 +212,7 @@ public class MexOptions {
     /// <summary>
     /// How many times a job can be moved back up the queue
     /// </summary>
-    public int PushbackCountDelayLimitForInteractiveJobs {
-        get { return pushbackCountDelayLimitForInteractiveJobs; }
-        set { pushbackCountDelayLimitForInteractiveJobs = value; }
-    }
+    public int PushbackCountDelayLimitForInteractiveJobs { get; set; } = 10;
 
     /// <summary>
     /// Removes duplicate entries when arriving in Mex, reducing the overhead of having two listeners
@@ -297,7 +287,7 @@ public class MexOptions {
     public bool UsePreferredNameInsteadOfProcessId { get; set; }
 
     [XmlIgnore]
-    public Dictionary<string, string> UserDefaults { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> UserDefaults { get; set; } = [];
 
     //public string OptionsStoreDirectory;
     /// <summary>
@@ -356,10 +346,9 @@ public class MexOptions {
     /// <summary>
     /// Place warning messages in ods view
     /// </summary>
-    public bool XRefWarningsToMain {
-        get { return xRefWarningsToMain; }
-        set { xRefWarningsToMain = value; }
-    }
+    public bool XRefWarningsToMain { get; set; }
+
+    public string[] PathsToCheckForImporters { get; set; }
 
     /// <summary>
     /// putmatching pids into the application view
@@ -378,15 +367,15 @@ public class MexOptions {
         result += "this.BeautifyDisplayedStrings                  =" + BeautifyDisplayedStrings.ToString() + Environment.NewLine; ;
         result += "this.CurrentMexFilterNames                     =" + "";//this.CurrentMexFilterNames == null ? "Null" : this.CurrentMexFilterNames.Length.ToString() + Environment.NewLine; ;
         result += "this.CurrentMexHighlightNames                  =" + ""; // this.CurrentMexHighlightNames == null ? "Null" : this.CurrentMexFilterNames.Length.ToString() + Environment.NewLine; ;
-        result += "this.DisplayInternalMessages                   =" + DisplayInternalMessages ?? "Null" + Environment.NewLine; ;
-        result += "this.FilterAndHighlightStoreDirectory          =" + FilterAndHighlightStoreDirectory ?? "Null" + Environment.NewLine; ;
-        result += "this.FilterDefaultProfileName                  =" + FilterFilenameToLoadOnStartup ?? "Null" + Environment.NewLine; ;
-        result += "this.FilterExtension                           =" + FilterExtension.ToString() ?? "Null" + Environment.NewLine; ;
-        result += "this.HighlightDefaultProfileName               =" + HighlightDefaultProfileName ?? "Null" + Environment.NewLine; ;
-        result += "this.HighlightExtension                        =" + HighlightExtension ?? "Null" + Environment.NewLine; ;
-        result += "this.Import_TextFileBehaviour                  =" + ImportTextFileBehaviour.ToString() ?? "Null" + Environment.NewLine; ;
-        result += "this.InteractiveNotifications                  =" + InteractiveNotifications.ToString() ?? "Null" + Environment.NewLine; ;
-        result += "this.IPAddressToBind                           =" + IPAddressToBind ?? "Null" + Environment.NewLine; ;
+        result += ("this.DisplayInternalMessages                   =" + DisplayInternalMessages) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.FilterAndHighlightStoreDirectory          =" + FilterAndHighlightStoreDirectory) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.FilterDefaultProfileName                  =" + FilterFilenameToLoadOnStartup) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.FilterExtension                           =" + FilterExtension.ToString()) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.HighlightDefaultProfileName               =" + HighlightDefaultProfileName) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.HighlightExtension                        =" + HighlightExtension) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.Import_TextFileBehaviour                  =" + ImportTextFileBehaviour.ToString()) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.InteractiveNotifications                  =" + InteractiveNotifications.ToString()) ?? ("Null" + Environment.NewLine); ;
+        result += ("this.IPAddressToBind                           =" + IPAddressToBind) ?? ("Null" + Environment.NewLine); ;
         result += "this.LogNotifications                          =" + LogNotifications.ToString() + Environment.NewLine; ;
         result += "this.MatchingNamePurgeAlsoClearsPartials       =" + MatchingNamePurgeAlsoClearsPartials.ToString() + Environment.NewLine; ;
         result += "this.NormalisationLimitMilliseconds            =" + NormalisationLimitMilliseconds.ToString() + Environment.NewLine; ;
@@ -442,7 +431,7 @@ public class MexOptions {
         if (result.ResetRefreshOnStartup && result.NoSecondsForRefreshOnImport > Consts.REFRESHTIME_UNNACCEPTABLE) {
             result.NoSecondsForRefreshOnImport = Consts.DEFAULT_UIREFRESHTIME;
         }
-        //Bilge.Log("Load completed, options now imported");
+
 
         // Find all of the filter files
 
@@ -477,7 +466,6 @@ public class MexOptions {
     /// Synchronous method to apply changed options to the application, this method locks down all of the Mex Threads
     /// therefore should be used sparingly!
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     internal void ApplyOptionsToApplication(MexOptions newOptions, bool isStartup) {
         //Bilge.Log("Dispatching notificaiton event of options changed");
         MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.BackgroundApplyOptionsBegins, UserMessageType.InformationMessage, "");
@@ -610,12 +598,31 @@ public class MexOptions {
         UsePreferredNameInsteadOfProcessId = true;
         RemoveDuplicatesOnImport = true;
         RemoveDuplicatesOnView = false;
+        var str = new List<string> {
+            ".\\",
+            ".\\importers\\",
+            "..\\..\\..\\..\\ff-ods\\bin\\Debug\\net9.0\\",
+            "..\\..\\..\\ff-ods\\bin\\Debug\\net9.0\\"
+        };
+        PathsToCheckForImporters = str.ToArray();
     }
 
     internal void SaveToFile(Stream savedest) {
+        PresaveValidation();
         var xmls = new XmlSerializer(typeof(MexOptions));
         xmls.Serialize(savedest, this);
         savedest.Close();
+    }
+
+    private void PresaveValidation() {
+        List<string> ptcfi = [];
+        foreach (string s in PathsToCheckForImporters) {
+            string p = s.Trim();
+            if (p.Length > 0 && !ptcfi.Contains(p)) {
+                ptcfi.Add(p);
+            }
+        }
+        PathsToCheckForImporters = ptcfi.ToArray();
     }
 
     private void PopulateFromMe(MexOptions src) {
@@ -681,6 +688,8 @@ public class MexOptions {
 
         NoUserNotificationsToStoreInLog = src.NoUserNotificationsToStoreInLog;
         UsePreferredNameInsteadOfProcessId = src.UsePreferredNameInsteadOfProcessId;
+
+        PathsToCheckForImporters = src.PathsToCheckForImporters;
     }
 
     // End MexOptions.ApplyOptionstoApplication

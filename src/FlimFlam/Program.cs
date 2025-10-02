@@ -10,11 +10,12 @@ using System.Windows.Forms;
 using Plisky.Diagnostics.FlimFlam;
 using Plisky.FlimFlam;
 using Plisky.Plumbing;
-
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 internal static class Program {
 
+    public static IHost host;
     /// <summary>
     /// The main entry point for the application.
     /// </summary>
@@ -29,6 +30,13 @@ internal static class Program {
             }
         }
 
+        var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddSingleton<OdsProcessGatherer>();
+        builder.Services.AddSingleton<IncomingMessageManager2>();
+
+        host = builder.Build();
+
+
         var hcfp = new FeatureHardCodedProvider();
         hcfp.AddFeature(new Feature("Bilge-ImportChain", true));
         hcfp.AddFeature(new Feature("Bilge-OdsOOP", true));  // Output Debug string Out Of Process
@@ -38,58 +46,18 @@ internal static class Program {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // The setting of bypass in the app config ensures that Tex does not perform its static initialisation.
 
-        Trace.Listeners.Clear();
-        //Bilge.CurrentTraceLevel = TraceLevel.Off;
-        // TODO ://Bilge.AddOutputDebugStringListener();
-
-        #region Tex Trace Support
+        IncomingMessageManager.Current = host.Services.GetRequiredService<IncomingMessageManager2>();
 
         if (args.Length > 0) {
-            if (args[0] == "/debug") {
-                // Mex can not use the Tex default listener as it captures the messages it writes therefore things get overly resource
-                // intensive if they share the same listener as sender on a single mex implementation - effectivly each message recieved
-                // generates several new messages and it gets complex, quick.
-                Trace.Listeners.Clear();
-                //Bilge.AddStackInformation = true;
-                //Bilge.QueueMessages = true;
-                // TODO//Bilge.AddTCPListener("Localhost,7654,INTERACTIVE", "MexTCP");
-                //Bilge.CurrentTraceLevel = TraceLevel.Verbose;
-
-#if TEXTFILELOG
-                string fname = @"c:\MexTraceOutput.txt";
-                if (File.Exists(fname)) {
-                    File.Copy(fname, fname + ".copy.txt", true);
-                    File.Delete(fname);
-                }
-
-               //Bilge.CurrentTraceLevel = TraceLevel.Verbose;
-
-                // Mex can use a file listener as this does not cause Mex to capture it and therefore it resolves the
-                // cyclic problem.  Mex can then later import this file to give a view of the logging.
-
-                StreamWriter sw = new StreamWriter(fname,false);
-                sw.AutoFlush = true;
-                TextWriterTraceListener twtl = new TextWriterTraceListener(sw);
-                Debug.Listeners.Add(twtl);
-
-#endif
-            }
-
             if (args[0] == "/log") {
                 // Added this in for logging MexPlus data.
                 setLogOptions = true;
             }
         }
 
-        #endregion Tex Trace Support
-
         AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
         Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
-        //Bilge.Initialise();
-        //Bilge.InitialiseThread("Mex_UIMain_Thread");
-        //Bilge.ResourceSysInfo("Application Startup");
 
         var f = new frmMexMainView();
         f.LoadViewerConfigurationData();
@@ -111,6 +79,7 @@ internal static class Program {
         RetrieveUserOptionalSettings();
 
 
+        
         try {
             Application.Run(f);
         } catch (Exception ex) {

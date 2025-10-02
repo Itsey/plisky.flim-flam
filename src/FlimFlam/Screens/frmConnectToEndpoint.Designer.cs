@@ -63,7 +63,7 @@
             btnSave.TabIndex = 1;
             btnSave.Text = "OK";
             btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
+            
             // 
             // btnCancel
             // 
@@ -140,7 +140,7 @@
             btnAdd.TabIndex = 17;
             btnAdd.Text = "Add";
             btnAdd.UseVisualStyleBackColor = true;
-            btnAdd.Click += btnAdd_Click;
+            btnAdd.Click += BtnAdd_Click;
             // 
             // chkPollForUpdates
             // 
@@ -278,7 +278,7 @@
             btnTest.TabIndex = 5;
             btnTest.Text = "Connect";
             btnTest.UseVisualStyleBackColor = true;
-            btnTest.Click += btnTest_Click;
+            
             // 
             // label4
             // 
@@ -289,7 +289,7 @@
             label4.Size = new System.Drawing.Size(114, 15);
             label4.TabIndex = 4;
             label4.Text = "Google Subscription";
-            label4.Click += label4_Click;
+            
             // 
             // label3
             // 

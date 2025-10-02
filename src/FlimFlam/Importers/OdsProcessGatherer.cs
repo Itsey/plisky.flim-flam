@@ -4,21 +4,16 @@ using System.IO;
 
 namespace Plisky.FlimFlam {
     /// <summary>
-    /// Responsible for locating and launching the ff-ods helper process used for ODS data gathering.
-    /// It will look for the executable in the current directory first, then two directories up under
-    /// ff-ods/bin/Debug. Maintains a single Process reference; will only launch if not already running.
+    /// Manages thee external process to capture output debug strings.  Due to stability issues with FF the unsafe code has been moved into an external
+    /// process which is then managed by this class. That external process uses the TCP gatherer to send the messages back to the main application.
     /// </summary>
-    internal static class OdsProcessGatherer {
+    public class OdsProcessGatherer {
 
-        private static readonly object sync = new object();
-        private static Process odsProcess;
+        private readonly object sync = new object();
+        private Process odsProcess;
+        private const string ODSIMPORTNAME = "ff-ods.exe";
 
-        /// <summary>
-        /// Ensures that the ff-ods process is running. Attempts to locate the executable in the current
-        /// directory, or alternatively two levels up in ff-ods/bin/Debug. Returns false if the executable
-        /// cannot be located or fails to start; true if already running or started successfully.
-        /// </summary>
-        internal static bool EnsureProcessRunning() {
+        internal bool StartOdsGathererProcess() {
             lock (sync) {
                 if (odsProcess != null) {
                     try {
@@ -55,11 +50,8 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        /// <summary>
-        /// Attempts to terminate the ff-ods process if it is currently running.
-        /// Returns true if a running process was found (and a kill was attempted), false if no process reference existed.
-        /// </summary>
-        internal static bool TryKillProcess() {
+
+        internal bool StopOdsGathererProcess() {
             lock (sync) {
                 if (odsProcess == null) { return false; }
                 try {
@@ -79,23 +71,20 @@ namespace Plisky.FlimFlam {
         /// <summary>
         /// Returns the full path to ff-ods.exe if it can be found using the search rules; otherwise null.
         /// </summary>
-        private static string LocateExecutable() {
+        private static string? LocateExecutable() {
             string currentDir = Directory.GetCurrentDirectory();
-            string primary = Path.Combine(currentDir, "ff-ods.exe");
-            if (File.Exists(primary)) { return primary; }
+            string matchedPath = null;
 
-            try {
-                var parent = Directory.GetParent(currentDir);
-                var grandParent = parent?.Parent;
-                if (grandParent != null) {
-                    string secondary = Path.Combine(grandParent.FullName, "ff-ods", "bin", "Debug", "ff-ods.exe");
-                    if (File.Exists(secondary)) { return secondary; }
+            foreach(string pathToCheck in MexCore.TheCore.Options.PathsToCheckForImporters) { 
+                string testPath = Path.Combine(currentDir, pathToCheck, ODSIMPORTNAME);
+
+                if (File.Exists(testPath)) {
+                    matchedPath = testPath;
+                    break;
                 }
-            } catch (UnauthorizedAccessException) {
-            } catch (DirectoryNotFoundException) {
-            }
+            };
 
-            return null;
+            return matchedPath;
         }
     }
 }

@@ -1,10 +1,11 @@
-namespace Plisky.FlimFlam {
+﻿namespace Plisky.FlimFlam {
 
     //using Plisky.Plumbing.Legacy;
     //using Plisky.Plumbing.Listeners;
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Security;
     using System.Security.Permissions;
     using System.Windows.Forms;
@@ -136,11 +137,16 @@ namespace Plisky.FlimFlam {
         private CheckBox chkIncludeFileContents;
         private CheckBox chkInlucdeTCPContents;
         private CheckBox chkImportLoggingInlcudedsODS;
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private readonly System.ComponentModel.Container components = null;
+        private ListBox lbxImportProcessPaths;
+        private Button btnRemovePath;
+        private Button btnAddPath;
+        private TextBox txtAdditionalPath;
+        private Label label15;
+        private TextBox textBox4;
+        private TextBox textBox3;
+        private Label label16;
+        private ErrorProvider errorProvider1;
+        private System.ComponentModel.IContainer components;
 
         internal frmMexOptionsScreen() {
             //
@@ -173,128 +179,138 @@ namespace Plisky.FlimFlam {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            components = new System.ComponentModel.Container();
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMexOptionsScreen));
-            btnOK = new System.Windows.Forms.Button();
-            btnCancel = new System.Windows.Forms.Button();
-            tabOptionsContainer = new System.Windows.Forms.TabControl();
-            tabPage1 = new System.Windows.Forms.TabPage();
-            lblRefreshWarning = new System.Windows.Forms.Label();
-            label10 = new System.Windows.Forms.Label();
-            txtLongRunningOps = new System.Windows.Forms.TextBox();
-            label9 = new System.Windows.Forms.Label();
-            txtUserLogSize = new System.Windows.Forms.TextBox();
-            label2 = new System.Windows.Forms.Label();
-            txtUIRefreshFrequency = new System.Windows.Forms.TextBox();
-            grpUserMessageNotificationOptions = new System.Windows.Forms.GroupBox();
-            rdoShowUserNotificationsInLog = new System.Windows.Forms.RadioButton();
-            rdoShowUserNotificationsInStatusBar = new System.Windows.Forms.RadioButton();
-            rdoShowUserNotificationsasMessages = new System.Windows.Forms.RadioButton();
-            rdoDontProcessUserNotifications = new System.Windows.Forms.RadioButton();
-            tabPage2 = new System.Windows.Forms.TabPage();
-            grpThreadDisplayOptions = new System.Windows.Forms.GroupBox();
-            rdoThreadShowDefault = new System.Windows.Forms.RadioButton();
-            rdoThreadShowFullInfo = new System.Windows.Forms.RadioButton();
-            rdoThreadShowNetId = new System.Windows.Forms.RadioButton();
-            rdoThreadShowOSId = new System.Windows.Forms.RadioButton();
-            groupBox2 = new System.Windows.Forms.GroupBox();
-            chkUseRenderNameNotPID = new System.Windows.Forms.CheckBox();
-            chkEnableBacktrace = new System.Windows.Forms.CheckBox();
-            chkHighlightCrossProcesses = new System.Windows.Forms.CheckBox();
-            chkMatchingNamePurgeAlsoClearsPartials = new System.Windows.Forms.CheckBox();
-            chkBeautifyOutput = new System.Windows.Forms.CheckBox();
-            chkWotTimedViewToo = new System.Windows.Forms.CheckBox();
-            chkDisplayGlobalIndexInMainView = new System.Windows.Forms.CheckBox();
-            chkSelectingProcessSelectsProcessView = new System.Windows.Forms.CheckBox();
-            chkAutoScroll = new System.Windows.Forms.CheckBox();
-            chkAutoRefresh = new System.Windows.Forms.CheckBox();
-            chkAllowCancelOperations = new System.Windows.Forms.CheckBox();
-            chkLeaveMatchingPidsInNonTracedToo = new System.Windows.Forms.CheckBox();
-            chkImportMatchingPIDODSIntoEvents = new System.Windows.Forms.CheckBox();
-            chkAutoSelectProcessIfNoneSelected = new System.Windows.Forms.CheckBox();
-            chkRespectFilter = new System.Windows.Forms.CheckBox();
-            chkRecycleProcessWhenNameMatches = new System.Windows.Forms.CheckBox();
-            tabPage3 = new System.Windows.Forms.TabPage();
-            chkRemoveDupesOnDisplay = new System.Windows.Forms.CheckBox();
-            chkRemoveDupes = new System.Windows.Forms.CheckBox();
-            groupBox5 = new System.Windows.Forms.GroupBox();
-            label8 = new System.Windows.Forms.Label();
-            label7 = new System.Windows.Forms.Label();
-            txtPortBinding = new System.Windows.Forms.TextBox();
-            txtIPBinding = new System.Windows.Forms.TextBox();
-            groupBox1 = new System.Windows.Forms.GroupBox();
-            chkXRefCheckAssertions = new System.Windows.Forms.CheckBox();
-            chkXRefResourceMessages = new System.Windows.Forms.CheckBox();
-            chkXRefVerbLogs = new System.Windows.Forms.CheckBox();
-            chkXRefMiniLogs = new System.Windows.Forms.CheckBox();
-            chkXRefLogs = new System.Windows.Forms.CheckBox();
-            chkXRefExceptions = new System.Windows.Forms.CheckBox();
-            chkXRefErrors = new System.Windows.Forms.CheckBox();
-            label3 = new System.Windows.Forms.Label();
-            chkXRefWarnings = new System.Windows.Forms.CheckBox();
-            chkXRefAppInitialises = new System.Windows.Forms.CheckBox();
-            tabAdvancedOptions = new System.Windows.Forms.TabPage();
-            groupBox3 = new System.Windows.Forms.GroupBox();
-            groupBox9 = new System.Windows.Forms.GroupBox();
-            btnDeleteMapping = new System.Windows.Forms.Button();
-            btnAddMapping = new System.Windows.Forms.Button();
-            label14 = new System.Windows.Forms.Label();
-            label13 = new System.Windows.Forms.Label();
-            lbxNameMappings = new System.Windows.Forms.ListBox();
-            textBox2 = new System.Windows.Forms.TextBox();
-            textBox1 = new System.Windows.Forms.TextBox();
-            chkTimingsViewIgnoresThreads = new System.Windows.Forms.CheckBox();
-            groupBox4 = new System.Windows.Forms.GroupBox();
-            txtNormalisationMS = new System.Windows.Forms.TextBox();
-            chkNormaliseRefresh = new System.Windows.Forms.CheckBox();
-            btnSetODSAcl = new System.Windows.Forms.Button();
-            label6 = new System.Windows.Forms.Label();
-            label5 = new System.Windows.Forms.Label();
-            label4 = new System.Windows.Forms.Label();
-            nudPushbackLimitCount = new System.Windows.Forms.NumericUpDown();
-            tabPage4 = new System.Windows.Forms.TabPage();
-            chkFilterDefaultIncludesClasses = new System.Windows.Forms.CheckBox();
-            chkFilterDefaultIncludeModules = new System.Windows.Forms.CheckBox();
-            chkFilterDefaultIncludesThreads = new System.Windows.Forms.CheckBox();
-            chkFilterDefaultIncludesLocations = new System.Windows.Forms.CheckBox();
-            chkAllowInternalMessageDisplays = new System.Windows.Forms.CheckBox();
-            chkRelocateOnChange = new System.Windows.Forms.CheckBox();
-            btnBrowseForFilterDir = new System.Windows.Forms.Button();
-            label1 = new System.Windows.Forms.Label();
-            txtFilterAndHighlightDir = new System.Windows.Forms.TextBox();
-            tabTexSettings = new System.Windows.Forms.TabPage();
-            btnReleaseDefaults = new System.Windows.Forms.Button();
-            btnDevelopmentDefaults = new System.Windows.Forms.Button();
-            chkAddStackInfo = new System.Windows.Forms.CheckBox();
-            chkEnableEnhancements = new System.Windows.Forms.CheckBox();
-            chkExpandAssertions = new System.Windows.Forms.CheckBox();
-            btnReadEnvironment = new System.Windows.Forms.Button();
-            btnSetEnvironment = new System.Windows.Forms.Button();
-            chkUseHighPerf = new System.Windows.Forms.CheckBox();
-            groupBox7 = new System.Windows.Forms.GroupBox();
-            label12 = new System.Windows.Forms.Label();
-            label11 = new System.Windows.Forms.Label();
-            lblErrorMsg = new System.Windows.Forms.Label();
-            btnAddNewListener = new System.Windows.Forms.Button();
-            btnRemoveSelected = new System.Windows.Forms.Button();
-            lbxAddTCPListeners = new System.Windows.Forms.ListBox();
-            chkMakeTcpInteractive = new System.Windows.Forms.CheckBox();
-            chkRemoveAll = new System.Windows.Forms.CheckBox();
-            txtIPInit = new System.Windows.Forms.TextBox();
-            txtPortInit = new System.Windows.Forms.TextBox();
-            chkAddTexListener = new System.Windows.Forms.CheckBox();
-            grpTraceLevel = new System.Windows.Forms.GroupBox();
-            rdoWarningLevel = new System.Windows.Forms.RadioButton();
-            rdoVerboseLevel = new System.Windows.Forms.RadioButton();
-            rdoErrorLevel = new System.Windows.Forms.RadioButton();
-            rdoTraceInfo = new System.Windows.Forms.RadioButton();
-            rdoTraceOff = new System.Windows.Forms.RadioButton();
-            txtGeneratedString = new System.Windows.Forms.TextBox();
-            lblHelp = new System.Windows.Forms.Label();
-            llbRelatedContent = new System.Windows.Forms.LinkLabel();
-            chkActivateImportLogging = new System.Windows.Forms.CheckBox();
-            chkImportLoggingInlcudedsODS = new System.Windows.Forms.CheckBox();
-            chkInlucdeTCPContents = new System.Windows.Forms.CheckBox();
-            chkIncludeFileContents = new System.Windows.Forms.CheckBox();
+            btnOK = new Button();
+            btnCancel = new Button();
+            tabOptionsContainer = new TabControl();
+            tabPage1 = new TabPage();
+            lblRefreshWarning = new Label();
+            label10 = new Label();
+            txtLongRunningOps = new TextBox();
+            label9 = new Label();
+            txtUserLogSize = new TextBox();
+            label2 = new Label();
+            txtUIRefreshFrequency = new TextBox();
+            grpUserMessageNotificationOptions = new GroupBox();
+            rdoShowUserNotificationsInLog = new RadioButton();
+            rdoShowUserNotificationsInStatusBar = new RadioButton();
+            rdoShowUserNotificationsasMessages = new RadioButton();
+            rdoDontProcessUserNotifications = new RadioButton();
+            tabPage2 = new TabPage();
+            grpThreadDisplayOptions = new GroupBox();
+            rdoThreadShowDefault = new RadioButton();
+            rdoThreadShowFullInfo = new RadioButton();
+            rdoThreadShowNetId = new RadioButton();
+            rdoThreadShowOSId = new RadioButton();
+            groupBox2 = new GroupBox();
+            chkUseRenderNameNotPID = new CheckBox();
+            chkEnableBacktrace = new CheckBox();
+            chkHighlightCrossProcesses = new CheckBox();
+            chkMatchingNamePurgeAlsoClearsPartials = new CheckBox();
+            chkBeautifyOutput = new CheckBox();
+            chkWotTimedViewToo = new CheckBox();
+            chkDisplayGlobalIndexInMainView = new CheckBox();
+            chkSelectingProcessSelectsProcessView = new CheckBox();
+            chkAutoScroll = new CheckBox();
+            chkAutoRefresh = new CheckBox();
+            chkAllowCancelOperations = new CheckBox();
+            chkLeaveMatchingPidsInNonTracedToo = new CheckBox();
+            chkImportMatchingPIDODSIntoEvents = new CheckBox();
+            chkAutoSelectProcessIfNoneSelected = new CheckBox();
+            chkRespectFilter = new CheckBox();
+            chkRecycleProcessWhenNameMatches = new CheckBox();
+            tabPage3 = new TabPage();
+            label16 = new Label();
+            label15 = new Label();
+            textBox4 = new TextBox();
+            textBox3 = new TextBox();
+            btnRemovePath = new Button();
+            btnAddPath = new Button();
+            txtAdditionalPath = new TextBox();
+            lbxImportProcessPaths = new ListBox();
+            chkRemoveDupesOnDisplay = new CheckBox();
+            chkRemoveDupes = new CheckBox();
+            groupBox5 = new GroupBox();
+            label8 = new Label();
+            label7 = new Label();
+            txtPortBinding = new TextBox();
+            txtIPBinding = new TextBox();
+            groupBox1 = new GroupBox();
+            chkXRefCheckAssertions = new CheckBox();
+            chkXRefResourceMessages = new CheckBox();
+            chkXRefVerbLogs = new CheckBox();
+            chkXRefMiniLogs = new CheckBox();
+            chkXRefLogs = new CheckBox();
+            chkXRefExceptions = new CheckBox();
+            chkXRefErrors = new CheckBox();
+            label3 = new Label();
+            chkXRefWarnings = new CheckBox();
+            chkXRefAppInitialises = new CheckBox();
+            tabAdvancedOptions = new TabPage();
+            groupBox3 = new GroupBox();
+            chkIncludeFileContents = new CheckBox();
+            chkInlucdeTCPContents = new CheckBox();
+            chkImportLoggingInlcudedsODS = new CheckBox();
+            chkActivateImportLogging = new CheckBox();
+            groupBox9 = new GroupBox();
+            btnDeleteMapping = new Button();
+            btnAddMapping = new Button();
+            label14 = new Label();
+            label13 = new Label();
+            lbxNameMappings = new ListBox();
+            textBox2 = new TextBox();
+            textBox1 = new TextBox();
+            chkTimingsViewIgnoresThreads = new CheckBox();
+            groupBox4 = new GroupBox();
+            txtNormalisationMS = new TextBox();
+            chkNormaliseRefresh = new CheckBox();
+            btnSetODSAcl = new Button();
+            label6 = new Label();
+            label5 = new Label();
+            label4 = new Label();
+            nudPushbackLimitCount = new NumericUpDown();
+            tabPage4 = new TabPage();
+            chkFilterDefaultIncludesClasses = new CheckBox();
+            chkFilterDefaultIncludeModules = new CheckBox();
+            chkFilterDefaultIncludesThreads = new CheckBox();
+            chkFilterDefaultIncludesLocations = new CheckBox();
+            chkAllowInternalMessageDisplays = new CheckBox();
+            chkRelocateOnChange = new CheckBox();
+            btnBrowseForFilterDir = new Button();
+            label1 = new Label();
+            txtFilterAndHighlightDir = new TextBox();
+            tabTexSettings = new TabPage();
+            btnReleaseDefaults = new Button();
+            btnDevelopmentDefaults = new Button();
+            chkAddStackInfo = new CheckBox();
+            chkEnableEnhancements = new CheckBox();
+            chkExpandAssertions = new CheckBox();
+            btnReadEnvironment = new Button();
+            btnSetEnvironment = new Button();
+            chkUseHighPerf = new CheckBox();
+            groupBox7 = new GroupBox();
+            label12 = new Label();
+            label11 = new Label();
+            lblErrorMsg = new Label();
+            btnAddNewListener = new Button();
+            btnRemoveSelected = new Button();
+            lbxAddTCPListeners = new ListBox();
+            chkMakeTcpInteractive = new CheckBox();
+            chkRemoveAll = new CheckBox();
+            txtIPInit = new TextBox();
+            txtPortInit = new TextBox();
+            chkAddTexListener = new CheckBox();
+            grpTraceLevel = new GroupBox();
+            rdoWarningLevel = new RadioButton();
+            rdoVerboseLevel = new RadioButton();
+            rdoErrorLevel = new RadioButton();
+            rdoTraceInfo = new RadioButton();
+            rdoTraceOff = new RadioButton();
+            txtGeneratedString = new TextBox();
+            lblHelp = new Label();
+            llbRelatedContent = new LinkLabel();
+            errorProvider1 = new ErrorProvider(components);
             tabOptionsContainer.SuspendLayout();
             tabPage1.SuspendLayout();
             grpUserMessageNotificationOptions.SuspendLayout();
@@ -313,36 +329,35 @@ namespace Plisky.FlimFlam {
             tabTexSettings.SuspendLayout();
             groupBox7.SuspendLayout();
             grpTraceLevel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
-            //
+            // 
             // btnOK
-            //
-            btnOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            // 
+            btnOK.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnOK.DialogResult = DialogResult.OK;
             btnOK.Location = new System.Drawing.Point(655, 446);
             btnOK.Name = "btnOK";
             btnOK.Size = new System.Drawing.Size(75, 27);
             btnOK.TabIndex = 6;
             btnOK.Text = "&Ok";
             btnOK.UseVisualStyleBackColor = true;
-            btnOK.Click += new System.EventHandler(OK_Click);
-            //
+            btnOK.Click += OK_Click;
+            // 
             // btnCancel
-            //
-            btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            // 
+            btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCancel.DialogResult = DialogResult.Cancel;
             btnCancel.Location = new System.Drawing.Point(574, 446);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(75, 27);
             btnCancel.TabIndex = 7;
             btnCancel.Text = "C&ancel";
             btnCancel.UseVisualStyleBackColor = true;
-            //
+            // 
             // tabOptionsContainer
-            //
-            tabOptionsContainer.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                        | System.Windows.Forms.AnchorStyles.Left
-                        | System.Windows.Forms.AnchorStyles.Right;
+            // 
+            tabOptionsContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tabOptionsContainer.Controls.Add(tabPage1);
             tabOptionsContainer.Controls.Add(tabPage2);
             tabOptionsContainer.Controls.Add(tabPage3);
@@ -354,9 +369,9 @@ namespace Plisky.FlimFlam {
             tabOptionsContainer.SelectedIndex = 0;
             tabOptionsContainer.Size = new System.Drawing.Size(731, 375);
             tabOptionsContainer.TabIndex = 17;
-            //
+            // 
             // tabPage1
-            //
+            // 
             tabPage1.Controls.Add(lblRefreshWarning);
             tabPage1.Controls.Add(label10);
             tabPage1.Controls.Add(txtLongRunningOps);
@@ -367,14 +382,14 @@ namespace Plisky.FlimFlam {
             tabPage1.Controls.Add(grpUserMessageNotificationOptions);
             tabPage1.Location = new System.Drawing.Point(4, 22);
             tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            tabPage1.Padding = new Padding(3);
             tabPage1.Size = new System.Drawing.Size(723, 349);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "User Preferences";
             tabPage1.UseVisualStyleBackColor = true;
-            //
+            // 
             // lblRefreshWarning
-            //
+            // 
             lblRefreshWarning.AutoSize = true;
             lblRefreshWarning.Location = new System.Drawing.Point(6, 97);
             lblRefreshWarning.Name = "lblRefreshWarning";
@@ -382,64 +397,64 @@ namespace Plisky.FlimFlam {
             lblRefreshWarning.TabIndex = 20;
             lblRefreshWarning.Text = "label15";
             lblRefreshWarning.Visible = false;
-            //
+            // 
             // label10
-            //
+            // 
             label10.AutoSize = true;
             label10.Location = new System.Drawing.Point(501, 62);
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(167, 13);
             label10.TabIndex = 19;
             label10.Text = "No seconds for long running";
-            //
+            // 
             // txtLongRunningOps
-            //
+            // 
             txtLongRunningOps.Location = new System.Drawing.Point(444, 59);
             txtLongRunningOps.Name = "txtLongRunningOps";
             txtLongRunningOps.Size = new System.Drawing.Size(51, 21);
             txtLongRunningOps.TabIndex = 18;
             txtLongRunningOps.Text = "45";
-            txtLongRunningOps.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtLongRunningOps.MouseHover += Generic_MouseHover;
+            // 
             // label9
-            //
+            // 
             label9.AutoSize = true;
             label9.Location = new System.Drawing.Point(336, 62);
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(85, 13);
             label9.TabIndex = 17;
             label9.Text = "User Log Size";
-            //
+            // 
             // txtUserLogSize
-            //
+            // 
             txtUserLogSize.Location = new System.Drawing.Point(271, 59);
             txtUserLogSize.Name = "txtUserLogSize";
             txtUserLogSize.Size = new System.Drawing.Size(59, 21);
             txtUserLogSize.TabIndex = 16;
             txtUserLogSize.Text = "150";
-            txtUserLogSize.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtUserLogSize.MouseHover += Generic_MouseHover;
+            // 
             // label2
-            //
+            // 
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(67, 64);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(146, 13);
             label2.TabIndex = 14;
             label2.Text = "Frequency of UI Refresh";
-            //
+            // 
             // txtUIRefreshFrequency
-            //
+            // 
             txtUIRefreshFrequency.Location = new System.Drawing.Point(10, 59);
             txtUIRefreshFrequency.Name = "txtUIRefreshFrequency";
             txtUIRefreshFrequency.Size = new System.Drawing.Size(51, 21);
             txtUIRefreshFrequency.TabIndex = 13;
             txtUIRefreshFrequency.Text = "1";
-            txtUIRefreshFrequency.TextChanged += new System.EventHandler(UIRefreshFrequency_TextChanged);
-            txtUIRefreshFrequency.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtUIRefreshFrequency.TextChanged += UIRefreshFrequency_TextChanged;
+            txtUIRefreshFrequency.MouseHover += Generic_MouseHover;
+            // 
             // grpUserMessageNotificationOptions
-            //
+            // 
             grpUserMessageNotificationOptions.Controls.Add(rdoShowUserNotificationsInLog);
             grpUserMessageNotificationOptions.Controls.Add(rdoShowUserNotificationsInStatusBar);
             grpUserMessageNotificationOptions.Controls.Add(rdoShowUserNotificationsasMessages);
@@ -452,10 +467,10 @@ namespace Plisky.FlimFlam {
             grpUserMessageNotificationOptions.TabStop = false;
             grpUserMessageNotificationOptions.Text = "Recieve User Messages";
             grpUserMessageNotificationOptions.Visible = false;
-            grpUserMessageNotificationOptions.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            grpUserMessageNotificationOptions.MouseHover += Generic_MouseHover;
+            // 
             // rdoShowUserNotificationsInLog
-            //
+            // 
             rdoShowUserNotificationsInLog.AutoSize = true;
             rdoShowUserNotificationsInLog.Location = new System.Drawing.Point(454, 19);
             rdoShowUserNotificationsInLog.Name = "rdoShowUserNotificationsInLog";
@@ -463,9 +478,9 @@ namespace Plisky.FlimFlam {
             rdoShowUserNotificationsInLog.TabIndex = 5;
             rdoShowUserNotificationsInLog.Text = "In the log only";
             rdoShowUserNotificationsInLog.UseVisualStyleBackColor = true;
-            //
+            // 
             // rdoShowUserNotificationsInStatusBar
-            //
+            // 
             rdoShowUserNotificationsInStatusBar.AutoSize = true;
             rdoShowUserNotificationsInStatusBar.Location = new System.Drawing.Point(301, 20);
             rdoShowUserNotificationsInStatusBar.Name = "rdoShowUserNotificationsInStatusBar";
@@ -473,9 +488,9 @@ namespace Plisky.FlimFlam {
             rdoShowUserNotificationsInStatusBar.TabIndex = 2;
             rdoShowUserNotificationsInStatusBar.Text = "In the status bar";
             rdoShowUserNotificationsInStatusBar.UseVisualStyleBackColor = true;
-            //
+            // 
             // rdoShowUserNotificationsasMessages
-            //
+            // 
             rdoShowUserNotificationsasMessages.AutoSize = true;
             rdoShowUserNotificationsasMessages.Checked = true;
             rdoShowUserNotificationsasMessages.Location = new System.Drawing.Point(128, 20);
@@ -485,9 +500,9 @@ namespace Plisky.FlimFlam {
             rdoShowUserNotificationsasMessages.TabStop = true;
             rdoShowUserNotificationsasMessages.Text = "Interactivly";
             rdoShowUserNotificationsasMessages.UseVisualStyleBackColor = true;
-            //
+            // 
             // rdoDontProcessUserNotifications
-            //
+            // 
             rdoDontProcessUserNotifications.AutoSize = true;
             rdoDontProcessUserNotifications.Location = new System.Drawing.Point(7, 19);
             rdoDontProcessUserNotifications.Name = "rdoDontProcessUserNotifications";
@@ -495,21 +510,21 @@ namespace Plisky.FlimFlam {
             rdoDontProcessUserNotifications.TabIndex = 0;
             rdoDontProcessUserNotifications.Text = "None";
             rdoDontProcessUserNotifications.UseVisualStyleBackColor = true;
-            //
+            // 
             // tabPage2
-            //
+            // 
             tabPage2.Controls.Add(grpThreadDisplayOptions);
             tabPage2.Controls.Add(groupBox2);
-            tabPage2.Location = new System.Drawing.Point(4, 22);
+            tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(723, 349);
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new System.Drawing.Size(723, 347);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Mex Behaviour";
             tabPage2.UseVisualStyleBackColor = true;
-            //
+            // 
             // grpThreadDisplayOptions
-            //
+            // 
             grpThreadDisplayOptions.Controls.Add(rdoThreadShowDefault);
             grpThreadDisplayOptions.Controls.Add(rdoThreadShowFullInfo);
             grpThreadDisplayOptions.Controls.Add(rdoThreadShowNetId);
@@ -520,10 +535,10 @@ namespace Plisky.FlimFlam {
             grpThreadDisplayOptions.TabIndex = 21;
             grpThreadDisplayOptions.TabStop = false;
             grpThreadDisplayOptions.Text = "Thread Display";
-            grpThreadDisplayOptions.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            grpThreadDisplayOptions.MouseHover += Generic_MouseHover;
+            // 
             // rdoThreadShowDefault
-            //
+            // 
             rdoThreadShowDefault.AutoSize = true;
             rdoThreadShowDefault.Location = new System.Drawing.Point(15, 20);
             rdoThreadShowDefault.Name = "rdoThreadShowDefault";
@@ -532,9 +547,9 @@ namespace Plisky.FlimFlam {
             rdoThreadShowDefault.TabStop = true;
             rdoThreadShowDefault.Text = "Default display - net threadname and OS thread identity";
             rdoThreadShowDefault.UseVisualStyleBackColor = true;
-            //
+            // 
             // rdoThreadShowFullInfo
-            //
+            // 
             rdoThreadShowFullInfo.AutoSize = true;
             rdoThreadShowFullInfo.Location = new System.Drawing.Point(279, 51);
             rdoThreadShowFullInfo.Name = "rdoThreadShowFullInfo";
@@ -543,9 +558,9 @@ namespace Plisky.FlimFlam {
             rdoThreadShowFullInfo.TabStop = true;
             rdoThreadShowFullInfo.Text = "show full information";
             rdoThreadShowFullInfo.UseVisualStyleBackColor = true;
-            //
+            // 
             // rdoThreadShowNetId
-            //
+            // 
             rdoThreadShowNetId.AutoSize = true;
             rdoThreadShowNetId.Location = new System.Drawing.Point(134, 51);
             rdoThreadShowNetId.Name = "rdoThreadShowNetId";
@@ -554,9 +569,9 @@ namespace Plisky.FlimFlam {
             rdoThreadShowNetId.TabStop = true;
             rdoThreadShowNetId.Text = ".net thread id";
             rdoThreadShowNetId.UseVisualStyleBackColor = true;
-            //
+            // 
             // rdoThreadShowOSId
-            //
+            // 
             rdoThreadShowOSId.AutoSize = true;
             rdoThreadShowOSId.Location = new System.Drawing.Point(16, 51);
             rdoThreadShowOSId.Name = "rdoThreadShowOSId";
@@ -565,9 +580,9 @@ namespace Plisky.FlimFlam {
             rdoThreadShowOSId.TabStop = true;
             rdoThreadShowOSId.Text = "OS Thread Id";
             rdoThreadShowOSId.UseVisualStyleBackColor = true;
-            //
+            // 
             // groupBox2
-            //
+            // 
             groupBox2.Controls.Add(chkUseRenderNameNotPID);
             groupBox2.Controls.Add(chkEnableBacktrace);
             groupBox2.Controls.Add(chkHighlightCrossProcesses);
@@ -590,9 +605,9 @@ namespace Plisky.FlimFlam {
             groupBox2.TabIndex = 9;
             groupBox2.TabStop = false;
             groupBox2.Text = " Mex Behaviour ";
-            //
+            // 
             // chkUseRenderNameNotPID
-            //
+            // 
             chkUseRenderNameNotPID.AutoSize = true;
             chkUseRenderNameNotPID.Location = new System.Drawing.Point(412, 223);
             chkUseRenderNameNotPID.Name = "chkUseRenderNameNotPID";
@@ -600,10 +615,10 @@ namespace Plisky.FlimFlam {
             chkUseRenderNameNotPID.TabIndex = 20;
             chkUseRenderNameNotPID.Text = "Prefer to use a processes name.";
             chkUseRenderNameNotPID.UseVisualStyleBackColor = true;
-            chkUseRenderNameNotPID.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkUseRenderNameNotPID.MouseHover += Generic_MouseHover;
+            // 
             // chkEnableBacktrace
-            //
+            // 
             chkEnableBacktrace.AutoSize = true;
             chkEnableBacktrace.Location = new System.Drawing.Point(15, 143);
             chkEnableBacktrace.Name = "chkEnableBacktrace";
@@ -611,10 +626,10 @@ namespace Plisky.FlimFlam {
             chkEnableBacktrace.TabIndex = 19;
             chkEnableBacktrace.Text = "Backtrace Extended Details View";
             chkEnableBacktrace.UseVisualStyleBackColor = true;
-            chkEnableBacktrace.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkEnableBacktrace.MouseHover += Generic_MouseHover;
+            // 
             // chkHighlightCrossProcesses
-            //
+            // 
             chkHighlightCrossProcesses.AutoSize = true;
             chkHighlightCrossProcesses.Location = new System.Drawing.Point(16, 74);
             chkHighlightCrossProcesses.Name = "chkHighlightCrossProcesses";
@@ -622,10 +637,10 @@ namespace Plisky.FlimFlam {
             chkHighlightCrossProcesses.TabIndex = 18;
             chkHighlightCrossProcesses.Text = "Cross Process View Highlight";
             chkHighlightCrossProcesses.UseVisualStyleBackColor = true;
-            chkHighlightCrossProcesses.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkHighlightCrossProcesses.MouseHover += Generic_MouseHover;
+            // 
             // chkMatchingNamePurgeAlsoClearsPartials
-            //
+            // 
             chkMatchingNamePurgeAlsoClearsPartials.AutoSize = true;
             chkMatchingNamePurgeAlsoClearsPartials.Location = new System.Drawing.Point(16, 53);
             chkMatchingNamePurgeAlsoClearsPartials.Name = "chkMatchingNamePurgeAlsoClearsPartials";
@@ -633,10 +648,10 @@ namespace Plisky.FlimFlam {
             chkMatchingNamePurgeAlsoClearsPartials.TabIndex = 15;
             chkMatchingNamePurgeAlsoClearsPartials.Text = "Partial Purge Elimiates Partial Copies too";
             chkMatchingNamePurgeAlsoClearsPartials.UseVisualStyleBackColor = true;
-            chkMatchingNamePurgeAlsoClearsPartials.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkMatchingNamePurgeAlsoClearsPartials.MouseHover += Generic_MouseHover;
+            // 
             // chkBeautifyOutput
-            //
+            // 
             chkBeautifyOutput.AutoSize = true;
             chkBeautifyOutput.Location = new System.Drawing.Point(412, 96);
             chkBeautifyOutput.Name = "chkBeautifyOutput";
@@ -644,10 +659,10 @@ namespace Plisky.FlimFlam {
             chkBeautifyOutput.TabIndex = 14;
             chkBeautifyOutput.Text = "Beautify Output Of Strings";
             chkBeautifyOutput.UseVisualStyleBackColor = true;
-            chkBeautifyOutput.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkBeautifyOutput.MouseHover += Generic_MouseHover;
+            // 
             // chkWotTimedViewToo
-            //
+            // 
             chkWotTimedViewToo.AutoSize = true;
             chkWotTimedViewToo.Location = new System.Drawing.Point(175, 97);
             chkWotTimedViewToo.Name = "chkWotTimedViewToo";
@@ -655,10 +670,10 @@ namespace Plisky.FlimFlam {
             chkWotTimedViewToo.TabIndex = 12;
             chkWotTimedViewToo.Text = "Even in timed view";
             chkWotTimedViewToo.UseVisualStyleBackColor = true;
-            chkWotTimedViewToo.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkWotTimedViewToo.MouseHover += Generic_MouseHover;
+            // 
             // chkDisplayGlobalIndexInMainView
-            //
+            // 
             chkDisplayGlobalIndexInMainView.AutoSize = true;
             chkDisplayGlobalIndexInMainView.Location = new System.Drawing.Point(412, 200);
             chkDisplayGlobalIndexInMainView.Name = "chkDisplayGlobalIndexInMainView";
@@ -666,10 +681,10 @@ namespace Plisky.FlimFlam {
             chkDisplayGlobalIndexInMainView.TabIndex = 11;
             chkDisplayGlobalIndexInMainView.Text = "Show Global Index In Process View";
             chkDisplayGlobalIndexInMainView.UseVisualStyleBackColor = true;
-            chkDisplayGlobalIndexInMainView.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkDisplayGlobalIndexInMainView.MouseHover += Generic_MouseHover;
+            // 
             // chkSelectingProcessSelectsProcessView
-            //
+            // 
             chkSelectingProcessSelectsProcessView.AutoSize = true;
             chkSelectingProcessSelectsProcessView.Location = new System.Drawing.Point(15, 187);
             chkSelectingProcessSelectsProcessView.Name = "chkSelectingProcessSelectsProcessView";
@@ -677,10 +692,10 @@ namespace Plisky.FlimFlam {
             chkSelectingProcessSelectsProcessView.TabIndex = 9;
             chkSelectingProcessSelectsProcessView.Text = "When selecting a new process change view to process view.";
             chkSelectingProcessSelectsProcessView.UseVisualStyleBackColor = true;
-            chkSelectingProcessSelectsProcessView.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkSelectingProcessSelectsProcessView.MouseHover += Generic_MouseHover;
+            // 
             // chkAutoScroll
-            //
+            // 
             chkAutoScroll.AutoSize = true;
             chkAutoScroll.Location = new System.Drawing.Point(412, 146);
             chkAutoScroll.Name = "chkAutoScroll";
@@ -688,10 +703,10 @@ namespace Plisky.FlimFlam {
             chkAutoScroll.TabIndex = 8;
             chkAutoScroll.Text = "Automatically Scroll";
             chkAutoScroll.UseVisualStyleBackColor = true;
-            chkAutoScroll.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAutoScroll.MouseHover += Generic_MouseHover;
+            // 
             // chkAutoRefresh
-            //
+            // 
             chkAutoRefresh.AutoSize = true;
             chkAutoRefresh.Location = new System.Drawing.Point(412, 123);
             chkAutoRefresh.Name = "chkAutoRefresh";
@@ -699,10 +714,10 @@ namespace Plisky.FlimFlam {
             chkAutoRefresh.TabIndex = 7;
             chkAutoRefresh.Text = "Automatically refresh";
             chkAutoRefresh.UseVisualStyleBackColor = true;
-            chkAutoRefresh.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAutoRefresh.MouseHover += Generic_MouseHover;
+            // 
             // chkAllowCancelOperations
-            //
+            // 
             chkAllowCancelOperations.AutoSize = true;
             chkAllowCancelOperations.Enabled = false;
             chkAllowCancelOperations.Location = new System.Drawing.Point(15, 120);
@@ -712,10 +727,10 @@ namespace Plisky.FlimFlam {
             chkAllowCancelOperations.Text = "Support Refresh Cancellation";
             chkAllowCancelOperations.UseVisualStyleBackColor = true;
             chkAllowCancelOperations.Visible = false;
-            chkAllowCancelOperations.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAllowCancelOperations.MouseHover += Generic_MouseHover;
+            // 
             // chkLeaveMatchingPidsInNonTracedToo
-            //
+            // 
             chkLeaveMatchingPidsInNonTracedToo.AutoSize = true;
             chkLeaveMatchingPidsInNonTracedToo.Location = new System.Drawing.Point(440, 51);
             chkLeaveMatchingPidsInNonTracedToo.Name = "chkLeaveMatchingPidsInNonTracedToo";
@@ -723,21 +738,21 @@ namespace Plisky.FlimFlam {
             chkLeaveMatchingPidsInNonTracedToo.TabIndex = 4;
             chkLeaveMatchingPidsInNonTracedToo.Text = "When this occurs, copy the entry";
             chkLeaveMatchingPidsInNonTracedToo.UseVisualStyleBackColor = true;
-            chkLeaveMatchingPidsInNonTracedToo.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkLeaveMatchingPidsInNonTracedToo.MouseHover += Generic_MouseHover;
+            // 
             // chkImportMatchingPIDODSIntoEvents
-            //
+            // 
             chkImportMatchingPIDODSIntoEvents.AutoSize = true;
             chkImportMatchingPIDODSIntoEvents.Location = new System.Drawing.Point(412, 28);
             chkImportMatchingPIDODSIntoEvents.Name = "chkImportMatchingPIDODSIntoEvents";
-            chkImportMatchingPIDODSIntoEvents.Size = new System.Drawing.Size(281, 17);
+            chkImportMatchingPIDODSIntoEvents.Size = new System.Drawing.Size(280, 17);
             chkImportMatchingPIDODSIntoEvents.TabIndex = 3;
             chkImportMatchingPIDODSIntoEvents.Text = "Messages from same PID join Tex Messages";
             chkImportMatchingPIDODSIntoEvents.UseVisualStyleBackColor = true;
-            chkImportMatchingPIDODSIntoEvents.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkImportMatchingPIDODSIntoEvents.MouseHover += Generic_MouseHover;
+            // 
             // chkAutoSelectProcessIfNoneSelected
-            //
+            // 
             chkAutoSelectProcessIfNoneSelected.AutoSize = true;
             chkAutoSelectProcessIfNoneSelected.Location = new System.Drawing.Point(15, 210);
             chkAutoSelectProcessIfNoneSelected.Name = "chkAutoSelectProcessIfNoneSelected";
@@ -745,10 +760,10 @@ namespace Plisky.FlimFlam {
             chkAutoSelectProcessIfNoneSelected.TabIndex = 2;
             chkAutoSelectProcessIfNoneSelected.Text = "Auto Select Process View For First Process";
             chkAutoSelectProcessIfNoneSelected.UseVisualStyleBackColor = true;
-            chkAutoSelectProcessIfNoneSelected.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAutoSelectProcessIfNoneSelected.MouseHover += Generic_MouseHover;
+            // 
             // chkRespectFilter
-            //
+            // 
             chkRespectFilter.AutoSize = true;
             chkRespectFilter.Location = new System.Drawing.Point(16, 97);
             chkRespectFilter.Name = "chkRespectFilter";
@@ -756,10 +771,10 @@ namespace Plisky.FlimFlam {
             chkRespectFilter.TabIndex = 1;
             chkRespectFilter.Text = "Respect Filter Settings";
             chkRespectFilter.UseVisualStyleBackColor = true;
-            chkRespectFilter.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkRespectFilter.MouseHover += Generic_MouseHover;
+            // 
             // chkRecycleProcessWhenNameMatches
-            //
+            // 
             chkRecycleProcessWhenNameMatches.AutoSize = true;
             chkRecycleProcessWhenNameMatches.Location = new System.Drawing.Point(16, 30);
             chkRecycleProcessWhenNameMatches.Name = "chkRecycleProcessWhenNameMatches";
@@ -767,36 +782,116 @@ namespace Plisky.FlimFlam {
             chkRecycleProcessWhenNameMatches.TabIndex = 0;
             chkRecycleProcessWhenNameMatches.Text = "On initialise partially purge matching process";
             chkRecycleProcessWhenNameMatches.UseVisualStyleBackColor = true;
-            chkRecycleProcessWhenNameMatches.MouseEnter += new System.EventHandler(RecycleProcessWhenNameMatches_MouseEnter);
-            chkRecycleProcessWhenNameMatches.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkRecycleProcessWhenNameMatches.MouseEnter += RecycleProcessWhenNameMatches_MouseEnter;
+            chkRecycleProcessWhenNameMatches.MouseHover += Generic_MouseHover;
+            // 
             // tabPage3
-            //
+            // 
+            tabPage3.Controls.Add(label16);
+            tabPage3.Controls.Add(label15);
+            tabPage3.Controls.Add(textBox4);
+            tabPage3.Controls.Add(textBox3);
+            tabPage3.Controls.Add(btnRemovePath);
+            tabPage3.Controls.Add(btnAddPath);
+            tabPage3.Controls.Add(txtAdditionalPath);
+            tabPage3.Controls.Add(lbxImportProcessPaths);
             tabPage3.Controls.Add(chkRemoveDupesOnDisplay);
             tabPage3.Controls.Add(chkRemoveDupes);
             tabPage3.Controls.Add(groupBox5);
             tabPage3.Controls.Add(groupBox1);
             tabPage3.Location = new System.Drawing.Point(4, 22);
             tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            tabPage3.Padding = new Padding(3);
             tabPage3.Size = new System.Drawing.Size(723, 349);
             tabPage3.TabIndex = 2;
-            tabPage3.Text = "Importer Behaviour";
+            tabPage3.Text = "Importer";
             tabPage3.UseVisualStyleBackColor = true;
-            //
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Location = new System.Drawing.Point(497, 158);
+            label16.Name = "label16";
+            label16.Size = new System.Drawing.Size(121, 13);
+            label16.TabIndex = 28;
+            label16.Text = "Google Subscription";
+            label16.Visible = false;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new System.Drawing.Point(346, 158);
+            label15.Name = "label15";
+            label15.Size = new System.Drawing.Size(91, 13);
+            label15.TabIndex = 27;
+            label15.Text = "Google Project";
+            label15.Visible = false;
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new System.Drawing.Point(497, 174);
+            textBox4.Name = "textBox4";
+            textBox4.Size = new System.Drawing.Size(143, 21);
+            textBox4.TabIndex = 26;
+            textBox4.Visible = false;
+            // 
+            // textBox3
+            // 
+            textBox3.Location = new System.Drawing.Point(345, 174);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new System.Drawing.Size(146, 21);
+            textBox3.TabIndex = 25;
+            textBox3.Visible = false;
+            // 
+            // btnRemovePath
+            // 
+            btnRemovePath.Location = new System.Drawing.Point(649, 246);
+            btnRemovePath.Name = "btnRemovePath";
+            btnRemovePath.Size = new System.Drawing.Size(53, 23);
+            btnRemovePath.TabIndex = 24;
+            btnRemovePath.Text = "➖";
+            btnRemovePath.UseVisualStyleBackColor = true;
+            btnRemovePath.Click += BtnRemovePath_Click;
+            // 
+            // btnAddPath
+            // 
+            btnAddPath.Location = new System.Drawing.Point(647, 220);
+            btnAddPath.Name = "btnAddPath";
+            btnAddPath.Size = new System.Drawing.Size(55, 23);
+            btnAddPath.TabIndex = 22;
+            btnAddPath.Text = "➕";
+            btnAddPath.UseVisualStyleBackColor = true;
+            btnAddPath.Click += BtnAddPath_Click;
+            // 
+            // txtAdditionalPath
+            // 
+            txtAdditionalPath.Location = new System.Drawing.Point(345, 221);
+            txtAdditionalPath.Name = "txtAdditionalPath";
+            txtAdditionalPath.Size = new System.Drawing.Size(298, 21);
+            txtAdditionalPath.TabIndex = 21;
+            // 
+            // lbxImportProcessPaths
+            // 
+            lbxImportProcessPaths.FormattingEnabled = true;
+            lbxImportProcessPaths.ItemHeight = 13;
+            lbxImportProcessPaths.Location = new System.Drawing.Point(343, 248);
+            lbxImportProcessPaths.Name = "lbxImportProcessPaths";
+            lbxImportProcessPaths.Size = new System.Drawing.Size(300, 95);
+            lbxImportProcessPaths.TabIndex = 20;
+            // 
             // chkRemoveDupesOnDisplay
-            //
+            // 
             chkRemoveDupesOnDisplay.AutoSize = true;
             chkRemoveDupesOnDisplay.Location = new System.Drawing.Point(6, 252);
             chkRemoveDupesOnDisplay.Name = "chkRemoveDupesOnDisplay";
-            chkRemoveDupesOnDisplay.Size = new System.Drawing.Size(212, 17);
+            chkRemoveDupesOnDisplay.Size = new System.Drawing.Size(211, 17);
             chkRemoveDupesOnDisplay.TabIndex = 19;
             chkRemoveDupesOnDisplay.Text = "Re-apply the filtering on display.";
             chkRemoveDupesOnDisplay.UseVisualStyleBackColor = true;
-            chkRemoveDupesOnDisplay.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkRemoveDupesOnDisplay.MouseHover += Generic_MouseHover;
+            // 
             // chkRemoveDupes
-            //
+            // 
             chkRemoveDupes.AutoSize = true;
             chkRemoveDupes.Location = new System.Drawing.Point(6, 229);
             chkRemoveDupes.Name = "chkRemoveDupes";
@@ -804,57 +899,57 @@ namespace Plisky.FlimFlam {
             chkRemoveDupes.TabIndex = 18;
             chkRemoveDupes.Text = "Detect and remove duplicate entries on import.";
             chkRemoveDupes.UseVisualStyleBackColor = true;
-            chkRemoveDupes.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkRemoveDupes.MouseHover += Generic_MouseHover;
+            // 
             // groupBox5
-            //
+            // 
             groupBox5.Controls.Add(label8);
             groupBox5.Controls.Add(label7);
             groupBox5.Controls.Add(txtPortBinding);
             groupBox5.Controls.Add(txtIPBinding);
             groupBox5.Location = new System.Drawing.Point(6, 147);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new System.Drawing.Size(542, 57);
+            groupBox5.Size = new System.Drawing.Size(297, 57);
             groupBox5.TabIndex = 17;
             groupBox5.TabStop = false;
             groupBox5.Text = "Listener Config.";
-            //
+            // 
             // label8
-            //
+            // 
             label8.AutoSize = true;
             label8.Location = new System.Drawing.Point(210, 27);
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(12, 13);
             label8.TabIndex = 3;
             label8.Text = ":";
-            //
+            // 
             // label7
-            //
+            // 
             label7.AutoSize = true;
             label7.Location = new System.Drawing.Point(6, 27);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(74, 13);
             label7.TabIndex = 2;
             label7.Text = "IP Address:";
-            //
+            // 
             // txtPortBinding
-            //
+            // 
             txtPortBinding.Location = new System.Drawing.Point(241, 24);
             txtPortBinding.Name = "txtPortBinding";
             txtPortBinding.Size = new System.Drawing.Size(39, 21);
             txtPortBinding.TabIndex = 1;
-            txtPortBinding.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtPortBinding.MouseHover += Generic_MouseHover;
+            // 
             // txtIPBinding
-            //
+            // 
             txtIPBinding.Location = new System.Drawing.Point(104, 24);
             txtIPBinding.Name = "txtIPBinding";
             txtIPBinding.Size = new System.Drawing.Size(100, 21);
             txtIPBinding.TabIndex = 0;
-            txtIPBinding.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtIPBinding.MouseHover += Generic_MouseHover;
+            // 
             // groupBox1
-            //
+            // 
             groupBox1.Controls.Add(chkXRefCheckAssertions);
             groupBox1.Controls.Add(chkXRefResourceMessages);
             groupBox1.Controls.Add(chkXRefVerbLogs);
@@ -867,13 +962,13 @@ namespace Plisky.FlimFlam {
             groupBox1.Controls.Add(chkXRefAppInitialises);
             groupBox1.Location = new System.Drawing.Point(6, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(542, 135);
+            groupBox1.Size = new System.Drawing.Size(702, 135);
             groupBox1.TabIndex = 7;
             groupBox1.TabStop = false;
             groupBox1.Text = " Cross Reference Options";
-            //
+            // 
             // chkXRefCheckAssertions
-            //
+            // 
             chkXRefCheckAssertions.AutoSize = true;
             chkXRefCheckAssertions.Location = new System.Drawing.Point(337, 61);
             chkXRefCheckAssertions.Name = "chkXRefCheckAssertions";
@@ -881,10 +976,10 @@ namespace Plisky.FlimFlam {
             chkXRefCheckAssertions.TabIndex = 11;
             chkXRefCheckAssertions.Text = "XR Assertions";
             chkXRefCheckAssertions.UseVisualStyleBackColor = true;
-            chkXRefCheckAssertions.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefCheckAssertions.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefResourceMessages
-            //
+            // 
             chkXRefResourceMessages.AutoSize = true;
             chkXRefResourceMessages.Location = new System.Drawing.Point(337, 41);
             chkXRefResourceMessages.Name = "chkXRefResourceMessages";
@@ -892,21 +987,21 @@ namespace Plisky.FlimFlam {
             chkXRefResourceMessages.TabIndex = 10;
             chkXRefResourceMessages.Text = "XR Resource Messages";
             chkXRefResourceMessages.UseVisualStyleBackColor = true;
-            chkXRefResourceMessages.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefResourceMessages.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefVerbLogs
-            //
+            // 
             chkXRefVerbLogs.AutoSize = true;
             chkXRefVerbLogs.Location = new System.Drawing.Point(337, 20);
             chkXRefVerbLogs.Name = "chkXRefVerbLogs";
-            chkXRefVerbLogs.Size = new System.Drawing.Size(103, 17);
+            chkXRefVerbLogs.Size = new System.Drawing.Size(102, 17);
             chkXRefVerbLogs.TabIndex = 9;
             chkXRefVerbLogs.Text = "XR Verb Logs";
             chkXRefVerbLogs.UseVisualStyleBackColor = true;
-            chkXRefVerbLogs.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefVerbLogs.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefMiniLogs
-            //
+            // 
             chkXRefMiniLogs.AutoSize = true;
             chkXRefMiniLogs.Location = new System.Drawing.Point(182, 60);
             chkXRefMiniLogs.Name = "chkXRefMiniLogs";
@@ -915,10 +1010,10 @@ namespace Plisky.FlimFlam {
             chkXRefMiniLogs.Text = "XR Mini Logs";
             chkXRefMiniLogs.UseVisualStyleBackColor = true;
             chkXRefMiniLogs.Visible = false;
-            chkXRefMiniLogs.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefMiniLogs.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefLogs
-            //
+            // 
             chkXRefLogs.AutoSize = true;
             chkXRefLogs.Location = new System.Drawing.Point(182, 40);
             chkXRefLogs.Name = "chkXRefLogs";
@@ -926,10 +1021,10 @@ namespace Plisky.FlimFlam {
             chkXRefLogs.TabIndex = 7;
             chkXRefLogs.Text = "XR Logs";
             chkXRefLogs.UseVisualStyleBackColor = true;
-            chkXRefLogs.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefLogs.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefExceptions
-            //
+            // 
             chkXRefExceptions.AutoSize = true;
             chkXRefExceptions.Location = new System.Drawing.Point(182, 19);
             chkXRefExceptions.Name = "chkXRefExceptions";
@@ -937,10 +1032,10 @@ namespace Plisky.FlimFlam {
             chkXRefExceptions.TabIndex = 6;
             chkXRefExceptions.Text = "XR Exceptions";
             chkXRefExceptions.UseVisualStyleBackColor = true;
-            chkXRefExceptions.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefExceptions.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefErrors
-            //
+            // 
             chkXRefErrors.AutoSize = true;
             chkXRefErrors.Location = new System.Drawing.Point(9, 60);
             chkXRefErrors.Name = "chkXRefErrors";
@@ -948,31 +1043,29 @@ namespace Plisky.FlimFlam {
             chkXRefErrors.TabIndex = 5;
             chkXRefErrors.Text = "XR Errors";
             chkXRefErrors.UseVisualStyleBackColor = true;
-            chkXRefErrors.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefErrors.MouseHover += Generic_MouseHover;
+            // 
             // label3
-            //
+            // 
             label3.Location = new System.Drawing.Point(6, 81);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(422, 43);
             label3.TabIndex = 4;
-            label3.Text = "Enabling these options will cause certain events to be cross referenced into the " +
-                "main view.  Turning all of these on simultaniously will turn the main view into " +
-                "a viewer showing all data.";
-            //
+            label3.Text = "Enabling these options will cause certain events to be cross referenced into the main view.  Turning all of these on simultaniously will turn the main view into a viewer showing all data.";
+            // 
             // chkXRefWarnings
-            //
+            // 
             chkXRefWarnings.AutoSize = true;
             chkXRefWarnings.Location = new System.Drawing.Point(9, 40);
             chkXRefWarnings.Name = "chkXRefWarnings";
-            chkXRefWarnings.Size = new System.Drawing.Size(99, 17);
+            chkXRefWarnings.Size = new System.Drawing.Size(98, 17);
             chkXRefWarnings.TabIndex = 1;
             chkXRefWarnings.Text = "XR Warnings";
             chkXRefWarnings.UseVisualStyleBackColor = true;
-            chkXRefWarnings.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefWarnings.MouseHover += Generic_MouseHover;
+            // 
             // chkXRefAppInitialises
-            //
+            // 
             chkXRefAppInitialises.AutoSize = true;
             chkXRefAppInitialises.Location = new System.Drawing.Point(9, 19);
             chkXRefAppInitialises.Name = "chkXRefAppInitialises";
@@ -980,24 +1073,24 @@ namespace Plisky.FlimFlam {
             chkXRefAppInitialises.TabIndex = 0;
             chkXRefAppInitialises.Text = "XR App Initialise";
             chkXRefAppInitialises.UseVisualStyleBackColor = true;
-            chkXRefAppInitialises.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkXRefAppInitialises.MouseHover += Generic_MouseHover;
+            // 
             // tabAdvancedOptions
-            //
+            // 
             tabAdvancedOptions.Controls.Add(groupBox3);
             tabAdvancedOptions.Controls.Add(groupBox9);
             tabAdvancedOptions.Controls.Add(chkTimingsViewIgnoresThreads);
             tabAdvancedOptions.Controls.Add(groupBox4);
-            tabAdvancedOptions.Location = new System.Drawing.Point(4, 22);
+            tabAdvancedOptions.Location = new System.Drawing.Point(4, 24);
             tabAdvancedOptions.Name = "tabAdvancedOptions";
-            tabAdvancedOptions.Padding = new System.Windows.Forms.Padding(3);
-            tabAdvancedOptions.Size = new System.Drawing.Size(723, 349);
+            tabAdvancedOptions.Padding = new Padding(3);
+            tabAdvancedOptions.Size = new System.Drawing.Size(723, 347);
             tabAdvancedOptions.TabIndex = 3;
             tabAdvancedOptions.Text = "Advanced Options";
             tabAdvancedOptions.UseVisualStyleBackColor = true;
-            //
+            // 
             // groupBox3
-            //
+            // 
             groupBox3.Controls.Add(chkIncludeFileContents);
             groupBox3.Controls.Add(chkInlucdeTCPContents);
             groupBox3.Controls.Add(chkImportLoggingInlcudedsODS);
@@ -1008,9 +1101,49 @@ namespace Plisky.FlimFlam {
             groupBox3.TabIndex = 15;
             groupBox3.TabStop = false;
             groupBox3.Text = " Logging. ";
-            //
+            // 
+            // chkIncludeFileContents
+            // 
+            chkIncludeFileContents.AutoSize = true;
+            chkIncludeFileContents.Location = new System.Drawing.Point(31, 88);
+            chkIncludeFileContents.Name = "chkIncludeFileContents";
+            chkIncludeFileContents.Size = new System.Drawing.Size(213, 17);
+            chkIncludeFileContents.TabIndex = 3;
+            chkIncludeFileContents.Text = "Include Imported File messages.";
+            chkIncludeFileContents.UseVisualStyleBackColor = true;
+            // 
+            // chkInlucdeTCPContents
+            // 
+            chkInlucdeTCPContents.AutoSize = true;
+            chkInlucdeTCPContents.Location = new System.Drawing.Point(31, 68);
+            chkInlucdeTCPContents.Name = "chkInlucdeTCPContents";
+            chkInlucdeTCPContents.Size = new System.Drawing.Size(160, 17);
+            chkInlucdeTCPContents.TabIndex = 2;
+            chkInlucdeTCPContents.Text = "Include TCP messages.";
+            chkInlucdeTCPContents.UseVisualStyleBackColor = true;
+            // 
+            // chkImportLoggingInlcudedsODS
+            // 
+            chkImportLoggingInlcudedsODS.AutoSize = true;
+            chkImportLoggingInlcudedsODS.Location = new System.Drawing.Point(31, 45);
+            chkImportLoggingInlcudedsODS.Name = "chkImportLoggingInlcudedsODS";
+            chkImportLoggingInlcudedsODS.Size = new System.Drawing.Size(246, 17);
+            chkImportLoggingInlcudedsODS.TabIndex = 1;
+            chkImportLoggingInlcudedsODS.Text = "Include OutputDebugString messages.";
+            chkImportLoggingInlcudedsODS.UseVisualStyleBackColor = true;
+            // 
+            // chkActivateImportLogging
+            // 
+            chkActivateImportLogging.AutoSize = true;
+            chkActivateImportLogging.Location = new System.Drawing.Point(10, 23);
+            chkActivateImportLogging.Name = "chkActivateImportLogging";
+            chkActivateImportLogging.Size = new System.Drawing.Size(167, 17);
+            chkActivateImportLogging.TabIndex = 0;
+            chkActivateImportLogging.Text = "Activate Import Logging.";
+            chkActivateImportLogging.UseVisualStyleBackColor = true;
+            // 
             // groupBox9
-            //
+            // 
             groupBox9.Controls.Add(btnDeleteMapping);
             groupBox9.Controls.Add(btnAddMapping);
             groupBox9.Controls.Add(label14);
@@ -1018,74 +1151,75 @@ namespace Plisky.FlimFlam {
             groupBox9.Controls.Add(lbxNameMappings);
             groupBox9.Controls.Add(textBox2);
             groupBox9.Controls.Add(textBox1);
-            groupBox9.Location = new System.Drawing.Point(474, 131);
+            groupBox9.Location = new System.Drawing.Point(339, 131);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new System.Drawing.Size(243, 160);
+            groupBox9.Size = new System.Drawing.Size(378, 160);
             groupBox9.TabIndex = 14;
             groupBox9.TabStop = false;
             groupBox9.Text = "Workstation Name Mappings";
             groupBox9.Visible = false;
-            //
+            // 
             // btnDeleteMapping
-            //
+            // 
             btnDeleteMapping.Location = new System.Drawing.Point(11, 110);
             btnDeleteMapping.Name = "btnDeleteMapping";
             btnDeleteMapping.Size = new System.Drawing.Size(123, 23);
             btnDeleteMapping.TabIndex = 6;
             btnDeleteMapping.Text = "Delete Mapping";
             btnDeleteMapping.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnAddMapping
-            //
+            // 
             btnAddMapping.Location = new System.Drawing.Point(6, 131);
             btnAddMapping.Name = "btnAddMapping";
             btnAddMapping.Size = new System.Drawing.Size(103, 23);
             btnAddMapping.TabIndex = 5;
             btnAddMapping.Text = "Add Mapping";
             btnAddMapping.UseVisualStyleBackColor = true;
-            //
+            // 
             // label14
-            //
+            // 
             label14.AutoSize = true;
             label14.Location = new System.Drawing.Point(28, 64);
             label14.Name = "label14";
             label14.Size = new System.Drawing.Size(212, 13);
             label14.TabIndex = 4;
             label14.Text = "Shall from henceforth be known as:";
-            //
+            // 
             // label13
-            //
+            // 
             label13.AutoSize = true;
             label13.Location = new System.Drawing.Point(51, 40);
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(162, 13);
             label13.TabIndex = 3;
             label13.Text = "The box formerly know as:";
-            //
+            // 
             // lbxNameMappings
-            //
+            // 
             lbxNameMappings.FormattingEnabled = true;
+            lbxNameMappings.ItemHeight = 13;
             lbxNameMappings.Location = new System.Drawing.Point(11, 20);
             lbxNameMappings.Name = "lbxNameMappings";
             lbxNameMappings.Size = new System.Drawing.Size(113, 30);
             lbxNameMappings.TabIndex = 2;
-            //
+            // 
             // textBox2
-            //
+            // 
             textBox2.Location = new System.Drawing.Point(11, 83);
             textBox2.Name = "textBox2";
             textBox2.Size = new System.Drawing.Size(113, 21);
             textBox2.TabIndex = 1;
-            //
+            // 
             // textBox1
-            //
+            // 
             textBox1.Location = new System.Drawing.Point(11, 56);
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(113, 21);
             textBox1.TabIndex = 0;
-            //
+            // 
             // chkTimingsViewIgnoresThreads
-            //
+            // 
             chkTimingsViewIgnoresThreads.AutoSize = true;
             chkTimingsViewIgnoresThreads.Location = new System.Drawing.Point(18, 19);
             chkTimingsViewIgnoresThreads.Name = "chkTimingsViewIgnoresThreads";
@@ -1093,10 +1227,10 @@ namespace Plisky.FlimFlam {
             chkTimingsViewIgnoresThreads.TabIndex = 13;
             chkTimingsViewIgnoresThreads.Text = "Timings view ignores threads.";
             chkTimingsViewIgnoresThreads.UseVisualStyleBackColor = true;
-            chkTimingsViewIgnoresThreads.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkTimingsViewIgnoresThreads.MouseHover += Generic_MouseHover;
+            // 
             // groupBox4
-            //
+            // 
             groupBox4.Controls.Add(txtNormalisationMS);
             groupBox4.Controls.Add(chkNormaliseRefresh);
             groupBox4.Controls.Add(btnSetODSAcl);
@@ -1105,23 +1239,23 @@ namespace Plisky.FlimFlam {
             groupBox4.Controls.Add(label4);
             groupBox4.Controls.Add(nudPushbackLimitCount);
             groupBox4.Enabled = false;
-            groupBox4.Location = new System.Drawing.Point(491, 19);
+            groupBox4.Location = new System.Drawing.Point(339, 19);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new System.Drawing.Size(225, 94);
+            groupBox4.Size = new System.Drawing.Size(377, 94);
             groupBox4.TabIndex = 12;
             groupBox4.TabStop = false;
             groupBox4.Text = "Advanced Options";
             groupBox4.Visible = false;
-            //
+            // 
             // txtNormalisationMS
-            //
+            // 
             txtNormalisationMS.Location = new System.Drawing.Point(9, 67);
             txtNormalisationMS.Name = "txtNormalisationMS";
             txtNormalisationMS.Size = new System.Drawing.Size(67, 21);
             txtNormalisationMS.TabIndex = 7;
-            //
+            // 
             // chkNormaliseRefresh
-            //
+            // 
             chkNormaliseRefresh.AutoSize = true;
             chkNormaliseRefresh.Location = new System.Drawing.Point(9, 45);
             chkNormaliseRefresh.Name = "chkNormaliseRefresh";
@@ -1129,57 +1263,53 @@ namespace Plisky.FlimFlam {
             chkNormaliseRefresh.TabIndex = 6;
             chkNormaliseRefresh.Text = "Normalise Refresh";
             chkNormaliseRefresh.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnSetODSAcl
-            //
+            // 
             btnSetODSAcl.Location = new System.Drawing.Point(9, 19);
             btnSetODSAcl.Name = "btnSetODSAcl";
             btnSetODSAcl.Size = new System.Drawing.Size(67, 20);
             btnSetODSAcl.TabIndex = 5;
             btnSetODSAcl.Text = "Set ODS ACL";
             btnSetODSAcl.UseVisualStyleBackColor = true;
-            //
+            // 
             // label6
-            //
+            // 
             label6.AutoSize = true;
             label6.Location = new System.Drawing.Point(160, 70);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(55, 13);
             label6.TabIndex = 4;
             label6.Text = "Seconds";
-            //
+            // 
             // label5
-            //
+            // 
             label5.AutoSize = true;
             label5.Location = new System.Drawing.Point(92, 70);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(62, 13);
             label5.TabIndex = 3;
             label5.Text = "Delays or";
-            //
+            // 
             // label4
-            //
+            // 
             label4.AutoSize = true;
             label4.Location = new System.Drawing.Point(83, 23);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(114, 13);
             label4.TabIndex = 1;
             label4.Text = "Pushback Limiting:";
-            //
+            // 
             // nudPushbackLimitCount
-            //
+            // 
             nudPushbackLimitCount.Location = new System.Drawing.Point(146, 41);
             nudPushbackLimitCount.Name = "nudPushbackLimitCount";
             nudPushbackLimitCount.Size = new System.Drawing.Size(38, 21);
             nudPushbackLimitCount.TabIndex = 0;
-            nudPushbackLimitCount.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            //
+            nudPushbackLimitCount.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
             // tabPage4
-            //
+            // 
             tabPage4.Controls.Add(chkFilterDefaultIncludesClasses);
             tabPage4.Controls.Add(chkFilterDefaultIncludeModules);
             tabPage4.Controls.Add(chkFilterDefaultIncludesThreads);
@@ -1189,16 +1319,16 @@ namespace Plisky.FlimFlam {
             tabPage4.Controls.Add(btnBrowseForFilterDir);
             tabPage4.Controls.Add(label1);
             tabPage4.Controls.Add(txtFilterAndHighlightDir);
-            tabPage4.Location = new System.Drawing.Point(4, 22);
+            tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(723, 349);
+            tabPage4.Padding = new Padding(3);
+            tabPage4.Size = new System.Drawing.Size(723, 347);
             tabPage4.TabIndex = 4;
             tabPage4.Text = "Filter Behaviour";
             tabPage4.UseVisualStyleBackColor = true;
-            //
+            // 
             // chkFilterDefaultIncludesClasses
-            //
+            // 
             chkFilterDefaultIncludesClasses.AutoSize = true;
             chkFilterDefaultIncludesClasses.Location = new System.Drawing.Point(79, 185);
             chkFilterDefaultIncludesClasses.Name = "chkFilterDefaultIncludesClasses";
@@ -1206,10 +1336,10 @@ namespace Plisky.FlimFlam {
             chkFilterDefaultIncludesClasses.TabIndex = 27;
             chkFilterDefaultIncludesClasses.Text = "By default filters include classes.";
             chkFilterDefaultIncludesClasses.UseVisualStyleBackColor = true;
-            chkFilterDefaultIncludesClasses.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkFilterDefaultIncludesClasses.MouseHover += Generic_MouseHover;
+            // 
             // chkFilterDefaultIncludeModules
-            //
+            // 
             chkFilterDefaultIncludeModules.AutoSize = true;
             chkFilterDefaultIncludeModules.Location = new System.Drawing.Point(79, 162);
             chkFilterDefaultIncludeModules.Name = "chkFilterDefaultIncludeModules";
@@ -1217,10 +1347,10 @@ namespace Plisky.FlimFlam {
             chkFilterDefaultIncludeModules.TabIndex = 26;
             chkFilterDefaultIncludeModules.Text = "By default filters include modules.";
             chkFilterDefaultIncludeModules.UseVisualStyleBackColor = true;
-            chkFilterDefaultIncludeModules.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkFilterDefaultIncludeModules.MouseHover += Generic_MouseHover;
+            // 
             // chkFilterDefaultIncludesThreads
-            //
+            // 
             chkFilterDefaultIncludesThreads.AutoSize = true;
             chkFilterDefaultIncludesThreads.Location = new System.Drawing.Point(79, 139);
             chkFilterDefaultIncludesThreads.Name = "chkFilterDefaultIncludesThreads";
@@ -1228,10 +1358,10 @@ namespace Plisky.FlimFlam {
             chkFilterDefaultIncludesThreads.TabIndex = 25;
             chkFilterDefaultIncludesThreads.Text = "By default filters include threads.";
             chkFilterDefaultIncludesThreads.UseVisualStyleBackColor = true;
-            chkFilterDefaultIncludesThreads.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkFilterDefaultIncludesThreads.MouseHover += Generic_MouseHover;
+            // 
             // chkFilterDefaultIncludesLocations
-            //
+            // 
             chkFilterDefaultIncludesLocations.AutoSize = true;
             chkFilterDefaultIncludesLocations.Location = new System.Drawing.Point(79, 116);
             chkFilterDefaultIncludesLocations.Name = "chkFilterDefaultIncludesLocations";
@@ -1239,10 +1369,10 @@ namespace Plisky.FlimFlam {
             chkFilterDefaultIncludesLocations.TabIndex = 24;
             chkFilterDefaultIncludesLocations.Text = "By default filters include locations.";
             chkFilterDefaultIncludesLocations.UseVisualStyleBackColor = true;
-            chkFilterDefaultIncludesLocations.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkFilterDefaultIncludesLocations.MouseHover += Generic_MouseHover;
+            // 
             // chkAllowInternalMessageDisplays
-            //
+            // 
             chkAllowInternalMessageDisplays.AutoSize = true;
             chkAllowInternalMessageDisplays.Location = new System.Drawing.Point(79, 69);
             chkAllowInternalMessageDisplays.Name = "chkAllowInternalMessageDisplays";
@@ -1250,50 +1380,50 @@ namespace Plisky.FlimFlam {
             chkAllowInternalMessageDisplays.TabIndex = 23;
             chkAllowInternalMessageDisplays.Text = "Allow internal messages to be displayed";
             chkAllowInternalMessageDisplays.UseVisualStyleBackColor = true;
-            chkAllowInternalMessageDisplays.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAllowInternalMessageDisplays.MouseHover += Generic_MouseHover;
+            // 
             // chkRelocateOnChange
-            //
+            // 
             chkRelocateOnChange.AutoSize = true;
             chkRelocateOnChange.Checked = true;
-            chkRelocateOnChange.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkRelocateOnChange.CheckState = CheckState.Checked;
             chkRelocateOnChange.Location = new System.Drawing.Point(79, 46);
             chkRelocateOnChange.Name = "chkRelocateOnChange";
             chkRelocateOnChange.Size = new System.Drawing.Size(281, 17);
             chkRelocateOnChange.TabIndex = 22;
             chkRelocateOnChange.Text = "Relocate existing filters on directory change.";
             chkRelocateOnChange.UseVisualStyleBackColor = true;
-            chkRelocateOnChange.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkRelocateOnChange.MouseHover += Generic_MouseHover;
+            // 
             // btnBrowseForFilterDir
-            //
+            // 
             btnBrowseForFilterDir.Location = new System.Drawing.Point(641, 33);
             btnBrowseForFilterDir.Name = "btnBrowseForFilterDir";
             btnBrowseForFilterDir.Size = new System.Drawing.Size(75, 23);
             btnBrowseForFilterDir.TabIndex = 21;
             btnBrowseForFilterDir.Text = "...";
             btnBrowseForFilterDir.UseVisualStyleBackColor = true;
-            btnBrowseForFilterDir.Click += new System.EventHandler(BrowseForFilterDir_Click);
-            //
+            btnBrowseForFilterDir.Click += BrowseForFilterDir_Click;
+            // 
             // label1
-            //
+            // 
             label1.AutoSize = true;
             label1.Location = new System.Drawing.Point(16, 13);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(61, 13);
             label1.TabIndex = 16;
             label1.Text = "Filter Dir:";
-            //
+            // 
             // txtFilterAndHighlightDir
-            //
+            // 
             txtFilterAndHighlightDir.Location = new System.Drawing.Point(79, 10);
             txtFilterAndHighlightDir.Name = "txtFilterAndHighlightDir";
             txtFilterAndHighlightDir.ReadOnly = true;
             txtFilterAndHighlightDir.Size = new System.Drawing.Size(638, 21);
             txtFilterAndHighlightDir.TabIndex = 15;
-            //
+            // 
             // tabTexSettings
-            //
+            // 
             tabTexSettings.Controls.Add(btnReleaseDefaults);
             tabTexSettings.Controls.Add(btnDevelopmentDefaults);
             tabTexSettings.Controls.Add(chkAddStackInfo);
@@ -1305,38 +1435,38 @@ namespace Plisky.FlimFlam {
             tabTexSettings.Controls.Add(groupBox7);
             tabTexSettings.Controls.Add(grpTraceLevel);
             tabTexSettings.Controls.Add(txtGeneratedString);
-            tabTexSettings.Location = new System.Drawing.Point(4, 22);
+            tabTexSettings.Location = new System.Drawing.Point(4, 24);
             tabTexSettings.Name = "tabTexSettings";
-            tabTexSettings.Padding = new System.Windows.Forms.Padding(3);
-            tabTexSettings.Size = new System.Drawing.Size(723, 349);
+            tabTexSettings.Padding = new Padding(3);
+            tabTexSettings.Size = new System.Drawing.Size(723, 347);
             tabTexSettings.TabIndex = 5;
             tabTexSettings.Text = "Tex Behaviour";
             tabTexSettings.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnReleaseDefaults
-            //
+            // 
             btnReleaseDefaults.Location = new System.Drawing.Point(555, 174);
             btnReleaseDefaults.Name = "btnReleaseDefaults";
             btnReleaseDefaults.Size = new System.Drawing.Size(151, 23);
             btnReleaseDefaults.TabIndex = 31;
             btnReleaseDefaults.Text = "Rel. Defaults";
             btnReleaseDefaults.UseVisualStyleBackColor = true;
-            btnReleaseDefaults.Click += new System.EventHandler(ReleaseDefaults_Click);
-            btnReleaseDefaults.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            btnReleaseDefaults.Click += ReleaseDefaults_Click;
+            btnReleaseDefaults.MouseHover += Generic_MouseHover;
+            // 
             // btnDevelopmentDefaults
-            //
+            // 
             btnDevelopmentDefaults.Location = new System.Drawing.Point(555, 145);
             btnDevelopmentDefaults.Name = "btnDevelopmentDefaults";
             btnDevelopmentDefaults.Size = new System.Drawing.Size(151, 23);
             btnDevelopmentDefaults.TabIndex = 30;
             btnDevelopmentDefaults.Text = "Dev. Defaults";
             btnDevelopmentDefaults.UseVisualStyleBackColor = true;
-            btnDevelopmentDefaults.Click += new System.EventHandler(DevelopmentDefaults_Click);
-            btnDevelopmentDefaults.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            btnDevelopmentDefaults.Click += DevelopmentDefaults_Click;
+            btnDevelopmentDefaults.MouseHover += Generic_MouseHover;
+            // 
             // chkAddStackInfo
-            //
+            // 
             chkAddStackInfo.AutoSize = true;
             chkAddStackInfo.Location = new System.Drawing.Point(555, 108);
             chkAddStackInfo.Name = "chkAddStackInfo";
@@ -1344,11 +1474,11 @@ namespace Plisky.FlimFlam {
             chkAddStackInfo.TabIndex = 29;
             chkAddStackInfo.Text = "Add Stack Information";
             chkAddStackInfo.UseVisualStyleBackColor = true;
-            chkAddStackInfo.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            chkAddStackInfo.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAddStackInfo.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            chkAddStackInfo.MouseHover += Generic_MouseHover;
+            // 
             // chkEnableEnhancements
-            //
+            // 
             chkEnableEnhancements.AutoSize = true;
             chkEnableEnhancements.Location = new System.Drawing.Point(555, 16);
             chkEnableEnhancements.Name = "chkEnableEnhancements";
@@ -1356,11 +1486,11 @@ namespace Plisky.FlimFlam {
             chkEnableEnhancements.TabIndex = 28;
             chkEnableEnhancements.Text = "Enable Enhancements";
             chkEnableEnhancements.UseVisualStyleBackColor = true;
-            chkEnableEnhancements.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            chkEnableEnhancements.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkEnableEnhancements.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            chkEnableEnhancements.MouseHover += Generic_MouseHover;
+            // 
             // chkExpandAssertions
-            //
+            // 
             chkExpandAssertions.AutoSize = true;
             chkExpandAssertions.Location = new System.Drawing.Point(555, 39);
             chkExpandAssertions.Name = "chkExpandAssertions";
@@ -1368,33 +1498,33 @@ namespace Plisky.FlimFlam {
             chkExpandAssertions.TabIndex = 27;
             chkExpandAssertions.Text = "Expand Assertions";
             chkExpandAssertions.UseVisualStyleBackColor = true;
-            chkExpandAssertions.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            chkExpandAssertions.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkExpandAssertions.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            chkExpandAssertions.MouseHover += Generic_MouseHover;
+            // 
             // btnReadEnvironment
-            //
+            // 
             btnReadEnvironment.Location = new System.Drawing.Point(307, 310);
             btnReadEnvironment.Name = "btnReadEnvironment";
             btnReadEnvironment.Size = new System.Drawing.Size(195, 23);
             btnReadEnvironment.TabIndex = 21;
             btnReadEnvironment.Text = "Get Environment Variable";
             btnReadEnvironment.UseVisualStyleBackColor = true;
-            btnReadEnvironment.Click += new System.EventHandler(ReadEnvironment_Click);
-            btnReadEnvironment.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            btnReadEnvironment.Click += ReadEnvironment_Click;
+            btnReadEnvironment.MouseHover += Generic_MouseHover;
+            // 
             // btnSetEnvironment
-            //
+            // 
             btnSetEnvironment.Location = new System.Drawing.Point(523, 310);
             btnSetEnvironment.Name = "btnSetEnvironment";
             btnSetEnvironment.Size = new System.Drawing.Size(193, 23);
             btnSetEnvironment.TabIndex = 20;
             btnSetEnvironment.Text = "Set Environment (Machine)";
             btnSetEnvironment.UseVisualStyleBackColor = true;
-            btnSetEnvironment.Click += new System.EventHandler(SetEnvironment_Click);
-            btnSetEnvironment.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            btnSetEnvironment.Click += SetEnvironment_Click;
+            btnSetEnvironment.MouseHover += Generic_MouseHover;
+            // 
             // chkUseHighPerf
-            //
+            // 
             chkUseHighPerf.AutoSize = true;
             chkUseHighPerf.Location = new System.Drawing.Point(555, 85);
             chkUseHighPerf.Name = "chkUseHighPerf";
@@ -1402,11 +1532,11 @@ namespace Plisky.FlimFlam {
             chkUseHighPerf.TabIndex = 18;
             chkUseHighPerf.Text = "High Perf support";
             chkUseHighPerf.UseVisualStyleBackColor = true;
-            chkUseHighPerf.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            chkUseHighPerf.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkUseHighPerf.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            chkUseHighPerf.MouseHover += Generic_MouseHover;
+            // 
             // groupBox7
-            //
+            // 
             groupBox7.Controls.Add(label12);
             groupBox7.Controls.Add(label11);
             groupBox7.Controls.Add(lblErrorMsg);
@@ -1424,34 +1554,34 @@ namespace Plisky.FlimFlam {
             groupBox7.TabIndex = 2;
             groupBox7.TabStop = false;
             groupBox7.Text = "Listeners";
-            //
+            // 
             // label12
-            //
+            // 
             label12.AutoSize = true;
             label12.Location = new System.Drawing.Point(144, 76);
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(35, 13);
             label12.TabIndex = 13;
             label12.Text = "Port:";
-            //
+            // 
             // label11
-            //
+            // 
             label11.AutoSize = true;
             label11.Location = new System.Drawing.Point(18, 76);
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(69, 13);
             label11.TabIndex = 12;
             label11.Text = "Hostname:";
-            //
+            // 
             // lblErrorMsg
-            //
+            // 
             lblErrorMsg.Location = new System.Drawing.Point(10, 217);
             lblErrorMsg.Name = "lblErrorMsg";
             lblErrorMsg.Size = new System.Drawing.Size(355, 51);
             lblErrorMsg.TabIndex = 11;
-            //
+            // 
             // btnAddNewListener
-            //
+            // 
             btnAddNewListener.Enabled = false;
             btnAddNewListener.Location = new System.Drawing.Point(263, 119);
             btnAddNewListener.Name = "btnAddNewListener";
@@ -1459,10 +1589,10 @@ namespace Plisky.FlimFlam {
             btnAddNewListener.TabIndex = 6;
             btnAddNewListener.Text = "Add";
             btnAddNewListener.UseVisualStyleBackColor = true;
-            btnAddNewListener.Click += new System.EventHandler(AddNewListener_Click);
-            //
+            btnAddNewListener.Click += AddNewListener_Click;
+            // 
             // btnRemoveSelected
-            //
+            // 
             btnRemoveSelected.Enabled = false;
             btnRemoveSelected.Location = new System.Drawing.Point(263, 148);
             btnRemoveSelected.Name = "btnRemoveSelected";
@@ -1470,33 +1600,34 @@ namespace Plisky.FlimFlam {
             btnRemoveSelected.TabIndex = 7;
             btnRemoveSelected.Text = "Remove";
             btnRemoveSelected.UseVisualStyleBackColor = true;
-            btnRemoveSelected.Click += new System.EventHandler(RemoveSelected_Click);
-            //
+            btnRemoveSelected.Click += RemoveSelected_Click;
+            // 
             // lbxAddTCPListeners
-            //
+            // 
             lbxAddTCPListeners.FormattingEnabled = true;
+            lbxAddTCPListeners.ItemHeight = 13;
             lbxAddTCPListeners.Location = new System.Drawing.Point(21, 119);
             lbxAddTCPListeners.Name = "lbxAddTCPListeners";
             lbxAddTCPListeners.Size = new System.Drawing.Size(236, 95);
             lbxAddTCPListeners.TabIndex = 5;
-            lbxAddTCPListeners.MouseHover += new System.EventHandler(Generic_MouseHover);
-            lbxAddTCPListeners.SelectedIndexChanged += new System.EventHandler(AddTCPListeners_SelectedIndexChanged);
-            //
+            lbxAddTCPListeners.SelectedIndexChanged += AddTCPListeners_SelectedIndexChanged;
+            lbxAddTCPListeners.MouseHover += Generic_MouseHover;
+            // 
             // chkMakeTcpInteractive
-            //
+            // 
             chkMakeTcpInteractive.AutoSize = true;
             chkMakeTcpInteractive.Checked = true;
-            chkMakeTcpInteractive.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkMakeTcpInteractive.CheckState = CheckState.Checked;
             chkMakeTcpInteractive.Location = new System.Drawing.Point(244, 94);
             chkMakeTcpInteractive.Name = "chkMakeTcpInteractive";
             chkMakeTcpInteractive.Size = new System.Drawing.Size(88, 17);
             chkMakeTcpInteractive.TabIndex = 4;
             chkMakeTcpInteractive.Text = "Interactive";
             chkMakeTcpInteractive.UseVisualStyleBackColor = true;
-            chkMakeTcpInteractive.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkMakeTcpInteractive.MouseHover += Generic_MouseHover;
+            // 
             // chkRemoveAll
-            //
+            // 
             chkRemoveAll.AutoSize = true;
             chkRemoveAll.Location = new System.Drawing.Point(21, 25);
             chkRemoveAll.Name = "chkRemoveAll";
@@ -1504,43 +1635,43 @@ namespace Plisky.FlimFlam {
             chkRemoveAll.TabIndex = 0;
             chkRemoveAll.Text = "Remove All Listeners before adding......";
             chkRemoveAll.UseVisualStyleBackColor = true;
-            chkRemoveAll.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            chkRemoveAll.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkRemoveAll.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            chkRemoveAll.MouseHover += Generic_MouseHover;
+            // 
             // txtIPInit
-            //
+            // 
             txtIPInit.Location = new System.Drawing.Point(20, 92);
             txtIPInit.MaxLength = 255;
             txtIPInit.Name = "txtIPInit";
             txtIPInit.Size = new System.Drawing.Size(121, 21);
             txtIPInit.TabIndex = 2;
-            txtIPInit.TextChanged += new System.EventHandler(IPInit_TextChanged);
-            txtIPInit.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtIPInit.TextChanged += IPInit_TextChanged;
+            txtIPInit.MouseHover += Generic_MouseHover;
+            // 
             // txtPortInit
-            //
+            // 
             txtPortInit.Location = new System.Drawing.Point(147, 92);
             txtPortInit.MaxLength = 8;
             txtPortInit.Name = "txtPortInit";
             txtPortInit.Size = new System.Drawing.Size(64, 21);
             txtPortInit.TabIndex = 3;
-            txtPortInit.TextChanged += new System.EventHandler(IPInit_TextChanged);
-            txtPortInit.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtPortInit.TextChanged += IPInit_TextChanged;
+            txtPortInit.MouseHover += Generic_MouseHover;
+            // 
             // chkAddTexListener
-            //
+            // 
             chkAddTexListener.AutoSize = true;
             chkAddTexListener.Location = new System.Drawing.Point(21, 48);
             chkAddTexListener.Name = "chkAddTexListener";
-            chkAddTexListener.Size = new System.Drawing.Size(96, 17);
+            chkAddTexListener.Size = new System.Drawing.Size(95, 17);
             chkAddTexListener.TabIndex = 1;
             chkAddTexListener.Text = "Tex Listener";
             chkAddTexListener.UseVisualStyleBackColor = true;
-            chkAddTexListener.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            chkAddTexListener.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            chkAddTexListener.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            chkAddTexListener.MouseHover += Generic_MouseHover;
+            // 
             // grpTraceLevel
-            //
+            // 
             grpTraceLevel.Controls.Add(rdoWarningLevel);
             grpTraceLevel.Controls.Add(rdoVerboseLevel);
             grpTraceLevel.Controls.Add(rdoErrorLevel);
@@ -1552,36 +1683,36 @@ namespace Plisky.FlimFlam {
             grpTraceLevel.TabIndex = 1;
             grpTraceLevel.TabStop = false;
             grpTraceLevel.Text = "Trace Level";
-            grpTraceLevel.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            grpTraceLevel.MouseHover += Generic_MouseHover;
+            // 
             // rdoWarningLevel
-            //
+            // 
             rdoWarningLevel.AutoSize = true;
             rdoWarningLevel.Location = new System.Drawing.Point(15, 119);
             rdoWarningLevel.Name = "rdoWarningLevel";
-            rdoWarningLevel.Size = new System.Drawing.Size(72, 17);
+            rdoWarningLevel.Size = new System.Drawing.Size(71, 17);
             rdoWarningLevel.TabIndex = 4;
             rdoWarningLevel.TabStop = true;
             rdoWarningLevel.Text = "Warning";
             rdoWarningLevel.UseVisualStyleBackColor = true;
-            rdoWarningLevel.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            rdoWarningLevel.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            rdoWarningLevel.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            rdoWarningLevel.MouseHover += Generic_MouseHover;
+            // 
             // rdoVerboseLevel
-            //
+            // 
             rdoVerboseLevel.AutoSize = true;
             rdoVerboseLevel.Location = new System.Drawing.Point(15, 96);
             rdoVerboseLevel.Name = "rdoVerboseLevel";
-            rdoVerboseLevel.Size = new System.Drawing.Size(72, 17);
+            rdoVerboseLevel.Size = new System.Drawing.Size(71, 17);
             rdoVerboseLevel.TabIndex = 3;
             rdoVerboseLevel.TabStop = true;
             rdoVerboseLevel.Text = "Verbose";
             rdoVerboseLevel.UseVisualStyleBackColor = true;
-            rdoVerboseLevel.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            rdoVerboseLevel.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            rdoVerboseLevel.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            rdoVerboseLevel.MouseHover += Generic_MouseHover;
+            // 
             // rdoErrorLevel
-            //
+            // 
             rdoErrorLevel.AutoSize = true;
             rdoErrorLevel.Location = new System.Drawing.Point(15, 72);
             rdoErrorLevel.Name = "rdoErrorLevel";
@@ -1590,11 +1721,11 @@ namespace Plisky.FlimFlam {
             rdoErrorLevel.TabStop = true;
             rdoErrorLevel.Text = "Error";
             rdoErrorLevel.UseVisualStyleBackColor = true;
-            rdoErrorLevel.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            rdoErrorLevel.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            rdoErrorLevel.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            rdoErrorLevel.MouseHover += Generic_MouseHover;
+            // 
             // rdoTraceInfo
-            //
+            // 
             rdoTraceInfo.AutoSize = true;
             rdoTraceInfo.Location = new System.Drawing.Point(15, 48);
             rdoTraceInfo.Name = "rdoTraceInfo";
@@ -1603,11 +1734,11 @@ namespace Plisky.FlimFlam {
             rdoTraceInfo.TabStop = true;
             rdoTraceInfo.Text = "Info";
             rdoTraceInfo.UseVisualStyleBackColor = true;
-            rdoTraceInfo.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            rdoTraceInfo.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            rdoTraceInfo.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            rdoTraceInfo.MouseHover += Generic_MouseHover;
+            // 
             // rdoTraceOff
-            //
+            // 
             rdoTraceOff.AutoSize = true;
             rdoTraceOff.Location = new System.Drawing.Point(15, 24);
             rdoTraceOff.Name = "rdoTraceOff";
@@ -1616,29 +1747,29 @@ namespace Plisky.FlimFlam {
             rdoTraceOff.TabStop = true;
             rdoTraceOff.Text = "Off";
             rdoTraceOff.UseVisualStyleBackColor = true;
-            rdoTraceOff.CheckedChanged += new System.EventHandler(TexOptionsScreen_CheckedChanged);
-            rdoTraceOff.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            rdoTraceOff.CheckedChanged += TexOptionsScreen_CheckedChanged;
+            rdoTraceOff.MouseHover += Generic_MouseHover;
+            // 
             // txtGeneratedString
-            //
+            // 
             txtGeneratedString.Location = new System.Drawing.Point(15, 283);
             txtGeneratedString.Name = "txtGeneratedString";
             txtGeneratedString.ReadOnly = true;
             txtGeneratedString.Size = new System.Drawing.Size(701, 21);
             txtGeneratedString.TabIndex = 15;
-            txtGeneratedString.MouseHover += new System.EventHandler(Generic_MouseHover);
-            //
+            txtGeneratedString.MouseHover += Generic_MouseHover;
+            // 
             // lblHelp
-            //
+            // 
             lblHelp.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             lblHelp.Location = new System.Drawing.Point(4, 383);
             lblHelp.Name = "lblHelp";
             lblHelp.Size = new System.Drawing.Size(726, 57);
             lblHelp.TabIndex = 27;
             lblHelp.Text = "Hover the mouse over a setting for information....";
-            //
+            // 
             // llbRelatedContent
-            //
+            // 
             llbRelatedContent.AutoSize = true;
             llbRelatedContent.Location = new System.Drawing.Point(4, 446);
             llbRelatedContent.Name = "llbRelatedContent";
@@ -1647,52 +1778,16 @@ namespace Plisky.FlimFlam {
             llbRelatedContent.TabStop = true;
             llbRelatedContent.Text = "Click Here for related help.";
             llbRelatedContent.Visible = false;
-            //
-            // chkActivateImportLogging
-            //
-            chkActivateImportLogging.AutoSize = true;
-            chkActivateImportLogging.Location = new System.Drawing.Point(10, 23);
-            chkActivateImportLogging.Name = "chkActivateImportLogging";
-            chkActivateImportLogging.Size = new System.Drawing.Size(167, 17);
-            chkActivateImportLogging.TabIndex = 0;
-            chkActivateImportLogging.Text = "Activate Import Logging.";
-            chkActivateImportLogging.UseVisualStyleBackColor = true;
-            //
-            // chkImportLoggingInlcudedsODS
-            //
-            chkImportLoggingInlcudedsODS.AutoSize = true;
-            chkImportLoggingInlcudedsODS.Location = new System.Drawing.Point(31, 45);
-            chkImportLoggingInlcudedsODS.Name = "chkImportLoggingInlcudedsODS";
-            chkImportLoggingInlcudedsODS.Size = new System.Drawing.Size(246, 17);
-            chkImportLoggingInlcudedsODS.TabIndex = 1;
-            chkImportLoggingInlcudedsODS.Text = "Include OutputDebugString messages.";
-            chkImportLoggingInlcudedsODS.UseVisualStyleBackColor = true;
-            //
-            // chkInlucdeTCPContents
-            //
-            chkInlucdeTCPContents.AutoSize = true;
-            chkInlucdeTCPContents.Location = new System.Drawing.Point(31, 68);
-            chkInlucdeTCPContents.Name = "chkInlucdeTCPContents";
-            chkInlucdeTCPContents.Size = new System.Drawing.Size(160, 17);
-            chkInlucdeTCPContents.TabIndex = 2;
-            chkInlucdeTCPContents.Text = "Include TCP messages.";
-            chkInlucdeTCPContents.UseVisualStyleBackColor = true;
-            //
-            // chkIncludeFileContents
-            //
-            chkIncludeFileContents.AutoSize = true;
-            chkIncludeFileContents.Location = new System.Drawing.Point(31, 88);
-            chkIncludeFileContents.Name = "chkIncludeFileContents";
-            chkIncludeFileContents.Size = new System.Drawing.Size(213, 17);
-            chkIncludeFileContents.TabIndex = 3;
-            chkIncludeFileContents.Text = "Include Imported File messages.";
-            chkIncludeFileContents.UseVisualStyleBackColor = true;
-            //
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
             // frmMexOptionsScreen
-            //
+            // 
             AutoScaleBaseSize = new System.Drawing.Size(6, 14);
             CancelButton = btnCancel;
-            ClientSize = new System.Drawing.Size(734, 488);
+            ClientSize = new System.Drawing.Size(726, 476);
             Controls.Add(llbRelatedContent);
             Controls.Add(lblHelp);
             Controls.Add(tabOptionsContainer);
@@ -1703,10 +1798,10 @@ namespace Plisky.FlimFlam {
             MaximumSize = new System.Drawing.Size(742, 515);
             MinimumSize = new System.Drawing.Size(742, 515);
             Name = "frmMexOptionsScreen";
-            SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "MexOptionsScreen";
-            Load += new System.EventHandler(FrmMexOptionsScreen_Load);
+            Load += FrmMexOptionsScreen_Load;
             tabOptionsContainer.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
@@ -1740,6 +1835,7 @@ namespace Plisky.FlimFlam {
             groupBox7.PerformLayout();
             grpTraceLevel.ResumeLayout(false);
             grpTraceLevel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1822,6 +1918,10 @@ namespace Plisky.FlimFlam {
             chkFilterDefaultIncludesThreads.Checked = mo.FilterDefaultSaveThreads;
             chkFilterDefaultIncludesLocations.Checked = mo.FilterDefaultSaveLocations;
             chkFilterDefaultIncludeModules.Checked = mo.FilterDefaultSaveModules;
+
+            foreach (string s in mo.PathsToCheckForImporters) {
+                lbxImportProcessPaths.Items.Add(s);
+            }
         }
 
         internal MexOptions GetOptionsFromDialog() {
@@ -1892,36 +1992,12 @@ namespace Plisky.FlimFlam {
             mo.FilterDefaultSaveLocations = chkFilterDefaultIncludesLocations.Checked;
             mo.FilterDefaultSaveModules = chkFilterDefaultIncludeModules.Checked;
 
+            mo.PathsToCheckForImporters = lbxImportProcessPaths.Items.Cast<string>().ToArray();
             return mo;
         }
 
-#if DEBUG
-
-        private void DebugBtn_Click(object sender, EventArgs e) {
-            /*TCPListener tcpl = new TCPListener("127.0.0.1", 8989, true);
-            Debug.Listeners.Clear();
-            Debug.Listeners.Add(tcpl);*/
-            //Bilge.QueueMessages = true;
-            //Bilge.AddStackInformation = true;
-            //Bilge.CurrentTraceLevel = TraceLevel.Verbose;
-        }
-
         private void FrmMexOptionsScreen_Load(object sender, EventArgs e) {
-            var b = new Button {
-                Text = "DBG:  Stream Output To Mex 8989",
-                Left = btnCancel.Left - 350,
-                Top = btnCancel.Top,
-                Width = 300
-            };
-            Controls.Add(b);
-            b.Click += new EventHandler(DebugBtn_Click);
         }
-
-#else
-    private void FrmMexOptionsScreen_Load(object sender, EventArgs e) {
-    }
-
-#endif
 
         private void RecycleProcessWhenNameMatches_MouseEnter(object sender, EventArgs e) {
         }
@@ -1994,9 +2070,8 @@ namespace Plisky.FlimFlam {
         private void RefreshTexTabFromEnvironmentVariable() {
             try {
                 lblErrorMsg.Text = string.Empty;
-                new EnvironmentPermission(EnvironmentPermissionAccess.Read, Settings.EnvironmentVariableName).Demand();
 
-                string envVar = Environment.GetEnvironmentVariable(Settings.EnvironmentVariableName, EnvironmentVariableTarget.Machine);
+                string envVar = Environment.GetEnvironmentVariable(Settings.ENVIRONMENTVARIABLENAME, EnvironmentVariableTarget.Machine);
                 if (envVar != null) {
                     formInitSettings.PopulateFromString(envVar);
                     RefreshOptionsScreenFromSettings();
@@ -2065,6 +2140,12 @@ namespace Plisky.FlimFlam {
                 chkRemoveAll.Checked = formInitSettings.ClearListenersOnStartup;
                 chkEnableEnhancements.Checked = formInitSettings.EnableEnhancements;
                 txtGeneratedString.Text = formInitSettings.ToString();
+
+                lbxImportProcessPaths.Items.Clear();
+                foreach (var s in formInitSettings.ImporterPathsToCheck) {
+                    _ = lbxImportProcessPaths.Items.Add(s);
+                }
+
             } finally {
                 thisFormBeingUpdated = false;
             }
@@ -2111,6 +2192,8 @@ namespace Plisky.FlimFlam {
 
             // Make sure the correct string is displayed.
             txtGeneratedString.Text = formInitSettings.ToString();
+
+            formInitSettings.ImporterPathsToCheck = lbxImportProcessPaths.Items.Cast<string>().ToList();
         }
 
         private void SetEnvironment_Click(object sender, EventArgs e) {
@@ -2121,7 +2204,7 @@ namespace Plisky.FlimFlam {
                 RefreshStructureFromForm();
 
                 txtGeneratedString.Text = formInitSettings.ToString();
-                Environment.SetEnvironmentVariable(Settings.EnvironmentVariableName, txtGeneratedString.Text, EnvironmentVariableTarget.Machine);
+                Environment.SetEnvironmentVariable(Settings.ENVIRONMENTVARIABLENAME, txtGeneratedString.Text, EnvironmentVariableTarget.Machine);
                 string expandAssertions = chkExpandAssertions.Checked ? "True" : "False";
                 Environment.SetEnvironmentVariable("TEXASSERTEXPAND", expandAssertions, EnvironmentVariableTarget.Machine);
                 Cursor.Current = curr;
@@ -2257,6 +2340,18 @@ namespace Plisky.FlimFlam {
                 }
             } catch (FormatException) {
             }
+        }
+
+        private void BtnAddPath_Click(object sender, EventArgs e) {
+            if (!string.IsNullOrWhiteSpace(txtAdditionalPath.Text)) {
+                lbxImportProcessPaths.Items.Add(txtAdditionalPath.Text.Trim());
+            }
+            RefreshStructureFromForm();
+        }
+
+        private void BtnRemovePath_Click(object sender, EventArgs e) {
+            lbxImportProcessPaths.Items.RemoveAt(lbxImportProcessPaths.SelectedIndex);
+            RefreshStructureFromForm();
         }
     }
 }

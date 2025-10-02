@@ -1,6 +1,7 @@
 //using Plisky.Plumbing.Legacy;
 using System.Diagnostics;
 using System.IO;
+using Plisky.Plumbing;
 
 namespace Plisky.FlimFlam {
 
@@ -20,8 +21,12 @@ namespace Plisky.FlimFlam {
             //Bilge.Log("Mex::WorkManager >> Found ActivateODS Gatherer request, asking MessageManager to activate ODS capture");
             if (activateTheGatherer) {
                 // Having this enabled while debugging is nasty.
-                if (!Debugger.IsAttached) {
+                if (Feature.GetFeatureByName("Bilge-OdsOOP").Active) {
                     MexCore.TheCore.MessageManager.ActivateODSGatherer();
+                } else {
+                    if (!Debugger.IsAttached) {
+                        MexCore.TheCore.MessageManager.ActivateODSGatherer();
+                    }
                 }
             } else {
                 MexCore.TheCore.MessageManager.DeactivateODSGatherer();

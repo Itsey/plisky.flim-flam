@@ -3,7 +3,7 @@ namespace FlimFlam.Tests {
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using AutoFixture;
-    using Google.Cloud.PubSub.V1;
+    
     using Plisky.Diagnostics;
     using Plisky.Diagnostics.FlimFlam;
     using Plisky.FlimFlam;

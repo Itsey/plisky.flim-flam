@@ -85,35 +85,22 @@
     <ProjectReference Include="..\Support\Support.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Flurl" Version="3.0.7" />
-    <PackageReference Include="Flurl.Http" Version="3.2.2" />
-    <PackageReference Include="Google.Api.CommonProtos" Version="2.10.0" />
-    <PackageReference Include="Google.Api.Gax" Version="4.4.0" />
-    <PackageReference Include="Google.Api.Gax.Grpc" Version="4.4.0" />
-    <PackageReference Include="Google.Apis" Version="1.60.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.60.0" />
-    <PackageReference Include="Google.Cloud.Iam.V1" Version="3.0.0" />
-    <PackageReference Include="Google.Cloud.PubSub.V1" Version="3.7.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.23.0" />
-    <PackageReference Include="Grpc.Auth" Version="2.53.0" />
-    <PackageReference Include="Grpc.Core" Version="2.46.6" />
-    <PackageReference Include="Grpc.Core.Api" Version="2.53.0" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.53.0" />
-    <PackageReference Include="Grpc.Net.Common" Version="2.53.0" />
+    <PackageReference Include="Flurl" Version="4.0.0" />
+    <PackageReference Include="Flurl.Http" Version="4.0.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
     <PackageReference Include="Plisky.Diagnostics" Version="3.2.0" />
-    <PackageReference Include="Plisky.Plumbing" Version="1.8.5" />
+    <PackageReference Include="Plisky.Plumbing" Version="1.8.14" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.2" />
-    <PackageReference Include="System.Reactive" Version="6.0.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.9" />
+    <PackageReference Include="System.Reactive" Version="6.0.2" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.9" />
+    <PackageReference Include="System.Text.Json" Version="9.0.9" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
 </Project>

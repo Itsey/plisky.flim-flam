@@ -12,28 +12,28 @@ namespace Plisky.Plumbing {
     /// or configured externally to the application through one of the initialisation routes.
     /// </summary>
     internal class Settings {
-        private List<string> m_listenersToAdd;
+        private List<string> listenersToAdd;
 
         /// <summary>
         /// The name of the system or user environment variable that is used to read configuration settings from. This environment variable
         /// </summary>
-        internal const string EnvironmentVariableName = "TEXINIT";
+        internal const string ENVIRONMENTVARIABLENAME = "TEXINIT";
 
         /// <summary>
         /// The name of the setting value within App Config which contains a settings configuration string.
         /// </summary>
-        internal const string AppConfigName = "TEXSETTINGS";
+        internal const string APPCONFIGNAME = "TEXSETTINGS";
 
         /// <summary>
         /// The name of the application configuration setting which is used to determine whether static initialisation should be bypassed
         /// to allow the application to control all of the initialisation.  Any value other than "False" will bypass the static configuration.
         /// </summary>
-        internal const string AppConfigBypass = "TEXSTATICBYPASS";
+        internal const string APPCONFIGBYPASS = "TEXSTATICBYPASS";
 
         /// <summary>
         /// The identifier used in the configuration file to determine what level should  be used for internal event log based logging.
         /// </summary>
-        internal const string InternalLoggingLevelName = "INTERNALLOGLEVEL";
+        internal const string INTERNALLOGLEVELNAME = "INTERNALLOGLEVEL";
 
         /// <summary>
         /// Gets or Sets a value indicating whether messages are queued internally before being written to the trace.  This will almost entirely
@@ -184,7 +184,7 @@ namespace Plisky.Plumbing {
         /// Maintains a list of the listeners that are to be added, these should ideally be custom listeners
         /// </summary>
         internal string[] ListenersToAdd {
-            get { return m_listenersToAdd.ToArray(); }
+            get { return listenersToAdd.ToArray(); }
         }
 
         /// <summary>
@@ -193,14 +193,15 @@ namespace Plisky.Plumbing {
         /// <param name="s">The string containing listener data</param>
         internal void AddListener(string s) {
             if ((s == null) || (s.Length == 0)) { throw new ArgumentException("The listener content can not be null or empty", "s"); }
-            m_listenersToAdd.Add(s);
+            listenersToAdd.Add(s);
         }
 
+        internal List<string> ImporterPathsToCheck { get; set; }
         /// <summary>
         /// Remove allqueued listeners from the list of listeners.
         /// </summary>
         internal void ClearAddedListeners() {
-            m_listenersToAdd.Clear();
+            listenersToAdd.Clear();
         }
 
         /// <summary>
@@ -268,7 +269,7 @@ namespace Plisky.Plumbing {
         private void SetListenersFromData(string data) {
             if (data == null) { return; }
             int nextIndex;
-            m_listenersToAdd.Clear();
+            listenersToAdd.Clear();
 
             while (data.Length > 0) {
                 if (!data.StartsWith("(")) {
@@ -280,7 +281,7 @@ namespace Plisky.Plumbing {
                 int optionCloseOffset = data.IndexOf(')');
                 string nextListener = data.Substring(1, optionCloseOffset - 1);
                 data = data.Substring(optionCloseOffset + 1);
-                m_listenersToAdd.Add(nextListener);
+                listenersToAdd.Add(nextListener);
             }
         }
 
@@ -373,7 +374,7 @@ namespace Plisky.Plumbing {
         /// This method will also try to identify the main application and window names.
         /// </summary>
         internal Settings() {
-            m_listenersToAdd = new List<string>();
+            listenersToAdd = new List<string>();
             CurrentTraceLevel = TraceLevel.Off;
 
             QueueMessages = true;
@@ -412,18 +413,18 @@ namespace Plisky.Plumbing {
         internal void PopulateFromEnvironmentVariable() {
             // Check whether we are allowed to read the environment variable and then proceed to get the configuration from the environment variable.
             try {
-                EnvironmentPermission ep = new EnvironmentPermission(EnvironmentPermissionAccess.Read, Settings.EnvironmentVariableName);
+                EnvironmentPermission ep = new EnvironmentPermission(EnvironmentPermissionAccess.Read, Settings.ENVIRONMENTVARIABLENAME);
                 ep.Demand();
 
                 string envVar = null;
                 try {
-                    envVar = Environment.GetEnvironmentVariable(Settings.EnvironmentVariableName, EnvironmentVariableTarget.Machine);
+                    envVar = Environment.GetEnvironmentVariable(Settings.ENVIRONMENTVARIABLENAME, EnvironmentVariableTarget.Machine);
                 } catch (SecurityException) {
                     InternalUtil.LogInternalError(InternalUtil.InternalErrorCodes.AccessDeniedToSomething, "Access denied to read environment variable directly, trying again.");
                 }
 
                 if (envVar == null) {
-                    envVar = Environment.GetEnvironmentVariable(Settings.EnvironmentVariableName);
+                    envVar = Environment.GetEnvironmentVariable(Settings.ENVIRONMENTVARIABLENAME);
                 }
 
                 if (envVar != null) {

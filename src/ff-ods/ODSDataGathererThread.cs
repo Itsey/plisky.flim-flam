@@ -147,16 +147,20 @@ internal class ODSDataGathererThread {
                             }
 
                             ODSWin32Interface.SetEvent(hBufferReadyEvent);   // Signal that were ready to go again
-                        } catch (Win32Exception) {
+                        } catch (Win32Exception ex) {
+                            Console.WriteLine($"Crash {ex.Message}");
+                            throw;
                             // Make sure that errors dont kill the loop - not sure if this is a good idea or not.
                             //Bilge.Dump(ex, "MEX::ODSGatherer::InterceptODS Error, ignoring error");
                             //MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.ODSStatusMessage, UserMessageType.WarningMessage, "The ODS Listener experienced an error and has lost a message.");
                         }
                     } // While Thread isalive loop
-                } catch (Win32Exception) {
+                } catch (Win32Exception ax) {
                     //Bilge.Dump(eex, "Mex::ODSGatherer - Unable to map the swap file, failed to initialise the mapping and aborting");
                     //Bilge.Log("Disabling ODS listener, no ODS messages will be captured");
                     //MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.ODSStatusMessage, UserMessageType.ErrorMessage, "The ODS listener was unable to initialise the access to the swap file.  Possibly 64Bit machine?");
+                    Console.WriteLine($"Crash {ax.Message}");
+                    throw;
                 } finally {
                     // Clean Up resources Section
                     if (hBufferReadyEvent != 0) {

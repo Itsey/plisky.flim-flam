@@ -165,9 +165,6 @@ public class IncomingMessageManager {
 
                     if (parsed != null) {
 
-                        
-
-
                         // Managed to retrieve it using the new importer, in which case map it back to the legacy structure.
                         if (nextEvent.pid == -1) {
                             var oi = ois.GetIdentity(parsed.OriginIdentity);
@@ -535,7 +532,7 @@ public class IncomingMessageManager {
     /// importing the current entry. Note this can be used when two import methods are generating the same messages.
     /// </summary>
     /// <param name="nextEvent">Entry to use to look for duplicates.</param>
-    private void RemoveDuplicatesOnImport(IncomingEventStore nextEvent) {
+    protected virtual void RemoveDuplicatesOnImport(IncomingEventStore nextEvent) {
         if (MexCore.TheCore.Options.RemoveDuplicatesOnImport) {
             bool dupeFound = true;
             while (dupeFound && (incommingMsgQueue.Count > 0)) {
@@ -587,23 +584,17 @@ public class IncomingMessageManager {
             // as the worker thread is the one that does this sort of thing and its on its lonesome.
             if (tcpThread == null) {
                 tcpThread = new Thread(new ThreadStart(TCPRecieverThread.InterceptTCPMessage));
-                //Bilge.InitialiseThread("MEX::TCPGathererThread", m_TCPThread);
-
                 tcpThread.Start();
-                //Bilge.Log("TCP Gatherer thread is online and listening.");
                 MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.TCPListenerTurnedOn, UserMessageType.InformationMessage, "IP:" + MexCore.TheCore.Options.IPAddressToBind + ":" + MexCore.TheCore.Options.PortAddressToBind);
-            } else {
-                //Bilge.Warning("Duplicate request was made to start the TCP thread, the duplicate request was ignored.");
             }
         }
     }
 
     public virtual void DeactivateODSGatherer() {
-        //Bilge.Log("IncommingMessageManager::DeactivateODSGatherer called");
         ODSDataGathererThread.continueRunning = false;
 
         if (odsThread == null) {
-            return;  // Actually were not collecting them at the mo.
+            return;  
         }
 
         var dt = DateTime.Now;
@@ -611,11 +602,8 @@ public class IncomingMessageManager {
         while ((odsThread != null) && odsThread.IsAlive) {
             var dtt = DateTime.Now;
             if ((dtt - dt).TotalSeconds > 5) {
-                // We have been waiting for this thread for 5 seconds, time to take drastic action.
-                //Bilge.Warning("The ODS Gatherer thread has not died after 5 seconds of waiting for it to shutdown nicely, terminating thread");
+                // We have been waiting for this thread for 5 seconds, time to take drastic action.                
                 MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.WaitTimeoutOccured, UserMessageType.WarningMessage, "The ODS Thread did not respond to a shutdown within 5 seconds, its been aborted.");
-
-                // TODO: m_ODSThread?.Abort();
             }
             Thread.Sleep(0);
         }

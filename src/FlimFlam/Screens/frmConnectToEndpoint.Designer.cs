@@ -63,7 +63,6 @@
             btnSave.TabIndex = 1;
             btnSave.Text = "OK";
             btnSave.UseVisualStyleBackColor = true;
-            
             // 
             // btnCancel
             // 
@@ -278,7 +277,7 @@
             btnTest.TabIndex = 5;
             btnTest.Text = "Connect";
             btnTest.UseVisualStyleBackColor = true;
-            
+            btnTest.Visible = false;
             // 
             // label4
             // 
@@ -289,7 +288,7 @@
             label4.Size = new System.Drawing.Size(114, 15);
             label4.TabIndex = 4;
             label4.Text = "Google Subscription";
-            
+            label4.Visible = false;
             // 
             // label3
             // 
@@ -300,6 +299,7 @@
             label3.Size = new System.Drawing.Size(85, 15);
             label3.TabIndex = 3;
             label3.Text = "Google Project";
+            label3.Visible = false;
             // 
             // txtSubscription
             // 
@@ -308,6 +308,7 @@
             txtSubscription.Name = "txtSubscription";
             txtSubscription.Size = new System.Drawing.Size(271, 23);
             txtSubscription.TabIndex = 1;
+            txtSubscription.Visible = false;
             // 
             // txtGoogleProjectId
             // 
@@ -316,6 +317,7 @@
             txtGoogleProjectId.Name = "txtGoogleProjectId";
             txtGoogleProjectId.Size = new System.Drawing.Size(221, 23);
             txtGoogleProjectId.TabIndex = 0;
+            txtGoogleProjectId.Visible = false;
             // 
             // frmConnectToEndpoint
             // 

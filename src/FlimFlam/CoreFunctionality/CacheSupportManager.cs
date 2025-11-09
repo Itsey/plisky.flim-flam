@@ -8,10 +8,10 @@ namespace Plisky.FlimFlam;
 /// <summary>
 /// Summary description for CacheSupportManager.
 /// </summary>
-internal class CacheSupportManager {
+public class CacheSupportManager {
     private string thisMachineNameCache = Environment.MachineName;
 
-    internal CacheSupportManager() {
+    public CacheSupportManager() {
         //Bilge.Log("MexViewer::CacheSupportManager --> Create () ");
         truncateCache = new Hashtable();
     }

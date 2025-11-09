@@ -4,7 +4,6 @@ namespace Plisky.FlimFlam {
     using System.ComponentModel;
     using System.Runtime.InteropServices;
     using Plisky.Diagnostics.FlimFlam;
-    using Plisky.Flimflam;
 
     internal class ODSDataGathererThread {
 

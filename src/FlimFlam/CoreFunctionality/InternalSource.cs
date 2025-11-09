@@ -1,9 +1,10 @@
-﻿namespace Plisky.Flimflam;
+﻿namespace Plisky.FlimFlam;
 
 public enum InternalSource {
     TCPReciever,
     HttpPoller,
     PubSubReciever,
     ODSCapture,
-    FileImport
+    FileImport,
+    Other
 }

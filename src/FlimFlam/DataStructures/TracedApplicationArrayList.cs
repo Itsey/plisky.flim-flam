@@ -9,22 +9,22 @@ namespace Plisky.FlimFlam {
     /// Mildly Type safe wrapper around the ArrayList for traced applications
     /// </summary>
     internal class TracedApplicationsArrayList : IEnumerator {
-        internal ReaderWriterLock TracedApplicationsDataRWL = new ReaderWriterLock();
+        internal ReaderWriterLock tracedApplicationsDataRWL = new ReaderWriterLock();
 
         #region locking code for aquiring  / freeing locks to all owned traced applications
 
-        private object AllTracedAppsLockingObject = new object();
+        private object allTracedAppsLockingObject = new object();
 
         internal bool AquireAllTracedApplicationsReaderLocks() {
-            lock (AllTracedAppsLockingObject) {
+            lock (allTracedAppsLockingObject) {
                 try {
-                    foreach (TracedApplication ta in m_store) {
+                    foreach (TracedApplication ta in store) {
                         ta.EventEntries.EventEntriesRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
                     }
                     return true;
                 } catch (ApplicationException /*aex*/) {
                     // timeout occured trying to get the locks
-                    foreach (TracedApplication ta in m_store) {
+                    foreach (TracedApplication ta in store) {
                         if (ta.EventEntries.EventEntriesRWL.IsReaderLockHeld) { ta.EventEntries.EventEntriesRWL.ReleaseReaderLock(); }
                     }
                     return false;
@@ -33,15 +33,15 @@ namespace Plisky.FlimFlam {
         } // End AqureAllTracedApplicationsReaderLocks
 
         internal bool AquireAllTracedApplicationsWriterLocks() {
-            lock (AllTracedAppsLockingObject) {
+            lock (allTracedAppsLockingObject) {
                 try {
-                    foreach (TracedApplication ta in m_store) {
+                    foreach (TracedApplication ta in store) {
                         ta.EventEntries.EventEntriesRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
                     }
                     return true;
                 } catch (ApplicationException /*aex*/) {
                     // timeout occured trying to get the locks
-                    foreach (TracedApplication ta in m_store) {
+                    foreach (TracedApplication ta in store) {
                         if (ta.EventEntries.EventEntriesRWL.IsWriterLockHeld) { ta.EventEntries.EventEntriesRWL.ReleaseWriterLock(); }
                     }
                     return false;
@@ -50,8 +50,8 @@ namespace Plisky.FlimFlam {
         }
 
         internal bool FreeAllTracedApplicationsReaderLocks() {
-            lock (AllTracedAppsLockingObject) {
-                foreach (TracedApplication ta in m_store) {
+            lock (allTracedAppsLockingObject) {
+                foreach (TracedApplication ta in store) {
                     ta.EventEntries.EventEntriesRWL.ReleaseReaderLock();
                 }
                 return true;
@@ -59,8 +59,8 @@ namespace Plisky.FlimFlam {
         }
 
         internal bool FreeAllTracedApplicationsWriterLocks() {
-            lock (AllTracedAppsLockingObject) {
-                foreach (TracedApplication ta in m_store) {
+            lock (allTracedAppsLockingObject) {
+                foreach (TracedApplication ta in store) {
                     ta.EventEntries.EventEntriesRWL.ReleaseWriterLock();
                 }
                 return true;
@@ -70,10 +70,10 @@ namespace Plisky.FlimFlam {
         #endregion locking code for aquiring  / freeing locks to all owned traced applications
 
         private int currentIndex = -1;
-        private ArrayList m_store;
+        private ArrayList store;
 
         internal TracedApplicationsArrayList() : base() {
-            this.m_store = new ArrayList(20);
+            this.store = new ArrayList(20);
         }
 
         object IEnumerator.Current {
@@ -82,12 +82,12 @@ namespace Plisky.FlimFlam {
                 if (currentIndex == -1) {
                     throw new InvalidOperationException("Current positiioned before the collection");
                 }
-                return this.m_store[currentIndex];
+                return this.store[currentIndex];
             }
         }
 
         internal int Count {
-            get { return this.m_store.Count; }
+            get { return this.store.Count; }
         }
 
         /// <summary>
@@ -99,14 +99,14 @@ namespace Plisky.FlimFlam {
                 //Bilge.Assert(index >= 0, "Request to get a TracedApplication with an invalid index was made - the index was out of range (<0)");
                 //Bilge.Assert(index < m_store.Count, "Request to get a TracedApplication with an invalid index was made, the index was too high.");
 
-                return (TracedApplication)this.m_store[index];
+                return (TracedApplication)this.store[index];
             } // End Get Indexer for logical index
 
             set {
                 //Bilge.Assert(index >= 0, "Request to get a TracedApplication with an invalid index was made - the index was out of range (<0)");
                 //Bilge.Assert(index < m_store.Count, "Request to get a TracedApplication with an invalid index was made, the index was too high.");
 
-                this.m_store[index] = value;
+                this.store[index] = value;
             }
         }
 
@@ -115,45 +115,45 @@ namespace Plisky.FlimFlam {
         /// application.  NB the integer parameter for this indexer is NOT the index of the application but
         /// instead is the ProcessId.  Indexer will return null if no matching application could be found.
         /// </summary>
-        internal TracedApplication this[int Pid, string machineName] {
+        internal TracedApplication this[int pid, string machineName] {
             get {
                 try {
-                    TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
+                    tracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
                     //Bilge.ResourceGrab(TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
                     try {
-                        foreach (TracedApplication ta in this.m_store) {
+                        foreach (TracedApplication ta in this.store) {
                             // TODO : This fix needs to be put back into Tex, having it rename the machine is a bad thing for this indexing.  Temporarily
                             // going to fix it here in Mex.
 
-                            if ((ta.ProcessIdNo == Pid) && (ta.MachineName == machineName)) {
+                            if ((ta.ProcessIdNo == pid) && (ta.MachineName == machineName)) {
                                 return ta;
                             }
                         } // End foreach traced application
 
                         // If its null try again ignoring machine name
-                        foreach (TracedApplication ta in this.m_store) {
-                            if (ta.ProcessIdNo == Pid) {
+                        foreach (TracedApplication ta in this.store) {
+                            if (ta.ProcessIdNo == pid) {
                                 return ta;
                             }
                         }
                     } finally {
                         //Bilge.ResourceFree(TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                        TracedApplicationsDataRWL.ReleaseReaderLock();
+                        tracedApplicationsDataRWL.ReleaseReaderLock();
                     }
 
                     // The traced application could not be found - return null
                     return null;
-                } catch (ApplicationException aex) {
+                } catch (ApplicationException) {
                     //Bilge.Dump(aex, "Exception occured, probably trying to get a reader lock for all traced applciations to run through them");
                     return null;
                 }
             } // End get Accessor for pid,machinename indexer
 
-            set { this[Pid, machineName] = value; }
+            set { this[pid, machineName] = value; }
         }
 
         public IEnumerator GetEnumerator() {
-            return this.m_store.GetEnumerator();
+            return this.store.GetEnumerator();
         }
 
         bool IEnumerator.MoveNext() {
@@ -161,10 +161,10 @@ namespace Plisky.FlimFlam {
             // Invalid operation instruction if there is a change since last reset
             do {
                 currentIndex++;
-                if ((this.m_store[currentIndex] != null)) {
+                if ((this.store[currentIndex] != null)) {
                     return true;
                 }
-            } while (currentIndex < this.m_store.Count);
+            } while (currentIndex < this.store.Count);
             return false;
         }
 
@@ -174,13 +174,13 @@ namespace Plisky.FlimFlam {
         }
 
         internal int Add(TracedApplication ta) {
-            TracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
+            tracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
-                return this.m_store.Add(ta);
+                return this.store.Add(ta);
             } finally {
                 //Bilge.ResourceFree(TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                TracedApplicationsDataRWL.ReleaseWriterLock();
+                tracedApplicationsDataRWL.ReleaseWriterLock();
             }
         } // End TracedApplicationsArrayList::Add
 
@@ -193,11 +193,11 @@ namespace Plisky.FlimFlam {
         /// <param name="virtualIndex"></param>
         /// <returns></returns>
         internal int AddNew(int pid, string machineName, int virtualIndex) {
-            return this.m_store.Add(new TracedApplication(pid, machineName, virtualIndex));
+            return this.store.Add(new TracedApplication(pid, machineName, virtualIndex));
         }
 
         internal void Clear() {
-            this.m_store.Clear();
+            this.store.Clear();
         }
 
         // end pid/machinename based indexer
@@ -209,12 +209,12 @@ namespace Plisky.FlimFlam {
         /// <param name="machineName">The machine name of the machine the application runs on</param>
         /// <returns></returns>
         internal int GetIndexOfApplication(int pid, string machineName) {
-            for (int a = 0; a < this.m_store.Count; a++) {
-                if (((TracedApplication)this.m_store[a]).IsBeingPurged) {
+            for (int a = 0; a < this.store.Count; a++) {
+                if (((TracedApplication)this.store[a]).IsBeingPurged) {
                     continue;
                 }
 
-                if ((((TracedApplication)this.m_store[a]).ProcessIdNo == pid) && ((TracedApplication)this.m_store[a]).MachineName == machineName) {
+                if ((((TracedApplication)this.store[a]).ProcessIdNo == pid) && ((TracedApplication)this.store[a]).MachineName == machineName) {
                     return a;
                 }
             }
@@ -222,20 +222,20 @@ namespace Plisky.FlimFlam {
         }
 
         internal void Remove(TracedApplication ta) {
-            TracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
+            tracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
-                this.m_store.Remove(ta);
+                this.store.Remove(ta);
             } finally {
                 //Bilge.ResourceFree(TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                TracedApplicationsDataRWL.ReleaseWriterLock();
+                tracedApplicationsDataRWL.ReleaseWriterLock();
             }
         } // End TracedApplicationsArrayList::Remove
 
         internal void RemoveAt(int tracedApplicationIdx) {
             //Bilge.Assert(TracedApplicationsDataRWL.IsWriterLockHeld, "The WriterLock must be held before RemoveAt is called on the TracedApplicationsList");
 
-            this.m_store.RemoveAt(tracedApplicationIdx);
+            this.store.RemoveAt(tracedApplicationIdx);
         }
 
         // end index based indexer

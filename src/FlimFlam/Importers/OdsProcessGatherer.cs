@@ -13,7 +13,7 @@ namespace Plisky.FlimFlam {
         private Process odsProcess;
         private const string ODSIMPORTNAME = "ff-ods.exe";
 
-        internal bool StartOdsGathererProcess() {
+        public virtual bool StartOdsGathererProcess() {
             lock (sync) {
                 if (odsProcess != null) {
                     try {
@@ -51,7 +51,7 @@ namespace Plisky.FlimFlam {
         }
 
 
-        internal bool StopOdsGathererProcess() {
+        public virtual bool StopOdsGathererProcess() {
             lock (sync) {
                 if (odsProcess == null) { return false; }
                 try {

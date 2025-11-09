@@ -12,17 +12,14 @@ namespace Plisky.Diagnostics.FlimFlam {
 
         private const int COMMANDSTRINGLENGTH = 5;
         private const string V1_LEGACY_REGEX = @"\{\[[0-9A-Za-z\._]{0,}\]\[[0-9]{1,5}\]\[[0-9]{1,5}\]\[[0-9A-Za-z\. ]{0,}\]\[[0-9]{0,8}\]\}\#[A-Z]{3,3}\#";
-        private static Regex v1RegexCache;
+        private static Regex? v1RegexCache;
 
         internal static void ReturnStringBreakdown(string debugString, out string cmdType, out string procId, out string machineNamme, out string threadID,
         out string moduleName, out string lineNumber, out string debugOutput) {
-            procId = null; machineNamme = null; threadID = null; debugOutput = null;
 
-            if (v1RegexCache == null) {
-                v1RegexCache = new Regex(@"\[[0-9A-Za-z\.:_]{0,}\]", RegexOptions.Compiled);
-            }
+            v1RegexCache ??= new Regex(@"\[[0-9A-Za-z\.:_]{0,}\]", RegexOptions.Compiled);
 
-            Match m = v1RegexCache.Match(debugString);
+            var m = v1RegexCache.Match(debugString);
             // This should return 5 matches for a legit debug string
 
             // TODO I believe this deletes string names where [] is passed as initial or final chars test and fix.
@@ -40,11 +37,11 @@ namespace Plisky.Diagnostics.FlimFlam {
             lineNumber = m.Captures[0].Value.Trim(new char[] { '[', ']' });
 
             // Now get the command type and turn it into an enum
-            Match cmdMatch = Regex.Match(debugString, "#[A-Z]{3,3}#");
+            var cmdMatch = Regex.Match(debugString, "#[A-Z]{3,3}#");
             cmdType = cmdMatch.Captures[0].Value;
 
             // finally get the rest of the string as the debug message
-            debugOutput = debugString.Substring(cmdMatch.Index + COMMANDSTRINGLENGTH);  // commandstrlen currently 5
+            debugOutput = debugString[(cmdMatch.Index + COMMANDSTRINGLENGTH)..];  // commandstrlen currently 5
         }
 
         #endregion legacy message parsing code
@@ -52,12 +49,10 @@ namespace Plisky.Diagnostics.FlimFlam {
         public V1FormatterLink(IOriginIdentityProvider i) : base(i) {
         }
 
-        public override SingleOriginEvent Handle(RawApplicationEvent source) {
-            SingleOriginEvent result = null;
-
+        public override SingleOriginEvent? Handle(RawApplicationEvent source) {
             if (IsV1TextString(source.Text)) {
                 ReturnStringBreakdown(source.Text, out string command, out string procid, out string machnm, out string thread, out string module, out string line, out string text);
-                result = GetEvent(machnm, procid);
+                var result = GetEvent(machnm, procid);
                 result.SetRawText(text);
                 result.LineNumber = line;
                 result.MethodName = module;
@@ -73,9 +68,7 @@ namespace Plisky.Diagnostics.FlimFlam {
             if ((theString == null) || (theString.Length == 0)) { return false; }
             if (!theString.StartsWith("{[")) { return false; }
 
-            if (v1RegexCache == null) {
-                v1RegexCache = new Regex(V1_LEGACY_REGEX, RegexOptions.Compiled);
-            }
+            v1RegexCache ??= new Regex(V1_LEGACY_REGEX, RegexOptions.Compiled);
 
             return v1RegexCache.IsMatch(theString);
         }

@@ -8,7 +8,6 @@
     using Flurl;
     using Flurl.Http;
     using Plisky.Diagnostics.FlimFlam;
-    using Plisky.Flimflam;
     using Plisky.FlimFlam;
 
     public partial class frmConnectToEndpoint : Form {

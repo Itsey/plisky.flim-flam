@@ -7,7 +7,11 @@
         public EventParserLinkBase parser;
 
         public ImportParser(OriginIdentityStore ois) {
-            parser = new FFV4FormatLink(ois).Link(new FFV3FormatLink(ois).Link(new V1FormatterLink(ois).Link(new FFV2FormatLink(ois).Link(new UnknownFormatLink(ois)))));
+            parser = new FFV4FormatLink(ois).Link(
+                new FFV3FormatLink(ois).Link(
+                new V1FormatterLink(ois).Link(
+                new FFV2FormatLink(ois).Link(
+                new UnknownFormatLink(ois)))));
         }
 
         public SingleOriginEvent Parse(RawApplicationEvent rae) {

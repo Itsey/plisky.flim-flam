@@ -4,6 +4,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using MexInternals;
+using Microsoft.Extensions.DependencyInjection;
 using Plisky.Diagnostics.FlimFlam;
 using Plisky.FilmFlam;
 
@@ -27,38 +29,20 @@ public class MexCore {
         var esf = new EventEntryStoreFactory();
         var dm = new DataManager(esf);
         var store = new OriginIdentityStore();
-        // TODO : RawEntryParserChain rapc = RawEntryParserChain.CreateChain(RawEntryParserChain.ALL_LINK, store);
-        // TODO : DataParser dp = new DataParser(store, rapc, dm);
         var im = new ImportManager(null);
 
-        //Bilge.Log("MexCore::MexCore - Diagnostics being initialised");
         Diagnostics = new MexDiagnosticManager();
-
-        //Bilge.Log("MexCore::MexCore - about to start Options");
         Options = new MexOptions();
-
-        //Bilge.Log("MexCore::MexCore - about to start WorkManager");
         WorkManager = PrimaryWorkManager.GetPrimaryWorkManager();
-
-        //Bilge.Log("MexCore::MexCore - about to start DataStructures");
         DataManager = new DataStructureManager();
-
-        //Bilge.Log("MexCore::MexCore - about to start IncommingMessageManager");
         MessageManager = IncomingMessageManager.Current;
-        //MessageManager.AddFlimFlamCompatibility(im);
-
-        //Bilge.Log("MexCore::MexCore - about to start ViewManager");
-        ViewManager = new ViewSupportManager();
-
-        //Bilge.Log("MexCore::MexCore - about to start CacheManager");
+        ViewManager = Program.host.Services.GetRequiredService<ViewSupportManager2>();
         CacheManager = new CacheSupportManager();
 
-        //Bilge.Log("MexCore::MexCore - Starting CoreWorkerThread");
         coreExecutionThread = new Thread(new ThreadStart(CoreThreadLoop)) {
             Name = "MexCoreThread"
         };
 
-        //Bilge.Log("MexCore::MexCore - Construction complete");
     }
 
     public MexOptions Options { get; set; }

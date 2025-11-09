@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 internal static class Program {
 
     public static IHost host;
+
     /// <summary>
     /// The main entry point for the application.
     /// </summary>
@@ -31,14 +32,18 @@ internal static class Program {
         }
 
         var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddSingleton<Hub>();
+        builder.Services.AddSingleton<DataStructureManager>();
         builder.Services.AddSingleton<OdsProcessGatherer>();
         builder.Services.AddSingleton<IncomingMessageManager2>();
+        builder.Services.AddSingleton<ViewSupportManager2>();
+
 
         host = builder.Build();
 
 
         var hcfp = new FeatureHardCodedProvider();
-        hcfp.AddFeature(new Feature("Bilge-ImportChain", true));
+        hcfp.AddFeature(new Feature("Bilge-ImportChain", true));   // Chain based import parser 
         hcfp.AddFeature(new Feature("Bilge-OdsOOP", true));  // Output Debug string Out Of Process
 
         Feature.AddProvider(hcfp);

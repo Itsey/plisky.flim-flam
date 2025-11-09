@@ -1,9 +1,9 @@
 ﻿namespace Plisky.Diagnostics.FlimFlam {
 
     public abstract class ChainBase<TRequest, TResponse> {
-        protected ChainBase<TRequest, TResponse> next = null;
+        protected ChainBase<TRequest, TResponse>? next = null;
 
-        public virtual TResponse Handle(TRequest source) {
+        public virtual TResponse? Handle(TRequest source) {
             if (next != null) {
                 return next.Handle(source);
             }

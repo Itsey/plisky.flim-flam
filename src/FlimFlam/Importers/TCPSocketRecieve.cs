@@ -5,11 +5,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Plisky.Diagnostics.FlimFlam;
-using Plisky.Flimflam;
 using Plisky.Plumbing;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     internal class TCPRecieverThread {
         internal static bool continueRunning;   // Determines when to end the threads.
@@ -31,7 +29,7 @@ namespace Plisky.FlimFlam {
                 } else {
                     try {
                         bindIP = Dns.GetHostEntry(MexCore.TheCore.Options.IPAddressToBind).AddressList[0];
-                    } catch (SocketException sox) {
+                    } catch (SocketException) {
                         //Bilge.Dump(sox, "Socket Exception resolving the hostname entered, not starting TCP listener");
                         MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.TCPListenerInvalidHostError, UserMessageType.ErrorMessage, "IP:" + MexCore.TheCore.Options.IPAddressToBind);
                         MexCore.TheCore.MessageManager.DeactivateTCPGatherer();
@@ -44,7 +42,7 @@ namespace Plisky.FlimFlam {
 
                 continueRunning = true;
 
-                TcpListener server = new TcpListener(bindIP, port);
+                var server = new TcpListener(bindIP, port);
                 try {
                     MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.TCPStatusMessage, UserMessageType.InformationMessage, "The TCP listener is starting.");
                     server.Start();
@@ -62,8 +60,8 @@ namespace Plisky.FlimFlam {
 
                     while (continueRunning) {
                         if (server.Pending()) {
-                            TcpClient client = server.AcceptTcpClient();
-                            ThreadPool.QueueUserWorkItem(new WaitCallback(ClientConnectionHandler), client);
+                            var client = server.AcceptTcpClient();
+                            _ = ThreadPool.QueueUserWorkItem(new WaitCallback(ClientConnectionHandler), client);
                         } else {
                             Thread.Sleep(100); // sleep, check whether to continue running and then try again.
                         }
@@ -84,7 +82,7 @@ namespace Plisky.FlimFlam {
         /// </summary>
         /// <param name="tcpClient">The client recieved when the connection was made</param>
         private static void ClientConnectionHandler(object tcpClient) {
-            TcpClient client = tcpClient as TcpClient;
+            var client = tcpClient as TcpClient;
 
             //Bilge.Assert(client != null, " Client was invalid when passed to client connection handler.  This code cant handle that");
 
@@ -92,9 +90,9 @@ namespace Plisky.FlimFlam {
             byte[] bytes = new byte[client.ReceiveBufferSize];
 
             // Get a stream object for reading and writing
-            NetworkStream stream = client.GetStream();
+            var stream = client.GetStream();
 
-            StringBuilder incomingMessage = new StringBuilder();
+            var incomingMessage = new StringBuilder();
             int bytesRead;
 
             // Loop to receive all the data sent by the client.
@@ -106,26 +104,26 @@ namespace Plisky.FlimFlam {
                     // as we are unable to get any more data out.  In this case any partial messages recorded are lost.
                     bytesRead = stream.Read(bytes, 0, bytes.Length);
                     if (bytesRead == 0) { continue; }
-                } catch (IOException iex) {
+                } catch (IOException) {
                     //Bilge.Dump(iex, "Network connection closed, unable to retrieve more data");
                     MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.TCPStatusMessage, UserMessageType.InformationMessage, "The connection was forcibly closed by the other end of the TCP Stream. Connection Aborted");
                     return;
-                } catch (ObjectDisposedException odx) {
+                } catch (ObjectDisposedException) {
                     MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.TCPStatusMessage, UserMessageType.InformationMessage, "The connection was forcibly closed by the other end of the TCP Stream. Connection Aborted");
                     //Bilge.Dump(odx, "Network connection disposed, unable to retrieve more data");
                     return;
                 }
 
-                incomingMessage.Append(System.Text.Encoding.ASCII.GetString(bytes, 0, bytesRead));
+                _ = incomingMessage.Append(System.Text.Encoding.ASCII.GetString(bytes, 0, bytesRead));
 
                 string temp = incomingMessage.ToString();
                 int liMarker = temp.LastIndexOf(FlimFlamConstants.TCPEND_MARKERTAG);
 
                 if (liMarker > -1) {
                     incomingMessage.Length = 0;
-                    incomingMessage.Append(temp.Substring(liMarker + FlimFlamConstants.TCPEND_MARKERTAGLEN));
+                    _ = incomingMessage.Append(temp[(liMarker + FlimFlamConstants.TCPEND_MARKERTAGLEN)..]);
 
-                    string[] msgs = temp.Substring(0, liMarker).Split(new string[1] { FlimFlamConstants.TCPEND_MARKERTAG }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] msgs = temp[..liMarker].Split(new string[1] { FlimFlamConstants.TCPEND_MARKERTAG }, StringSplitOptions.RemoveEmptyEntries);
 
                     foreach (string s in msgs) {
                         IncomingMessageManager.Current.AddIncomingMessage(InternalSource.TCPReciever, s, -1);

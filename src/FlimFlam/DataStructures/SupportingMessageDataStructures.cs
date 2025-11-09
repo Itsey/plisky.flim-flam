@@ -1,47 +1,46 @@
 //using Plisky.Plumbing.Legacy;
 using System;
 using Plisky.Diagnostics;
-using Plisky.Diagnostics.FlimFlam;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     public abstract class SupportingMessageData {
 
-        public static SupportingMessageData ParseAsMessageData(TraceCommandTypes tct, ref string PrimaryMessagData, ref string MoreInfoData) {
+        public static SupportingMessageData ParseAsMessageData(TraceCommandTypes tct, ref string primaryMessagData, ref string moreInfoData) {
             try {
-                if ((tct == TraceCommandTypes.SectionStart) || (tct == TraceCommandTypes.SectionEnd)) {
+                if (tct is TraceCommandTypes.SectionStart or TraceCommandTypes.SectionEnd) {
                     // Sections can contain timer data, if so then we abstract the timer data here.
                     TimerInstanceData tid = null;
-                    if (PrimaryMessagData.StartsWith(Constants.TIMER_SECTIONIDENTIFIER)) {
+                    if (primaryMessagData.StartsWith(Constants.TIMER_SECTIONIDENTIFIER)) {
                         // This is only a timer based section if it has this specfic tag in its debug message.
                         try {
-                            tid = new TimerInstanceData(MoreInfoData);
-                        } catch (ArgumentException aex) {
+                            tid = new TimerInstanceData(moreInfoData);
+                        } catch (ArgumentException) {
                             //Bilge.Dump(aex, "Timer error, couldnt parse timer message as timer message structure:  (" + MoreInfoData + ")");
                             MexCore.TheCore.ViewManager.AddUserNotificationMessageByIndex(UserMessages.CorruptStringFound, UserMessageType.ErrorMessage, "A timing message was recieved but it was corrupt.  Try removing any strange characters from the timer names.  Timing data may be innaccurate.");
                         }
-                        PrimaryMessagData = PrimaryMessagData.Substring(Constants.TIMER_SECTIONIDENTIFIER.Length); // Strip the intiial identifier
-                        MoreInfoData = string.Empty;  // All of the more info should be consumed when creating the timer event.
+                        primaryMessagData = primaryMessagData[Constants.TIMER_SECTIONIDENTIFIER.Length..]; // Strip the intiial identifier
+                        moreInfoData = string.Empty;  // All of the more info should be consumed when creating the timer event.
                     }
 
                     return tid;
                 }
 
-                if ((tct == TraceCommandTypes.ResourcePuke) || (tct == TraceCommandTypes.ResourceEat)) {
+                if (tct is TraceCommandTypes.ResourcePuke or TraceCommandTypes.ResourceEat) {
                     // Resource alteration identifiers contain values for named resources incrementing or decrementing by amounts.
-                    ResourceInstanceData rid = new ResourceInstanceData(MoreInfoData);
-                    PrimaryMessagData = "Resource Alteration for " + rid.ResourceName;
-                    MoreInfoData = "Value Change " + rid.ResourceValue.ToString();
+                    var rid = new ResourceInstanceData(moreInfoData);
+                    primaryMessagData = "Resource Alteration for " + rid.resourceName;
+                    moreInfoData = "Value Change " + rid.resourceValue.ToString();
                     return rid;
                 }
 
                 if (tct == TraceCommandTypes.ResourceCount) {
-                    ResourceInstanceData rid = new ResourceInstanceData(MoreInfoData);
-                    PrimaryMessagData = "Resource Set For " + rid.ResourceName;
-                    MoreInfoData = "Value = " + rid.ResourceValue;
+                    var rid = new ResourceInstanceData(moreInfoData);
+                    primaryMessagData = "Resource Set For " + rid.resourceName;
+                    moreInfoData = "Value = " + rid.resourceValue;
                     return rid;
                 }
-            } catch (ArgumentException aex) {
+            } catch (ArgumentException) {
                 //Bilge.Dump(aex, "There was a problem when trying to extract data from a message type.");
                 //Bilge.Warning("Failed to interpret the data string sent to Mex as valid data containing more info.  Returning null for this instance", "Trace Command Type  : " + tct.ToString());
                 //Bilge.FurtherInfo("Primary:" + PrimaryMessagData);
@@ -58,19 +57,18 @@ namespace Plisky.FlimFlam {
     }
 
     internal class ResourceInstanceData : SupportingMessageData {
-        internal string ContextName;
-        internal string ResourceName;
-        internal long ResourceValue;
+        internal string contextName;
+        internal string resourceName;
+        internal long resourceValue;
 
         internal ResourceInstanceData(string moreInfo) {
             try {
-                string resValueTemp;
-                if (!TraceMessageFormat.SplitResourceContentStringByParts(moreInfo, out ResourceName, out ContextName, out resValueTemp)) {
+                if (!TraceMessageFormat.SplitResourceContentStringByParts(moreInfo, out resourceName, out contextName, out string resValueTemp)) {
                     throw new ArgumentException("The string containig the resource data could not be parsed into valid resource isntance information");
                 }
 
                 try {
-                    ResourceValue = long.Parse(resValueTemp);
+                    resourceValue = long.Parse(resValueTemp);
                 } catch (FormatException fex) {
                     //Bilge.Log("WARNING >> Resources Count lost, string arrived in an unparsable format, the res value recieved in trace stream was unreoverable into a double value");
                     throw new ArgumentException("The resource count could not be converted to a valid count", fex);
@@ -89,18 +87,18 @@ namespace Plisky.FlimFlam {
         }
 
         internal override string RevertToMoreInfo(string currentMoreInfo) {
-            return TraceMessageFormat.AssembleResourceContentString(ResourceName, ContextName, ResourceValue.ToString());
+            return TraceMessageFormat.AssembleResourceContentString(resourceName, contextName, resourceValue.ToString());
         }
     }
 
     internal class TimerInstanceData : SupportingMessageData {
-        internal DateTime TimeInstance;
-        internal string TimeSinkInstanceDescription;
-        internal string TimeSinkName;
+        internal DateTime timeInstance;
+        internal string timeSinkInstanceDescription;
+        internal string timeSinkName;
 
         internal TimerInstanceData(string timerString) {
             try {
-                if (!TraceMessageFormat.SplitTimerStringByParts(timerString, out TimeSinkInstanceDescription, out TimeSinkName, out TimeInstance)) {
+                if (!TraceMessageFormat.SplitTimerStringByParts(timerString, out timeSinkInstanceDescription, out timeSinkName, out timeInstance)) {
                     throw new ArgumentException("The string containing timer data could not be parsed as valid timer data");
                 }
             } catch (IndexOutOfRangeException iorx) {
@@ -113,7 +111,7 @@ namespace Plisky.FlimFlam {
         }
 
         internal override string RevertToMoreInfo(string currentMoreInfo) {
-            return TraceMessageFormat.AssembleTimerContentString(TimeSinkInstanceDescription, TimeSinkName, TimeInstance);
+            return TraceMessageFormat.AssembleTimerContentString(timeSinkInstanceDescription, timeSinkName, timeInstance);
         }
     }
 }

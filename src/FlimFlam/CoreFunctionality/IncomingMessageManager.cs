@@ -12,7 +12,6 @@ using Flurl.Http;
 using Plisky.Diagnostics;
 using Plisky.Diagnostics.FlimFlam;
 using Plisky.FilmFlam;
-using Plisky.Flimflam;
 using Plisky.Plumbing;
 
 /// <summary>
@@ -71,7 +70,7 @@ public class IncomingMessageManager {
     /// </summary>
     /// <param name="msg">The text component of the message to be added</param>
     /// <param name="pid">The pid if the pid is supported by this gatherer, otherwise set this value to -1</param>
-    public void AddIncomingMessage(InternalSource source, string msg, int processId) {
+    public virtual void AddIncomingMessage(InternalSource source, string msg, int processId) {
         incommingMsgQueue.Enqueue(new IncomingEventStore(source, MexCore.TheCore.CacheManager.MexRunningOnMachineName, msg, processId, MexCore.TheCore.DataManager.GetNextGlobalIndex()));
     }
 
@@ -90,9 +89,8 @@ public class IncomingMessageManager {
     /// called when there are messages queued ready to be added to the data manager - this method will take either the next one or all available
     /// pending messaged from the queue and add it to the data structures that atre used to store the information.
     /// </summary>
-    public void ProcessNextStoredMessage(bool doAll, bool reporting) {
+    public virtual void ProcessNextStoredMessage(bool doAll, bool reporting) {
         if (incommingMsgQueue.Count == 0) {
-            //Bilge.Warning("WARNING INNEFFICIENT --> ProcessNextStoredMessage Called  when there are no messages on queue  INC_CHECKDUPEJOBS");
             return;
         }
 
@@ -110,9 +108,6 @@ public class IncomingMessageManager {
                     //Bilge.Log("Aborting import as shutdown has been requested.");
                     break;
                 }
-
-                
-                
 
                 var nextEvent = (IncomingEventStore)incommingMsgQueue.Dequeue();
                 if (string.IsNullOrEmpty(nextEvent.messageString)) {
@@ -560,7 +555,7 @@ public class IncomingMessageManager {
     protected Thread tcpThread;
 
     public virtual void ActivateODSGatherer() {
-
+        // Superceeded already using feature.
 
         // The ODS Gatherer is long running and is created now.
         if (odsThread == null) {

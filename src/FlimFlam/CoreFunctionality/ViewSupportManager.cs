@@ -17,7 +17,7 @@ using TimerPartialInstancedataStructure = System.Collections.Generic.Dictionary<
 /// <summary>
 /// Summary description for UISupportManager.
 /// </summary>
-internal class ViewSupportManager {
+public class ViewSupportManager {
 
     public Bilge b = new Bilge("Plisky.FlimFlam.ViewSupportManager");
 
@@ -1667,9 +1667,9 @@ internal class ViewSupportManager {
 
         if (ee.cmdType == TraceCommandTypes.SectionStart) {
             tiv = new TimeInstanceView {
-                SinkName = tid.TimeSinkName,
-                InstanceName = tid.TimeSinkInstanceDescription,
-                EnterTime = tid.TimeInstance
+                SinkName = tid.timeSinkName,
+                InstanceName = tid.timeSinkInstanceDescription,
+                EnterTime = tid.timeInstance
             };
 
             existingPartials.Add(tiv);
@@ -1682,8 +1682,8 @@ internal class ViewSupportManager {
             int matchMade;
             for (matchMade = 0; matchMade < existingPartials.Count; matchMade++) {
                 tiv = existingPartials[matchMade];
-                if ((tid.TimeSinkName == tiv.SinkName) && (tid.TimeSinkInstanceDescription == tiv.InstanceName)) {
-                    tiv.ExitTime = tid.TimeInstance;
+                if ((tid.timeSinkName == tiv.SinkName) && (tid.timeSinkInstanceDescription == tiv.InstanceName)) {
+                    tiv.ExitTime = tid.timeInstance;
                     if (!monitoredTimerInstances.ContainsKey(tiv.SinkName)) {
                         monitoredTimerInstances.Add(tiv.SinkName, new List<TimeInstanceView>());
                     }
@@ -1972,9 +1972,9 @@ internal class ViewSupportManager {
                 //return;
             }
 
-            resName = ((ResourceInstanceData)ee.SupportingData).ResourceName;
-            resValue = ((ResourceInstanceData)ee.SupportingData).ResourceValue;
-            resContext = ((ResourceInstanceData)ee.SupportingData).ContextName;
+            resName = ((ResourceInstanceData)ee.SupportingData).resourceName;
+            resValue = ((ResourceInstanceData)ee.SupportingData).resourceValue;
+            resContext = ((ResourceInstanceData)ee.SupportingData).contextName;
 
             // In order for the addition and running totals to be valid this assertion must hold true.
             //Bilge.Assert(ee.cmdType == TraceCommandTypes.ResourcePuke ? resValue < 0 : resValue > 0, "Asserting that a ResourcePuke has a resource value of <0 and that a ResourceEat has a resource value of >1 failed.",
@@ -2000,8 +2000,8 @@ internal class ViewSupportManager {
             }
 
             var rti = new ResourceTrackingInstance {
-                Name = ((ResourceInstanceData)ee.SupportingData).ResourceName,
-                Value = ((ResourceInstanceData)ee.SupportingData).ResourceValue,
+                Name = ((ResourceInstanceData)ee.SupportingData).resourceName,
+                Value = ((ResourceInstanceData)ee.SupportingData).resourceValue,
                 GlobalIndex = ee.GlobalIndex,
                 Line = ee.lineNumber,
                 Module = ee.module,
@@ -2729,12 +2729,8 @@ private void Application_ThreadException(object sender, System.Threading.ThreadE
 }
 #endif
 
-    internal ViewSupportManager(/*Bilge useThisTrace = null*/) {
-        /*if (useThisTrace == null) {
-            b = new Bilge(tl: System.Diagnostics.TraceLevel.Verbose);
-        }*/
-
-        // The view support manager is being created....
+    internal ViewSupportManager() {
+        
         CurrentFilter = new ViewFilter();
         CurrentHighlightOptions = new HighlightRequestsStore();
 #if !DEBUG

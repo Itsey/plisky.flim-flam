@@ -21,41 +21,32 @@ namespace Plisky.Diagnostics.FlimFlam {
         private Regex groupMatchRegexCache;
         private Regex isValidRegexCache;
 
-        public override SingleOriginEvent Handle(RawApplicationEvent source) {
+        public override SingleOriginEvent? Handle(RawApplicationEvent source) {
             if (source == null) { return null; }
-            SingleOriginEvent result = null;
 
-            if (IsValidV2FormattedString(source.Text)) {
-                result = PopulateFromDebugString(source.Text);
-                return result;
-            }
 
-            return base.Handle(source);
+            return IsValidV2FormattedString(source.Text) ? PopulateFromDebugString(source.Text) : base.Handle(source);
         }
 
         public FFV2FormatLink(IOriginIdentityProvider i) : base(i) {
         }
 
-        #region private methods
+
 
         private bool IsValidV2FormattedString(string theString) {
             if ((theString == null) || (theString.Length == 0)) { return false; }
             if (!theString.StartsWith("{[")) { return false; }
 
-            if (isValidRegexCache == null) {
-                isValidRegexCache = new Regex(FlimFlamMessageStructures.IS_VALID_V2FORMATTEDSTRING_REGEX, RegexOptions.Compiled);
-            }
+            isValidRegexCache ??= new Regex(FlimFlamMessageStructures.IS_VALID_V2FORMATTEDSTRING_REGEX, RegexOptions.Compiled);
 
             return isValidRegexCache.IsMatch(theString);
         }
 
         private SingleOriginEvent PopulateFromDebugString(string debugString) {
-            if (groupMatchRegexCache == null) {
-                groupMatchRegexCache = new Regex(FlimFlamMessageStructures.V2MESSAGEPARSERREGEX, RegexOptions.Compiled);
-            }
+            groupMatchRegexCache ??= new Regex(FlimFlamMessageStructures.V2MESSAGEPARSERREGEX, RegexOptions.Compiled);
             SingleOriginEvent output;
 
-            Match m = groupMatchRegexCache.Match(debugString);
+            var m = groupMatchRegexCache.Match(debugString);
             // This should return 5 matches for a legit debug string
             string machineName = m.Captures[0].Value.Trim(new char[] { '[', ']' });
             m = m.NextMatch();
@@ -76,20 +67,12 @@ namespace Plisky.Diagnostics.FlimFlam {
 
             // Now get the command type and turn it into an enum
             var cmdMatch = Regex.Match(debugString, FlimFlamMessageStructures.V2COMMANDIDENTIFIERREGEX);
-            // TODO : REVERT after Bilge update
 
-#if true
             output.Type = TraceCommands.StringToTraceCommand(cmdMatch.Captures[0].Value);
-#else
-            if (cmdMatch.Captures[0].Value != "#ALT#") {
-                output.Type = TraceCommands.StringToTraceCommand(cmdMatch.Captures[0].Value);
-            } else {
-                output.Type = TraceCommandTypes.Alert;
-            }
-#endif
+
 
             // finally get the rest of the string as the debug message, from the command index + length of the actual command.
-            output.SetRawText(debugString.Substring(cmdMatch.Index + FlimFlamMessageStructures.V2COMMANDSTRINGLENGTH));
+            output.SetRawText(debugString[(cmdMatch.Index + FlimFlamMessageStructures.V2COMMANDSTRINGLENGTH)..]);
 
 #if DEBUG
             output.createdBy = nameof(FFV2FormatLink);
@@ -98,6 +81,6 @@ namespace Plisky.Diagnostics.FlimFlam {
             return output;
         }
 
-        #endregion private methods
+
     }
 }

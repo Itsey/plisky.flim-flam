@@ -11,8 +11,8 @@ namespace Plisky.FlimFlam;
 /// from the program.  Each event entry is stored in its own class - although much of the information is stripped and only the
 /// event entry specific stuff remains - such as the thread ID
 /// </summary>
-[DebuggerDisplay("{m_vsnetdbgvw}")]
-internal class EventEntry {
+[DebuggerDisplay("{Vsnetdbgvw}")]
+public class EventEntry {
     internal TraceCommandTypes cmdType;
 
     internal string debugMessage;

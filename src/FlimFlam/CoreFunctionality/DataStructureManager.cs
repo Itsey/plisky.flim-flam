@@ -20,10 +20,10 @@ using Plisky.Plumbing;
 
 namespace Plisky.FlimFlam;
 
-internal class DataStructureManager {
-    internal ReaderWriterLock DataStructuresLock { get; set; }
+public class DataStructureManager {
+    public ReaderWriterLock DataStructuresLock { get; set; }
 
-    internal string DiagnosticsText() {
+    public string DiagnosticsText() {
         var diagReturnString = new StringBuilder();
 
         diagReturnString.Append("Non traced app entries : " + this.NonTracedApplicationEntries.Count.ToString() + "\r\n");
@@ -45,12 +45,12 @@ internal class DataStructureManager {
 
     public List<AlertEntry> Alerts { get; set; } = new List<AlertEntry>();
 
-    internal int PlaceAlertInoDataStructure(AlertEntry aa) {
+    public virtual int PlaceAlertInoDataStructure(AlertEntry aa) {
         Alerts.Add(aa);
         return Alerts.Count;
     }
 
-    internal List<AlertEntry> GetAlertEntries() {
+    public virtual List<AlertEntry> GetAlertEntries() {
         return Alerts;
     }
 
@@ -107,7 +107,7 @@ internal class DataStructureManager {
     /// <param name="eventMachineName">The machine name of the machine hosting the application</param>
     /// <exception cref="InvalidOperationException">Thrown if it was not possible to allocate the next internal TracedApplication storage</exception>
     /// <returns>The logical index of the application the event was inserted into.</returns>
-    internal int PlaceNewEventIntoDataStructure(EventEntry newEvt, int thePid, string eventMachineName) {
+    public virtual int PlaceNewEventIntoDataStructure(EventEntry newEvt, int thePid, string eventMachineName) {
         if (newEvt == null) { return -1; }
 
 
@@ -286,7 +286,7 @@ internal class DataStructureManager {
             if (everyCallback != null) {
                 // actually visit each node
 
-                this.TracedApplications.TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
+                this.TracedApplications.tracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
                 //Bilge.ResourceGrab(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
 
                 try {
@@ -310,7 +310,7 @@ internal class DataStructureManager {
                 } finally {
                     // Give the lock back for reading.
                     //Bilge.ResourceFree(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                    this.TracedApplications.TracedApplicationsDataRWL.ReleaseReaderLock();
+                    this.TracedApplications.tracedApplicationsDataRWL.ReleaseReaderLock();
                 }
             }
         } catch (ApplicationException) {
@@ -412,7 +412,7 @@ internal class DataStructureManager {
     /// <returns>-1 if no match is found, otherwise the virtual index of the traced application</returns>
     internal int FindTracedAppIndexThatContainsGlobalIndex(long index) {
         if (index > 0) {
-            this.TracedApplications.TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
+            this.TracedApplications.tracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
                 for (int taCount = 0; taCount < this.TracedApplications.Count; taCount++) {
@@ -429,7 +429,7 @@ internal class DataStructureManager {
                 }
             } finally {
                 //Bilge.ResourceFree(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                this.TracedApplications.TracedApplicationsDataRWL.ReleaseReaderLock();
+                this.TracedApplications.tracedApplicationsDataRWL.ReleaseReaderLock();
             }
 
             // If we get here weve searched all of the known apps and cant find the index.
@@ -442,7 +442,7 @@ internal class DataStructureManager {
     internal EventEntry FindEventEntryInKnownAppsByIndex(long index) {
         if (index > 0) {
             // Reader lock the traced applications list
-            this.TracedApplications.TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
+            this.TracedApplications.tracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
                 for (int taCount = 0; taCount < this.TracedApplications.Count; taCount++) {
@@ -464,7 +464,7 @@ internal class DataStructureManager {
                 }
             } finally {
                 //Bilge.ResourceFree(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                this.TracedApplications.TracedApplicationsDataRWL.ReleaseReaderLock();
+                this.TracedApplications.tracedApplicationsDataRWL.ReleaseReaderLock();
             }
 
             // If we get here weve searched all of the known apps and cant find the index.
@@ -495,7 +495,7 @@ internal class DataStructureManager {
         var pss = new ProcessSummary[MexCore.TheCore.DataManager.TracedApplications.Count];
         int theIdx = 0;
 
-        this.TracedApplications.TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
+        this.TracedApplications.tracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
         //Bilge.ResourceGrab(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
         try {
             foreach (TracedApplication ta in MexCore.TheCore.DataManager.TracedApplications) {
@@ -504,7 +504,7 @@ internal class DataStructureManager {
             }
         } finally {
             //Bilge.ResourceFree(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-            this.TracedApplications.TracedApplicationsDataRWL.ReleaseReaderLock();
+            this.TracedApplications.tracedApplicationsDataRWL.ReleaseReaderLock();
         }
         return pss;
     }
@@ -542,7 +542,7 @@ internal class DataStructureManager {
     internal void PurgeAllKnownApplications() {
         //Bilge.E("Request made to purge all of the known data");
         try {
-            TracedApplications.TracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
+            TracedApplications.tracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
                 // This code has been put in as its possible that an importer thread has a reference to the TA and is still
@@ -553,7 +553,7 @@ internal class DataStructureManager {
                 TracedApplications.Clear();
             } finally {
                 //Bilge.ResourceFree(TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                TracedApplications.TracedApplicationsDataRWL.ReleaseWriterLock();
+                TracedApplications.tracedApplicationsDataRWL.ReleaseWriterLock();
             }
         } finally {
             //Bilge.X();
@@ -563,7 +563,7 @@ internal class DataStructureManager {
     internal void PurgeAllKnownApplicationsExceptThisOne(int vIndexNotToPurge) {
         //Bilge.E("PurgeAllExcept called with parameter " + vIndexNotToPurge.ToString());
         try {
-            TracedApplications.TracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
+            TracedApplications.tracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
                 int i = 0;
@@ -580,7 +580,7 @@ internal class DataStructureManager {
                 }
             } finally {
                 //Bilge.ResourceFree(this.TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                TracedApplications.TracedApplicationsDataRWL.ReleaseWriterLock();
+                TracedApplications.tracedApplicationsDataRWL.ReleaseWriterLock();
             }
             //Bilge.Log("PurgeAllExceptThisOne completes its execution.");
         } finally {
@@ -633,7 +633,7 @@ internal class DataStructureManager {
             int i = 0;
 
             // This can change the number of traced apps therefore we lock the entire structure.
-            TracedApplications.TracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
+            TracedApplications.tracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
             //Bilge.ResourceGrab(TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
             try {
                 //Bilge.Log("TracedApplicationsDataRWL is now locked for the purge by name, starting to loop through all applications");
@@ -655,7 +655,7 @@ internal class DataStructureManager {
                 //Bilge.Log("Loop completes, freeing TracedApplicationsDataRWL");
             } finally {
                 //Bilge.ResourceFree(TracedApplications.TracedApplicationsDataRWL, "TracedApplicationsDataRWL");
-                TracedApplications.TracedApplicationsDataRWL.ReleaseWriterLock();
+                TracedApplications.tracedApplicationsDataRWL.ReleaseWriterLock();
             }
         } finally {
             //Bilge.X();
@@ -673,11 +673,11 @@ internal class DataStructureManager {
         //Bilge.Log("Mex::DataMAnager::PurgeKnownApplication >> Purge known application called for application w/index " + virtualIndex.ToString());
         //Bilge.Assert(IsValidTracedApplicationIndex(virtualIndex), "Mex::DataManager::PurgeKnownApplication - Failure, the virtual index passed is not a valid index");
 
-        TracedApplications.TracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
+        TracedApplications.tracedApplicationsDataRWL.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
         try {
             TracedApplications.RemoveAt(TracedAppPhysicalIndexFromVirtualIndex(virtualIndex));
         } finally {
-            TracedApplications.TracedApplicationsDataRWL.ReleaseWriterLock();
+            TracedApplications.tracedApplicationsDataRWL.ReleaseWriterLock();
         }
     }
 
@@ -738,7 +738,7 @@ internal class DataStructureManager {
     /// <returns>The physical store index of the application matching the passed virtual index</returns>
     private int TracedAppPhysicalIndexFromVirtualIndex(int virtualIndex) {
         // Run through all of the tracedApplications looking for the matching virtual index.
-        this.TracedApplications.TracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
+        this.TracedApplications.tracedApplicationsDataRWL.AcquireReaderLock(Consts.MS_TIMEOUTFORLOCKS);
         try {
             for (int physicalIndex = 0; physicalIndex < TracedApplications.Count; physicalIndex++) {
                 if (TracedApplications[physicalIndex].VirtualIndex == virtualIndex) {
@@ -746,7 +746,7 @@ internal class DataStructureManager {
                 }
             }
         } finally {
-            this.TracedApplications.TracedApplicationsDataRWL.ReleaseReaderLock();
+            this.TracedApplications.tracedApplicationsDataRWL.ReleaseReaderLock();
         }
         // Could not find the specified virtual index
         //Bilge.Log("Mex::DataManager::TracedAppPhysicalIndexFromVirtualIndex >> WARNING >> Returning -1, the lookup for the specified virtual index (" + virtualIndex.ToString() + " failed");
@@ -833,43 +833,31 @@ internal class DataStructureManager {
     }
 
     internal TracedApplication GetKnownApplicationByPid(int pid, string machineName) {
-        //Bilge.Log("Mex::DataManager::GetKnownApplicationByPid called  for pid " + pid);
         return this.TracedApplications[pid, machineName];
     }
 
-    #region Constructor / Destructor
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    internal void ShutDownDataManager() {
-        //Bilge.Log("DataManager::ShutDownDataManager - Datamanager shutdown requested");
-    } // End shutdown data manager
 
-    internal DataStructureManager() {
-        //Bilge.Log("DataManager::Constructor");
+    public DataStructureManager() {
 
 #if DEBUG
-        // Do not start at a logical place - this will help identify when the physical index is being passed outside of the datamanger
+        // This is a little bit chaos monkey. In development use a random starying point for the virtual
+        // index to make it more likely where we catch using that index outside of this class.
         var r = new Random();
         tracedAppVirtualIndexLastUsed = r.Next(24999);
 #else
-  tracedAppVirtualIndexLastUsed=-1;
+        tracedAppVirtualIndexLastUsed=-1;
 #endif
 
         DataStructuresLock = new ReaderWriterLock();
 
         try {
             DataStructuresLock.AcquireWriterLock(Consts.MS_TIMEOUTFORLOCKS);
-#if DEBUG
-            //Bilge.ResourceGrab(DebugMexConsts.DATASTRUCTURESLOCK_RESNAME, "DataManagerShutdown");
-#endif
             try {
                 // Bring the traced applications store up....
                 TracedApplications = new TracedApplicationsArrayList();
                 NonTracedApplicationEntries = new NonTracedApplicationsArrayList();
             } finally {
-#if DEBUG
-                //Bilge.ResourceFree(DebugMexConsts.DATASTRUCTURESLOCK_RESNAME, "DataManagerShutdown");
-#endif
                 DataStructuresLock.ReleaseWriterLock();
             }
         } catch (ApplicationException) {
@@ -878,5 +866,4 @@ internal class DataStructureManager {
         }
     }
 
-    #endregion Constructor / Destructor
 }

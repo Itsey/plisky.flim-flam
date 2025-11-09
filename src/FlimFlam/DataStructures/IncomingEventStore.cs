@@ -1,7 +1,6 @@
 namespace Plisky.FlimFlam;
 
 using System;
-using Plisky.Flimflam;
 
 /// <summary>
 /// Temporarily stores incoming events, ready for processing by mex.

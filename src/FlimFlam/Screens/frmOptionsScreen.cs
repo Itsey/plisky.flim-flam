@@ -1,17 +1,15 @@
-﻿namespace Plisky.FlimFlam {
+﻿
+//using Plisky.Plumbing.Legacy;
+//using Plisky.Plumbing.Listeners;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security;
+using System.Windows.Forms;
+using Plisky.Plumbing;
 
-    //using Plisky.Plumbing.Legacy;
-    //using Plisky.Plumbing.Listeners;
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Security;
-    using System.Security.Permissions;
-    using System.Windows.Forms;
-    using Plisky.Diagnostics.FlimFlam;
-    using Plisky.Plumbing;
-
+namespace Plisky.FlimFlam {
     /// <summary>
     /// Summary description for MexOptionsScreen.
     /// </summary>
@@ -1920,7 +1918,7 @@
             chkFilterDefaultIncludeModules.Checked = mo.FilterDefaultSaveModules;
 
             foreach (string s in mo.PathsToCheckForImporters) {
-                lbxImportProcessPaths.Items.Add(s);
+                _ = lbxImportProcessPaths.Items.Add(s);
             }
         }
 
@@ -2142,7 +2140,7 @@
                 txtGeneratedString.Text = formInitSettings.ToString();
 
                 lbxImportProcessPaths.Items.Clear();
-                foreach (var s in formInitSettings.ImporterPathsToCheck) {
+                foreach (string s in formInitSettings.ImporterPathsToCheck) {
                     _ = lbxImportProcessPaths.Items.Add(s);
                 }
 
@@ -2158,15 +2156,6 @@
         /// </summary>
         private void RefreshStructureFromForm() {
             if (thisFormBeingUpdated) { return; }  // In the middle of an update from a set
-
-            #region entry code
-
-            //Bilge.Assert(m_formInitSettings != null, "The internal texInitSettings class should never be null");
-            //Bilge.Assert(m_formInitSettings.ListenersToAdd != null, "The texInitSettings listeners collection should never be null");
-
-            #endregion entry code
-
-            //Bilge.Log("Refreshing internal texinitsettings from the form settings");
 
             txtGeneratedString.Text = formInitSettings.ToString();
 
@@ -2344,7 +2333,7 @@
 
         private void BtnAddPath_Click(object sender, EventArgs e) {
             if (!string.IsNullOrWhiteSpace(txtAdditionalPath.Text)) {
-                lbxImportProcessPaths.Items.Add(txtAdditionalPath.Text.Trim());
+                _ = lbxImportProcessPaths.Items.Add(txtAdditionalPath.Text.Trim());
             }
             RefreshStructureFromForm();
         }

@@ -134,7 +134,7 @@ public class IncomingMessageManager {
                 string tempMachineName = null;
                 bool legacyMode = false;
                 bool isCommand = false;
-                
+
                 if (nextEvent.messageString.StartsWith(FlimFlamConstants.MESSAGETRUNCATE)) {
                     // OutputDebugString handler is limited in the size of its messages so it sends truncated messages. Other handlers typically dont but we
                     // support truncated message reassembly here.
@@ -167,10 +167,10 @@ public class IncomingMessageManager {
                             nextEvent.pid = int.Parse(oi.Identifier2);
                         }
 
-                        ApplyIncomingMessageApplicationEffects(parsed,tempMachineName,nextEvent.pid);
+                        ApplyIncomingMessageApplicationEffects(parsed, tempMachineName, nextEvent.pid);
                         ee = new EventEntry(parsed);
 
-                        
+
                         if (ee.GlobalIndex == 0) {
                             throw new InvalidOperationException();
                         }
@@ -274,8 +274,8 @@ public class IncomingMessageManager {
                                     actualAppName = actualAppName[..^Consts.PROCNAMEIDENT_POSTFIX.Length];
                                     ee.debugMessage = actualAppName;
 
-                                    SetTracedApplicationName(additionalDataTracedApp, actualAppName,ee.GlobalIndex);
-                                    
+                                    SetTracedApplicationName(additionalDataTracedApp, actualAppName, ee.GlobalIndex);
+
                                     break;
 
                                 case 'M': //MainModule
@@ -443,21 +443,24 @@ public class IncomingMessageManager {
     }
 
     private void ApplyIncomingMessageApplicationEffects(SingleOriginEvent parsed, string tempMachineName, int pid) {
-        
+        Debug.Assert(parsed != null, "Parsed message cannot be null");
+        Debug.Assert(parsed.Tags != null, "Parsed message tags cannot be null");
+
         var additionalDataTracedApp = GetTracedApplicationWithCreate(tempMachineName, pid);
 
         if (parsed.Type == TraceCommandTypes.Alert) {
+
             if (parsed.Tags.ContainsKey("alert-name")) {
                 if (parsed.Tags["alert-name"] == "online") {
                     // This is an applicaiton online Alert.   Implement reset behaviour.
 
-                    
+
                     if (parsed.Tags.TryGetValue("app-name", out string newAppName)) {
-                        SetTracedApplicationName(additionalDataTracedApp, newAppName,parsed.Id);
+                        SetTracedApplicationName(additionalDataTracedApp, newAppName, parsed.Id);
                     }
-                } 
+                }
             }
-            
+
         }
     }
 
@@ -468,13 +471,7 @@ public class IncomingMessageManager {
         }
 
         if (MexCore.TheCore.Options.AutoPurgeApplicationOnMatchingName) {
-            // BUG!!! Omg too dumb.  Realised only after coding this that if oyu add autopurge as a job option it kicks
-            // in after the import and then purges all of the new messages.  Aysnchthink ftw.
-            //Bilge.Log("Synchronous Purge By Matching Name starting.  Trying to purge name " + actualAppName, "However skipping new pid which is " + tPid);
-            MexCore.TheCore.DataManager.PurgeByName(actualAppName, additionalDataTracedApp.MachineName,additionalDataTracedApp.ProcessIdNo);
-            //MexCore.TheCore.WorkManager.ProcessJob(new Job_PartialPurgeApp(tempMachineName,tPid));
-            
-            //Bilge.Log("Synchronous Purge By Matching Name Completes.");
+            MexCore.TheCore.DataManager.PurgeByName(actualAppName, additionalDataTracedApp.MachineName, additionalDataTracedApp.ProcessIdNo);
         }
 
         additionalDataTracedApp.ProcessName = actualAppName;
@@ -534,7 +531,7 @@ public class IncomingMessageManager {
                 var potentialNext = (IncomingEventStore)incommingMsgQueue.Peek();
                 if (potentialNext != null) {
                     dupeFound = potentialNext.Equals(nextEvent);
-                    if (dupeFound) {                        
+                    if (dupeFound) {
                         if (incommingMsgQueue.Count > 0) {
                             incommingMsgQueue.Dequeue();
                         }
@@ -589,7 +586,7 @@ public class IncomingMessageManager {
         ODSDataGathererThread.continueRunning = false;
 
         if (odsThread == null) {
-            return;  
+            return;
         }
 
         var dt = DateTime.Now;
@@ -635,7 +632,7 @@ public class IncomingMessageManager {
         }
     }
 
-#endregion Gatherer support - ODS / TCP Gatherers
+    #endregion Gatherer support - ODS / TCP Gatherers
 
     public void RegisterHttpDataImport(string uriToHit, bool repeatIt) {
         RefreshFromHttpSource(uriToHit);

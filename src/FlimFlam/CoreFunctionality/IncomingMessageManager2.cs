@@ -1,10 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Plisky.Diagnostics;
+﻿using Plisky.Diagnostics;
 using Plisky.Diagnostics.FlimFlam;
 using Plisky.Plumbing;
 
@@ -101,7 +95,7 @@ public class IncomingMessageManager2 : IncomingMessageManager {
             };
 
             var parsed = msgParser.Parse(rae);
-            if (parsed ==null) {
+            if (parsed == null) {
                 // TODO Error Handling, via hub?
             }
 
@@ -151,8 +145,8 @@ public class IncomingMessageManager2 : IncomingMessageManager {
     }
 
     public override void ProcessNextStoredMessage(bool doAll, bool reporting) {
-        // COMPAT MODE - not required. 
-        // doAll no longer required it was always true.
+        // COMPAT MODE - this method is not required, doAll was always true - kept it in while doing the refactoring to minimise the disruption. REMOVE once done.
+
 
         if (!importerFeature.Active) {
             base.ProcessNextStoredMessage(doAll, reporting);

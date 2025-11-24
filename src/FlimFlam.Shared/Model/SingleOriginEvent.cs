@@ -28,10 +28,9 @@
         public string? MethodName { get; set; }
         public string? Filename { get; set; }
 
-        public Dictionary<string, string> Tags { get; set; }
+        public Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
 
         public void AddTag(string tagKey, string tagValue) {
-            if (Tags == null) { Tags = new Dictionary<string, string>(); }
             if (!Tags.ContainsKey(tagKey)) {
                 Tags.Add(tagKey, tagValue);
             } else {

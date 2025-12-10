@@ -1,12 +1,11 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Plisky.Diagnostics.FlimFlam;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     internal partial class frmOpenDialog : Form {
-        private bool m_modifiedLabel;
+        private bool modifiedLabel;
 
         internal frmOpenDialog() {
             InitializeComponent();
@@ -40,7 +39,7 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void btnBrowseForFile_Click(object sender, EventArgs e) {
+        private void BtnBrowseForFile_Click(object sender, EventArgs e) {
             using (OpenFileDialog ofd = new OpenFileDialog()) {
                 ofd.InitialDirectory = Environment.CurrentDirectory;
                 ofd.Filter = "TexLogs (txt)|*.txt|Logs (log)|*.Log|All Files (*)|*.*";
@@ -50,21 +49,21 @@ namespace Plisky.FlimFlam {
             }
         }
 
-        private void lbxMRUList_SelectedIndexChanged(object sender, EventArgs e) {
+        private void LbxMRUList_SelectedIndexChanged(object sender, EventArgs e) {
             if (lbxMRUList.SelectedItem == null) { return; }
             txtFilename.Text = lbxMRUList.SelectedItem.ToString();
         }
 
-        private void txtFilename_TextChanged(object sender, EventArgs e) {
+        private void TxtFilename_TextChanged(object sender, EventArgs e) {
             btnOk.Enabled = File.Exists(txtFilename.Text);
-            if (!m_modifiedLabel) {
+            if (!modifiedLabel) {
                 txtLabelIdent.Text = Path.GetFileNameWithoutExtension(txtFilename.Text);
             }
         }
 
         // Default false
-        private void txtLabelIdent_TextChanged(object sender, EventArgs e) {
-            m_modifiedLabel = true;
+        private void TxtLabelIdent_TextChanged(object sender, EventArgs e) {
+            modifiedLabel = true;
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoFixture;
 using Plisky.Diagnostics;
 using Plisky.Diagnostics.FlimFlam;
@@ -46,6 +42,7 @@ public class MessageParsingTests {
 
     [Theory]
     [InlineData("{[DAVYJONES][55516][0][2][X:\\Code\\nosccm\\BilgeSample\\BilgeSample\\Program.cs][17][::< Main >$]}#LOG#Hello Wonderful World\r\n")]
+    [InlineData("{[Norway][1025][8901][Donner][ChimneyApproach.cs][125][ChimneyApproach::SlopeSolve]}#LOG#Approach solved grinch; roofPitch=32°, ropeSlack=grinch 0.12m, flueAngle=+6°; descentRate=0.8m/s grinch; safetyMargin=grinch 0.19")]
     public void TestChain(string incomingMessage) {
         EventRecieverForComparisons comparer = new();
         OriginIdentityStore store = new();

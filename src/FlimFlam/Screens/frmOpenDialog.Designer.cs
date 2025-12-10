@@ -16,191 +16,207 @@ namespace Plisky.FlimFlam {
       base.Dispose(disposing);
     }
 
-    #region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent() {
-        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOpenDialog));
-        this.btnOk = new System.Windows.Forms.Button();
-        this.btnCancel = new System.Windows.Forms.Button();
-        this.txtFilename = new System.Windows.Forms.TextBox();
-        this.groupBox1 = new System.Windows.Forms.GroupBox();
-        this.rdoDebugViewTex = new System.Windows.Forms.RadioButton();
-        this.rdoDefaultLogfile = new System.Windows.Forms.RadioButton();
-        this.rdoImportADPlus = new System.Windows.Forms.RadioButton();
-        this.rdoImportTypeTxtFileWriter = new System.Windows.Forms.RadioButton();
-        this.lbxMRUList = new System.Windows.Forms.ListBox();
-        this.btnBrowseForFile = new System.Windows.Forms.Button();
-        this.chkAsynchImport = new System.Windows.Forms.CheckBox();
-        this.txtLabelIdent = new System.Windows.Forms.TextBox();
-        this.label1 = new System.Windows.Forms.Label();
-        this.groupBox1.SuspendLayout();
-        this.SuspendLayout();
-        // 
-        // btnOk
-        // 
-        this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-        this.btnOk.Location = new System.Drawing.Point(585, 240);
-        this.btnOk.Name = "btnOk";
-        this.btnOk.Size = new System.Drawing.Size(75, 23);
-        this.btnOk.TabIndex = 0;
-        this.btnOk.Text = "OK";
-        this.btnOk.UseVisualStyleBackColor = true;
-        // 
-        // btnCancel
-        // 
-        this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-        this.btnCancel.Location = new System.Drawing.Point(504, 240);
-        this.btnCancel.Name = "btnCancel";
-        this.btnCancel.Size = new System.Drawing.Size(75, 23);
-        this.btnCancel.TabIndex = 1;
-        this.btnCancel.Text = "Cancel";
-        this.btnCancel.UseVisualStyleBackColor = true;
-        // 
-        // txtFilename
-        // 
-        this.txtFilename.Location = new System.Drawing.Point(3, 1);
-        this.txtFilename.Name = "txtFilename";
-        this.txtFilename.Size = new System.Drawing.Size(612, 20);
-        this.txtFilename.TabIndex = 2;
-        this.txtFilename.TextChanged += new System.EventHandler(this.txtFilename_TextChanged);
-        // 
-        // groupBox1
-        // 
-        this.groupBox1.Controls.Add(this.rdoDebugViewTex);
-        this.groupBox1.Controls.Add(this.rdoDefaultLogfile);
-        this.groupBox1.Controls.Add(this.rdoImportADPlus);
-        this.groupBox1.Controls.Add(this.rdoImportTypeTxtFileWriter);
-        this.groupBox1.Location = new System.Drawing.Point(3, 27);
-        this.groupBox1.Name = "groupBox1";
-        this.groupBox1.Size = new System.Drawing.Size(332, 103);
-        this.groupBox1.TabIndex = 3;
-        this.groupBox1.TabStop = false;
-        this.groupBox1.Text = "Import file type:";
-        // 
-        // rdoDebugViewTex
-        // 
-        this.rdoDebugViewTex.AutoSize = true;
-        this.rdoDebugViewTex.Location = new System.Drawing.Point(178, 19);
-        this.rdoDebugViewTex.Name = "rdoDebugViewTex";
-        this.rdoDebugViewTex.Size = new System.Drawing.Size(148, 17);
-        this.rdoDebugViewTex.TabIndex = 3;
-        this.rdoDebugViewTex.Text = "Tex Log From DebugView";
-        this.rdoDebugViewTex.UseVisualStyleBackColor = true;
-        // 
-        // rdoDefaultLogfile
-        // 
-        this.rdoDefaultLogfile.AutoSize = true;
-        this.rdoDefaultLogfile.Location = new System.Drawing.Point(6, 65);
-        this.rdoDefaultLogfile.Name = "rdoDefaultLogfile";
-        this.rdoDefaultLogfile.Size = new System.Drawing.Size(88, 17);
-        this.rdoDefaultLogfile.TabIndex = 2;
-        this.rdoDefaultLogfile.Text = "Just A Logfile";
-        this.rdoDefaultLogfile.UseVisualStyleBackColor = true;
-        // 
-        // rdoImportADPlus
-        // 
-        this.rdoImportADPlus.AutoSize = true;
-        this.rdoImportADPlus.Location = new System.Drawing.Point(6, 42);
-        this.rdoImportADPlus.Name = "rdoImportADPlus";
-        this.rdoImportADPlus.Size = new System.Drawing.Size(142, 17);
-        this.rdoImportADPlus.TabIndex = 1;
-        this.rdoImportADPlus.Text = "Log Where CRLF Is Lost";
-        this.rdoImportADPlus.UseVisualStyleBackColor = true;
-        // 
-        // rdoImportTypeTxtFileWriter
-        // 
-        this.rdoImportTypeTxtFileWriter.AutoSize = true;
-        this.rdoImportTypeTxtFileWriter.Checked = true;
-        this.rdoImportTypeTxtFileWriter.Location = new System.Drawing.Point(6, 19);
-        this.rdoImportTypeTxtFileWriter.Name = "rdoImportTypeTxtFileWriter";
-        this.rdoImportTypeTxtFileWriter.Size = new System.Drawing.Size(134, 17);
-        this.rdoImportTypeTxtFileWriter.TabIndex = 0;
-        this.rdoImportTypeTxtFileWriter.TabStop = true;
-        this.rdoImportTypeTxtFileWriter.Text = "TextFileWriter from Tex";
-        this.rdoImportTypeTxtFileWriter.UseVisualStyleBackColor = true;
-        // 
-        // lbxMRUList
-        // 
-        this.lbxMRUList.FormattingEnabled = true;
-        this.lbxMRUList.Location = new System.Drawing.Point(3, 136);
-        this.lbxMRUList.Name = "lbxMRUList";
-        this.lbxMRUList.Size = new System.Drawing.Size(657, 95);
-        this.lbxMRUList.TabIndex = 4;
-        this.lbxMRUList.SelectedIndexChanged += new System.EventHandler(this.lbxMRUList_SelectedIndexChanged);
-        // 
-        // btnBrowseForFile
-        // 
-        this.btnBrowseForFile.Location = new System.Drawing.Point(623, 1);
-        this.btnBrowseForFile.Name = "btnBrowseForFile";
-        this.btnBrowseForFile.Size = new System.Drawing.Size(37, 20);
-        this.btnBrowseForFile.TabIndex = 5;
-        this.btnBrowseForFile.Text = "...";
-        this.btnBrowseForFile.UseVisualStyleBackColor = true;
-        this.btnBrowseForFile.Click += new System.EventHandler(this.btnBrowseForFile_Click);
-        // 
-        // chkAsynchImport
-        // 
-        this.chkAsynchImport.AutoSize = true;
-        this.chkAsynchImport.Checked = true;
-        this.chkAsynchImport.CheckState = System.Windows.Forms.CheckState.Checked;
-        this.chkAsynchImport.Location = new System.Drawing.Point(12, 247);
-        this.chkAsynchImport.Name = "chkAsynchImport";
-        this.chkAsynchImport.Size = new System.Drawing.Size(134, 17);
-        this.chkAsynchImport.TabIndex = 6;
-        this.chkAsynchImport.Text = "Do background import.";
-        this.chkAsynchImport.UseVisualStyleBackColor = true;
-        // 
-        // txtLabelIdent
-        // 
-        this.txtLabelIdent.BackColor = System.Drawing.SystemColors.Info;
-        this.txtLabelIdent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        this.txtLabelIdent.Location = new System.Drawing.Point(472, 27);
-        this.txtLabelIdent.Name = "txtLabelIdent";
-        this.txtLabelIdent.Size = new System.Drawing.Size(188, 20);
-        this.txtLabelIdent.TabIndex = 7;
-        this.txtLabelIdent.TextChanged += new System.EventHandler(this.txtLabelIdent_TextChanged);
-        // 
-        // label1
-        // 
-        this.label1.AutoSize = true;
-        this.label1.Location = new System.Drawing.Point(375, 29);
-        this.label1.Name = "label1";
-        this.label1.Size = new System.Drawing.Size(91, 13);
-        this.label1.TabIndex = 8;
-        this.label1.Text = "Label This Import:";
-        // 
-        // frmOpenDialog
-        // 
-        this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(672, 276);
-        this.Controls.Add(this.label1);
-        this.Controls.Add(this.txtLabelIdent);
-        this.Controls.Add(this.chkAsynchImport);
-        this.Controls.Add(this.btnBrowseForFile);
-        this.Controls.Add(this.lbxMRUList);
-        this.Controls.Add(this.groupBox1);
-        this.Controls.Add(this.txtFilename);
-        this.Controls.Add(this.btnCancel);
-        this.Controls.Add(this.btnOk);
-        this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-        this.Name = "frmOpenDialog";
-        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-        this.Text = "Open Trace From Existing Source";
-        this.groupBox1.ResumeLayout(false);
-        this.groupBox1.PerformLayout();
-        this.ResumeLayout(false);
-        this.PerformLayout();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOpenDialog));
+            btnOk = new System.Windows.Forms.Button();
+            btnCancel = new System.Windows.Forms.Button();
+            txtFilename = new System.Windows.Forms.TextBox();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            rdoDebugViewTex = new System.Windows.Forms.RadioButton();
+            rdoDefaultLogfile = new System.Windows.Forms.RadioButton();
+            rdoImportADPlus = new System.Windows.Forms.RadioButton();
+            rdoImportTypeTxtFileWriter = new System.Windows.Forms.RadioButton();
+            lbxMRUList = new System.Windows.Forms.ListBox();
+            btnBrowseForFile = new System.Windows.Forms.Button();
+            chkAsynchImport = new System.Windows.Forms.CheckBox();
+            txtLabelIdent = new System.Windows.Forms.TextBox();
+            label1 = new System.Windows.Forms.Label();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
+            // 
+            // btnOk
+            // 
+            btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            btnOk.Location = new System.Drawing.Point(682, 277);
+            btnOk.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnOk.Name = "btnOk";
+            btnOk.Size = new System.Drawing.Size(88, 27);
+            btnOk.TabIndex = 0;
+            btnOk.Text = "OK";
+            btnOk.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnCancel.Location = new System.Drawing.Point(588, 277);
+            btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new System.Drawing.Size(88, 27);
+            btnCancel.TabIndex = 1;
+            btnCancel.Text = "Cancel";
+            btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // txtFilename
+            // 
+            txtFilename.Location = new System.Drawing.Point(4, 1);
+            txtFilename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtFilename.Name = "txtFilename";
+            txtFilename.Size = new System.Drawing.Size(713, 23);
+            txtFilename.TabIndex = 2;
+            txtFilename.TextChanged += TxtFilename_TextChanged;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(rdoDebugViewTex);
+            groupBox1.Controls.Add(rdoDefaultLogfile);
+            groupBox1.Controls.Add(rdoImportADPlus);
+            groupBox1.Controls.Add(rdoImportTypeTxtFileWriter);
+            groupBox1.Location = new System.Drawing.Point(4, 31);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(387, 119);
+            groupBox1.TabIndex = 3;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Import file type:";
+            // 
+            // rdoDebugViewTex
+            // 
+            rdoDebugViewTex.AutoSize = true;
+            rdoDebugViewTex.Location = new System.Drawing.Point(208, 22);
+            rdoDebugViewTex.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rdoDebugViewTex.Name = "rdoDebugViewTex";
+            rdoDebugViewTex.Size = new System.Drawing.Size(159, 19);
+            rdoDebugViewTex.TabIndex = 3;
+            rdoDebugViewTex.Text = "Tex Log From DebugView";
+            rdoDebugViewTex.UseVisualStyleBackColor = true;
+            // 
+            // rdoDefaultLogfile
+            // 
+            rdoDefaultLogfile.AutoSize = true;
+            rdoDefaultLogfile.Location = new System.Drawing.Point(7, 75);
+            rdoDefaultLogfile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rdoDefaultLogfile.Name = "rdoDefaultLogfile";
+            rdoDefaultLogfile.Size = new System.Drawing.Size(95, 19);
+            rdoDefaultLogfile.TabIndex = 2;
+            rdoDefaultLogfile.Text = "Just A Logfile";
+            rdoDefaultLogfile.UseVisualStyleBackColor = true;
+            // 
+            // rdoImportADPlus
+            // 
+            rdoImportADPlus.AutoSize = true;
+            rdoImportADPlus.Location = new System.Drawing.Point(7, 48);
+            rdoImportADPlus.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rdoImportADPlus.Name = "rdoImportADPlus";
+            rdoImportADPlus.Size = new System.Drawing.Size(148, 19);
+            rdoImportADPlus.TabIndex = 1;
+            rdoImportADPlus.Text = "Log Where CRLF Is Lost";
+            rdoImportADPlus.UseVisualStyleBackColor = true;
+            // 
+            // rdoImportTypeTxtFileWriter
+            // 
+            rdoImportTypeTxtFileWriter.AutoSize = true;
+            rdoImportTypeTxtFileWriter.Checked = true;
+            rdoImportTypeTxtFileWriter.Location = new System.Drawing.Point(7, 22);
+            rdoImportTypeTxtFileWriter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rdoImportTypeTxtFileWriter.Name = "rdoImportTypeTxtFileWriter";
+            rdoImportTypeTxtFileWriter.Size = new System.Drawing.Size(124, 19);
+            rdoImportTypeTxtFileWriter.TabIndex = 0;
+            rdoImportTypeTxtFileWriter.TabStop = true;
+            rdoImportTypeTxtFileWriter.Text = "Log File from Bilge";
+            rdoImportTypeTxtFileWriter.UseVisualStyleBackColor = true;
+            // 
+            // lbxMRUList
+            // 
+            lbxMRUList.FormattingEnabled = true;
+            lbxMRUList.ItemHeight = 15;
+            lbxMRUList.Location = new System.Drawing.Point(4, 157);
+            lbxMRUList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lbxMRUList.Name = "lbxMRUList";
+            lbxMRUList.Size = new System.Drawing.Size(766, 109);
+            lbxMRUList.TabIndex = 4;
+            lbxMRUList.SelectedIndexChanged += LbxMRUList_SelectedIndexChanged;
+            // 
+            // btnBrowseForFile
+            // 
+            btnBrowseForFile.Location = new System.Drawing.Point(727, 1);
+            btnBrowseForFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBrowseForFile.Name = "btnBrowseForFile";
+            btnBrowseForFile.Size = new System.Drawing.Size(43, 23);
+            btnBrowseForFile.TabIndex = 5;
+            btnBrowseForFile.Text = "...";
+            btnBrowseForFile.UseVisualStyleBackColor = true;
+            btnBrowseForFile.Click += BtnBrowseForFile_Click;
+            // 
+            // chkAsynchImport
+            // 
+            chkAsynchImport.AutoSize = true;
+            chkAsynchImport.Checked = true;
+            chkAsynchImport.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkAsynchImport.Location = new System.Drawing.Point(14, 285);
+            chkAsynchImport.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkAsynchImport.Name = "chkAsynchImport";
+            chkAsynchImport.Size = new System.Drawing.Size(150, 19);
+            chkAsynchImport.TabIndex = 6;
+            chkAsynchImport.Text = "Do background import.";
+            chkAsynchImport.UseVisualStyleBackColor = true;
+            // 
+            // txtLabelIdent
+            // 
+            txtLabelIdent.BackColor = System.Drawing.SystemColors.Info;
+            txtLabelIdent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtLabelIdent.Location = new System.Drawing.Point(551, 31);
+            txtLabelIdent.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtLabelIdent.Name = "txtLabelIdent";
+            txtLabelIdent.Size = new System.Drawing.Size(219, 23);
+            txtLabelIdent.TabIndex = 7;
+            txtLabelIdent.TextChanged += TxtLabelIdent_TextChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(438, 33);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(102, 15);
+            label1.TabIndex = 8;
+            label1.Text = "Label This Import:";
+            // 
+            // frmOpenDialog
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(784, 318);
+            Controls.Add(label1);
+            Controls.Add(txtLabelIdent);
+            Controls.Add(chkAsynchImport);
+            Controls.Add(btnBrowseForFile);
+            Controls.Add(lbxMRUList);
+            Controls.Add(groupBox1);
+            Controls.Add(txtFilename);
+            Controls.Add(btnCancel);
+            Controls.Add(btnOk);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmOpenDialog";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Open Trace From Existing Source";
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
-    }
+        }
 
-    #endregion
+        #endregion
 
-    private System.Windows.Forms.Button btnOk;
+        private System.Windows.Forms.Button btnOk;
     private System.Windows.Forms.Button btnCancel;
     private System.Windows.Forms.TextBox txtFilename;
     private System.Windows.Forms.GroupBox groupBox1;

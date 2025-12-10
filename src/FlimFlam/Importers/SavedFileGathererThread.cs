@@ -1,6 +1,7 @@
 //using Plisky.Plumbing.Legacy;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Plisky.FlimFlam {
 
@@ -18,10 +19,12 @@ namespace Plisky.FlimFlam {
         internal static void LoadFromFileAsynch(string fileName, FileImportMethod style) {
             if (!File.Exists(fileName)) { return; }
             try {
-                var d = new LoadFileDelegate(ReadMessagesFromFile);
-                // TODO : FireAndForget support required so we dont leak like a bottomer.
-                _ = d.BeginInvoke(fileName, style, null, null);
-                // We just let this happen in the background and dissapear when its done.
+
+
+                ThreadPool.QueueUserWorkItem(delegate {
+                    ReadMessagesFromFile(fileName, style);
+                });
+
             } catch (IOException) {
                 // OK what do we do about errors ?
                 //Bilge.Dump(ex, "Error occured during LoadFromFileAsynch method");

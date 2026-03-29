@@ -1,4 +1,5 @@
 namespace Plisky.FlimFlam;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,9 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using OldFlimflam;
 using Plisky.Diagnostics;
-using Plisky.Diagnostics.FlimFlam;
 using Plisky.Plumbing;
 
 using TimerPartialInstancedataStructure = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<Plisky.FlimFlam.TimeInstanceView>>;
@@ -82,10 +81,10 @@ public class ViewSupportManager {
             if (SelectedTracedAppIdx == -1) { return false; } // Short circuit when its never been set up.
             return MexCore.TheCore.DataManager.IsValidTracedApplicationIndex(SelectedTracedAppIdx);  // Check to see its still valid
         }
-    } 
+    }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    internal void ShutDown() {        
+    internal void ShutDown() {
         b.Info.Log("MexViewer::ViewSupportManager::Shutdown requested, ViewSupport is closing");
     }
 
@@ -132,7 +131,7 @@ public class ViewSupportManager {
         }
         string theMsg;
         switch (msg) {
-            case UserMessages.UnhandledExceptionOccured: theMsg = "There was an unhandled exception in the application. >"+parameter; break;
+            case UserMessages.UnhandledExceptionOccured: theMsg = "There was an unhandled exception in the application. >" + parameter; break;
             case UserMessages.NoThreadsSelectedForView: theMsg = "No threads were selected, therefore the thread view could not be updated."; break;
             case UserMessages.ErrorDuringfileImport: theMsg = "There was an error during the file import.  The import did not succeed"; break;
             case UserMessages.CorruptStringFound: theMsg = "An entry scheduled for import was corrupt. Mex has thrown away this entry and continued."; break;
@@ -259,7 +258,7 @@ public class ViewSupportManager {
         return result;
     }
 
-    internal List<string> GetAllModules(int limit=-1) {
+    internal List<string> GetAllModules(int limit = -1) {
         #region entry code
         //Bilge.Assert(m_selectedTracedApp != -1, "MexViewer::ViewSupportManager::GetAllThreads >> Called while there was no selected application.  Cant return thread list when no application selected");
         //Bilge.Assert(MexCore.TheCore.DataManager.IsValidTracedApplicationIndex(m_selectedTracedApp), "MexViewer::ViewSupportManager::RefreshProcessView >> The index specified byt the currently selected application is out of range.  RefreshProcessView is trying to refresh an invalid process.");
@@ -268,7 +267,7 @@ public class ViewSupportManager {
 
         int count = 0;
         var moduleList = new List<string>();
-        
+
         var ta = MexCore.TheCore.DataManager.GetKnownApplication(SelectedTracedAppIdx);
 
         if (ta != null) {
@@ -344,7 +343,7 @@ public class ViewSupportManager {
         var result = new List<string>();
 
         foreach (string s in fullLocationData) {
-            if (s==null) { continue; }
+            if (s == null) { continue; }
             int idx = s.IndexOf("::");
             if (idx > 0) {
                 string next = s[..idx];
@@ -357,7 +356,7 @@ public class ViewSupportManager {
         }
 
         return result;
-    } 
+    }
 
     /// <summary>
     /// This method is called when the user wants to duplicate an entry to create a pseudo view.
@@ -460,7 +459,7 @@ public class ViewSupportManager {
             ta.EventEntries.EventEntriesRWL.ReleaseReaderLock();
         }
         return result;
-    } 
+    }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     private string BeautifyDebugMessage(string msg) {
@@ -566,7 +565,7 @@ public class ViewSupportManager {
             TraceCommandTypes.ResourcePuke => 3,
             TraceCommandTypes.ResourceCount => 36,
             _ => 0
-        };        
+        };
     }
 
     internal void RefreshView_Alerting(ListBox lbgAlertEntries, Label lblMostRecentText, Label lblSelectedAlertText, bool refreshMode) {
@@ -648,7 +647,7 @@ public class ViewSupportManager {
                 #endregion Cancellation support code
 
                 nextNode = new TreeNode(BeautifyDebugMessage(ee.debugMessage));
-                if (ee.viewData.isValid && ee.viewData.isHighlighted) {
+                if (ee.viewData.isValid && ee.viewData.IsHighlighted) {
                     if (ee.viewData.isBackgroundHighlighted) {
                         nextNode.BackColor = ee.viewData.backgroundHighlightColor;
                     }
@@ -986,7 +985,7 @@ public class ViewSupportManager {
                     };
 
                     // Now check whether color is being used for highlights.
-                    if (ee.viewData.isValid && ee.viewData.isHighlighted) {
+                    if (ee.viewData.isValid && ee.viewData.IsHighlighted) {
                         if (ee.viewData.isBackgroundHighlighted) {
                             lvi.BackColor = ee.viewData.backgroundHighlightColor;
                         }
@@ -1107,7 +1106,7 @@ public class ViewSupportManager {
                             lvi.BackColor = GetColorByIndex(appCount);
                         } else {
                             // Now check whether color is being used for highlights.
-                            if (ee.viewData.isValid && ee.viewData.isHighlighted) {
+                            if (ee.viewData.isValid && ee.viewData.IsHighlighted) {
                                 if (ee.viewData.isBackgroundHighlighted) {
                                     lvi.BackColor = ee.viewData.backgroundHighlightColor;
                                 }
@@ -1262,7 +1261,7 @@ public class ViewSupportManager {
                     };
 
                     // Now check whether color is being used for highlights.
-                    if (ee.viewData.isValid && ee.viewData.isHighlighted) {
+                    if (ee.viewData.isValid && ee.viewData.IsHighlighted) {
                         if (ee.viewData.isBackgroundHighlighted) {
                             lvi.BackColor = ee.viewData.backgroundHighlightColor;
                         }
@@ -1355,7 +1354,7 @@ public class ViewSupportManager {
                     };
 
                     // Now check whether color is being used for highlights.
-                    if (ee.viewData.isValid && ee.viewData.isHighlighted) {
+                    if (ee.viewData.isValid && ee.viewData.IsHighlighted) {
                         if (ee.viewData.isBackgroundHighlighted) {
                             lvi.BackColor = ee.viewData.backgroundHighlightColor;
                         }
@@ -1519,7 +1518,7 @@ public class ViewSupportManager {
                     Tag = nta.assignedIndex
                 };
 
-                if (nta.viewData.isValid && nta.viewData.isHighlighted) {
+                if (nta.viewData.isValid && nta.viewData.IsHighlighted) {
                     if (nta.viewData.isBackgroundHighlighted) {
                         lvi.BackColor = nta.viewData.backgroundHighlightColor;
                     }
@@ -2449,7 +2448,7 @@ public class ViewSupportManager {
                 _ = lvi.SubItems.Add(ee.debugMessage);
                 _ = CurrentHighlightOptions.ModifyEventEntryForHighlight(ee);
 
-                if (ee.viewData.isValid && ee.viewData.isHighlighted) {
+                if (ee.viewData.isValid && ee.viewData.IsHighlighted) {
                     if (ee.viewData.isBackgroundHighlighted) {
                         lvi.BackColor = ee.viewData.backgroundHighlightColor;
                     }
@@ -2471,7 +2470,7 @@ public class ViewSupportManager {
                     _ = lvi.SubItems.Add(nta.Pid.ToString());
                     _ = lvi.SubItems.Add(nta.DebugEntry);
 
-                    if (nta.viewData.isValid && nta.viewData.isHighlighted) {
+                    if (nta.viewData.isValid && nta.viewData.IsHighlighted) {
                         if (nta.viewData.isBackgroundHighlighted) {
                             lvi.BackColor = nta.viewData.backgroundHighlightColor;
                         }
@@ -2635,7 +2634,7 @@ public class ViewSupportManager {
     /// </summary>
     /// <remarks>If the changed index is -1 all processes are flagged as refresh required</remarks>
     /// <param name="affectedIndex">The index number of the affected application</param>
-    internal void ProcessNewEventNotification(object affectedIndex) {
+    internal void ProcessNewEventNotification(int affectedIndex) {
         //Bilge.Assert(affectedIndex != null, "Mex::ViewSupportManager::ProcessNewEventNotification -> affectedIndex is supposed to reflect the index that was changed, however it is null.  Cannot process this.");
         // The index of the process event that was affected
         int idx = (int)affectedIndex;
@@ -2730,7 +2729,7 @@ private void Application_ThreadException(object sender, System.Threading.ThreadE
 #endif
 
     internal ViewSupportManager() {
-        
+
         CurrentFilter = new ViewFilter();
         CurrentHighlightOptions = new HighlightRequestsStore();
 #if !DEBUG

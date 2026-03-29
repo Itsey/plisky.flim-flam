@@ -55,8 +55,8 @@ namespace Plisky.FlimFlam {
         internal bool ModifyEventEntryForHighlight(EventEntry ee) {
             // first check to see if there is any highlight data.
             if ((highlightRequests == null) || (highlightRequests.Count == 0)) {
-                if ((ee.viewData.isValid) && (ee.viewData.isHighlighted)) {
-                    ee.viewData.isHighlighted = false;
+                if ((ee.viewData.isValid) && (ee.viewData.IsHighlighted)) {
+                    ee.viewData.IsHighlighted = false;
                     return true;
                 }
                 return false;
@@ -118,8 +118,8 @@ namespace Plisky.FlimFlam {
             } // end for each of the highlights to apply
 
             // if we get here then there was no match for the current highlight selection.
-            if ((ee.viewData.isValid) && (ee.viewData.isHighlighted)) {
-                ee.viewData.isHighlighted = false;
+            if ((ee.viewData.isValid) && (ee.viewData.IsHighlighted)) {
+                ee.viewData.IsHighlighted = false;
                 return true;
             } else {
                 return false;
@@ -129,8 +129,8 @@ namespace Plisky.FlimFlam {
         internal bool ModifyNonTracedEventEntryForHighlight(NonTracedApplicationEntry nta) {
             // first check to see if there is any highlight data.
             if ((highlightRequests == null) || (highlightRequests.Count == 0)) {
-                if ((nta.viewData.isValid) && (nta.viewData.isHighlighted)) {
-                    nta.viewData.isHighlighted = false;
+                if ((nta.viewData.isValid) && (nta.viewData.IsHighlighted)) {
+                    nta.viewData.IsHighlighted = false;
                     return true;
                 }
                 return false;
@@ -166,7 +166,7 @@ namespace Plisky.FlimFlam {
                         // There was a match made but it was already applied to this element.  Therefore no changes.
                         return false;
                     } else {
-                        nta.viewData.isHighlighted = true;
+                        nta.viewData.IsHighlighted = true;
                         nta.viewData.isValid = true;
                         if (ahr.BackColorSpecified) {
                             nta.viewData.isBackgroundHighlighted = true;
@@ -182,8 +182,8 @@ namespace Plisky.FlimFlam {
             } // end for each of the highlights to apply
 
             // if we get here then there was no match for the current highlight selection.
-            if ((nta.viewData.isValid) && (nta.viewData.isHighlighted)) {
-                nta.viewData.isHighlighted = false;
+            if ((nta.viewData.isValid) && (nta.viewData.IsHighlighted)) {
+                nta.viewData.IsHighlighted = false;
                 return true;
             } else {
                 return false;

@@ -1,17 +1,19 @@
 ﻿using System.Runtime.Versioning;
 [assembly: SupportedOSPlatform("windows")]
 
-namespace MexInternals;
+namespace Plisky.FlimFlam;
 
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Plisky.Diagnostics.FlimFlam;
-using Plisky.FlimFlam;
-using Plisky.Plumbing;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Plisky.Diagnostics.FlimFlam;
+using Plisky.Plumbing;
 
 internal static class Program {
 
@@ -30,6 +32,30 @@ internal static class Program {
                 break;
             }
         }
+
+
+        // Build the minimal web app for MCP
+        var builder2 = WebApplication.CreateBuilder();
+        // Optional: force a specific URL/port
+        builder2.WebHost.UseUrls("http://127.0.0.1:9061");
+
+        builder2.Services
+            .AddMcpServer()
+            .WithHttpTransport()
+            .WithTools<FlimFlamTraceTool>();
+
+        var app = builder2.Build();
+        app.MapMcp();
+
+
+        // Cancellation + lifetime control so we can stop the server cleanly
+        var cts = new CancellationTokenSource();
+
+        // Start the web host in background so UI thread remains free
+        var webHostTask = Task.Run(async () => {
+            await app.StartAsync(cts.Token).ConfigureAwait(false);
+        }, cts.Token);
+
 
         var builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddSingleton<Hub>();
@@ -65,6 +91,18 @@ internal static class Program {
         Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
 
         var f = new frmMexMainView();
+
+        f.FormClosing += async (s, e) => {
+            try {
+                cts.Cancel();
+                await app.StopAsync().ConfigureAwait(false);
+            } finally {
+
+                cts.Dispose();
+            }
+
+
+        };
         f.LoadViewerConfigurationData();
 
         //Bilge.VerboseLog("Options Loaded ok, now going to refresh the filter list for the main screen");
@@ -84,7 +122,7 @@ internal static class Program {
         RetrieveUserOptionalSettings();
 
 
-        
+
         try {
             Application.Run(f);
         } catch (Exception ex) {

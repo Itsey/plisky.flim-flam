@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 
-namespace Plisky.FlimFlam { 
+namespace Plisky.FlimFlam {
 
     /// <summary>
     /// The view specific data is attached to each event entry and details how the envent entry should be viewed on the screen.  Eventually to
@@ -19,15 +19,15 @@ namespace Plisky.FlimFlam {
 
         internal bool isValid;
 
-        internal bool isHighlighted {
+        internal bool IsHighlighted {
             get { return isBackgroundHighlighted || isForegroundHighlighted; }
             // TODO:  This is pretty rough code, have forced the property to be set to false only which isnt even remotely
             // what a property should be about.  This is currently compatible with the code therefore left that like that.
             set {
                 // TODO : this is horrid.  What awful design.
                 //Bilge.Assert(value == false, "The is Highlighted property can only be used to clear a higlight rather than set it");
-                if (value == false) {
-                    throw new InvalidOperationException("Do not set this to true");
+                if (value == true) {
+                    throw new InvalidOperationException("Developer Error, you can not set the highlight like this.  If true is passed in then this is a mistake.");
                 }
                 isBackgroundHighlighted = false;
                 isForegroundHighlighted = false;

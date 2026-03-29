@@ -1,14 +1,12 @@
 //using Plisky.Plumbing.Legacy;
 
-using Plisky.Diagnostics.FlimFlam;
-
 namespace Plisky.FlimFlam {
 
     internal class Job_PartialPurgeApp : BaseJob {
         private int virtualIndexOfPurgerequest;
 
         internal Job_PartialPurgeApp(string machineName, int pid) {
-            TracedApplication ta = MexCore.TheCore.DataManager.GetKnownApplicationByPid(pid, machineName);
+            var ta = MexCore.TheCore.DataManager.GetKnownApplicationByPid(pid, machineName);
             //Bilge.Assert(ta != null, "pid/machine name passed to Job_PartialPurge constructor do not map to a valid traced application.  This should not be possible");
             virtualIndexOfPurgerequest = ta.VirtualIndex;
         }

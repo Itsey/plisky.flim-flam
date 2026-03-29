@@ -70,6 +70,11 @@ public class IncomingMessageManager2 : IncomingMessageManager {
     }
 
     public virtual void ProcessNextStoredMessage(bool reporting) {
+
+        if (!importerFeature.Active) {
+            return;
+        }
+
         var msgParser = new ImportParser(ois);
 
 

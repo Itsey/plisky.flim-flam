@@ -10,7 +10,6 @@
     using System.Windows.Forms;
     using OldFlimflam.Screens;
     using Plisky.Diagnostics;
-    using Plisky.Diagnostics.FlimFlam;
 
     public partial class frmMexMainView : Form {
         internal MexStatus ViewerStatus { get; set; }
@@ -608,6 +607,8 @@
 
         private void RefreshCurrentView(bool refreshMode) {
             long selectedIndex = 0;
+
+            RefreshProcessListCache();
 
             if (tbcMainView.SelectedTab == tabTimingsView) {
                 Core.ViewManager.RefreshView_Timings(tvwTimingInstances, currentAdditionalData);

@@ -169,6 +169,7 @@ public class IncomingMessageManager {
 
                         ApplyIncomingMessageApplicationEffects(parsed, tempMachineName, nextEvent.pid);
                         ee = new EventEntry(parsed);
+                        ee.TimeMessageRecieved = nextEvent.timeRecieved;
 
 
                         if (ee.GlobalIndex == 0) {

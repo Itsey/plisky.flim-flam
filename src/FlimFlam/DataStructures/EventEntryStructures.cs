@@ -79,6 +79,7 @@ public class EventEntry {
         this.threadID = copyMe.threadID;
         this.threadNetId = copyMe.threadNetId;
         this.viewData = new ViewSpecificData();
+        this.TimeMessageRecieved = copyMe.TimeMessageRecieved;
     }
 
     internal EventEntry(long newGlobalIndex, string newModule, string newLineNo, string newThreadId, string newDebugMessage, string moreLocData, string threadnetidentity)

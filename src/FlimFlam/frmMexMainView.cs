@@ -756,7 +756,8 @@
 
         private void RedrawProcessLists(/*ProcessSummary[] pss*/) {
             if (doingWork) {
-                throw new InvalidOperationException("Reentry not supported, this should not occur.");
+                return;
+                //throw new InvalidOperationException("Reentry not supported, this should not occur.");
             }
             doingWork = true;
 

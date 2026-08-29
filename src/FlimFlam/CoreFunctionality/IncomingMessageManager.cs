@@ -110,7 +110,7 @@ public class IncomingMessageManager {
                 }
 
                 var nextEvent = (IncomingEventStore)incommingMsgQueue.Dequeue();
-                if (string.IsNullOrEmpty(nextEvent.messageString)) {
+                if ((nextEvent == null) || string.IsNullOrEmpty(nextEvent.messageString)) {
                     continue;
                 }
                 MexCore.TheCore.LogEveryting("IncommingMessageManager", nextEvent.messageString);
@@ -208,7 +208,7 @@ public class IncomingMessageManager {
                     }
                 }
 
-            // The goto bypasses the non legacy code
+                // The goto bypasses the non legacy code
             LEGACYSUPPORT:
                 int nextLogicalIndexAffected = -1;
 
